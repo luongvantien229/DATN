@@ -85,8 +85,8 @@ function App() {
           }
         />
         <Route
-          path="/login-register"
-          element={
+          path="/product-detail"
+          element={ 
             <MainLayout>
               <ProductDetail />
             </MainLayout>

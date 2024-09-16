@@ -12,7 +12,7 @@ export default function ProductArena1() {
             <a href="shop.html">Personal</a>
           </div>
           <h2>
-            <a href="product-details.html">Disposable Hand Wash Gel</a>
+            <a href="/product-detail">Disposable Hand Wash Gel</a>
           </h2>
           <div className="product-price">
             <span className="new-price">$20.00</span>
@@ -21,7 +21,7 @@ export default function ProductArena1() {
         </div>
         <div className="product-img-action-wrap mb-20 mt-25">
           <div className="product-img product-img-zoom">
-            <a href="product-details.html">
+            <a href="/product-detail">
               <img
                 className="default-img"
                 src="assets/images/product/product-1.jpg"

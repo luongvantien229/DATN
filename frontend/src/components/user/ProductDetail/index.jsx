@@ -1,21 +1,22 @@
 import React from "react";
-
+import ProductDetail from "./ProductDetail";
+import Information from "./Information";
 export default function Index() {
   return (
-    <div class="product-details-area padding-30-row-col pt-75 pb-75">
-      <div class="container">
-        <div class="row">
-          <div class="col-lg-12 col-md-12">
-            <div class="product-details-wrap">
-              <div class="product-details-wrap-top">
-                <div class="row">
-                  <div class="col-lg-6 col-md-6">
-                    <div class="product-details-slider-wrap">
-                      <div class="pro-dec-big-img-slider">
-                        <div class="single-big-img-style">
-                          <div class="pro-details-big-img">
+    <div className="product-details-area padding-30-row-col pt-75 pb-75">
+      <div className="container">
+        <div className="row">
+          <div className="col-lg-12 col-md-12">
+            <div className="product-details-wrap">
+              {/* <div className="product-details-wrap-top">
+                <div className="row">
+                  <div className="col-lg-6 col-md-6">
+                    <div className="product-details-slider-wrap">
+                      <div className="pro-dec-big-img-slider">
+                        <div className="single-big-img-style">
+                          <div className="pro-details-big-img">
                             <a
-                              class="img-popup"
+                              className="img-popup"
                               href="assets/images/product-details/pro-details-b-large-1.jpg"
                             >
                               <img
@@ -24,14 +25,14 @@ export default function Index() {
                               />
                             </a>
                           </div>
-                          <div class="pro-details-badges product-badges-position">
-                            <span class="red">Sale !</span>
+                          <div className="pro-details-badges product-badges-position">
+                            <span className="red">Sale !</span>
                           </div>
                         </div>
-                        <div class="single-big-img-style">
-                          <div class="pro-details-big-img">
+                        <div className="single-big-img-style">
+                          <div className="pro-details-big-img">
                             <a
-                              class="img-popup"
+                              className="img-popup"
                               href="assets/images/product-details/pro-details-b-large-2.jpg"
                             >
                               <img
@@ -40,14 +41,14 @@ export default function Index() {
                               />
                             </a>
                           </div>
-                          <div class="pro-details-badges product-badges-position">
-                            <span class="red">Sale !</span>
+                          <div className="pro-details-badges product-badges-position">
+                            <span className="red">Sale !</span>
                           </div>
                         </div>
-                        <div class="single-big-img-style">
-                          <div class="pro-details-big-img">
+                        <div className="single-big-img-style">
+                          <div className="pro-details-big-img">
                             <a
-                              class="img-popup"
+                              className="img-popup"
                               href="assets/images/product-details/pro-details-b-large-3.jpg"
                             >
                               <img
@@ -56,14 +57,14 @@ export default function Index() {
                               />
                             </a>
                           </div>
-                          <div class="pro-details-badges product-badges-position">
-                            <span class="red">Sale !</span>
+                          <div className="pro-details-badges product-badges-position">
+                            <span className="red">Sale !</span>
                           </div>
                         </div>
-                        <div class="single-big-img-style">
-                          <div class="pro-details-big-img">
+                        <div className="single-big-img-style">
+                          <div className="pro-details-big-img">
                             <a
-                              class="img-popup"
+                              className="img-popup"
                               href="assets/images/product-details/pro-details-b-large-4.jpg"
                             >
                               <img
@@ -72,14 +73,14 @@ export default function Index() {
                               />
                             </a>
                           </div>
-                          <div class="pro-details-badges product-badges-position">
-                            <span class="red">Sale !</span>
+                          <div className="pro-details-badges product-badges-position">
+                            <span className="red">Sale !</span>
                           </div>
                         </div>
-                        <div class="single-big-img-style">
-                          <div class="pro-details-big-img">
+                        <div className="single-big-img-style">
+                          <div className="pro-details-big-img">
                             <a
-                              class="img-popup"
+                              className="img-popup"
                               href="assets/images/product-details/pro-details-b-large-2.jpg"
                             >
                               <img
@@ -88,37 +89,37 @@ export default function Index() {
                               />
                             </a>
                           </div>
-                          <div class="pro-details-badges product-badges-position">
-                            <span class="red">Sale !</span>
+                          <div className="pro-details-badges product-badges-position">
+                            <span className="red">Sale !</span>
                           </div>
                         </div>
                       </div>
-                      <div class="product-dec-slider-small product-dec-small-style1">
-                        <div class="product-dec-small active">
+                      <div className="product-dec-slider-small product-dec-small-style1">
+                        <div className="product-dec-small active">
                           <img
                             src="assets/images/product-details/pro-details-small-1.jpg"
                             alt=""
                           />
                         </div>
-                        <div class="product-dec-small">
+                        <div className="product-dec-small">
                           <img
                             src="assets/images/product-details/pro-details-small-2.jpg"
                             alt=""
                           />
                         </div>
-                        <div class="product-dec-small">
+                        <div className="product-dec-small">
                           <img
                             src="assets/images/product-details/pro-details-small-3.jpg"
                             alt=""
                           />
                         </div>
-                        <div class="product-dec-small">
+                        <div className="product-dec-small">
                           <img
                             src="assets/images/product-details/pro-details-small-4.jpg"
                             alt=""
                           />
                         </div>
-                        <div class="product-dec-small">
+                        <div className="product-dec-small">
                           <img
                             src="assets/images/product-details/pro-details-small-2.jpg"
                             alt=""
@@ -127,9 +128,9 @@ export default function Index() {
                       </div>
                     </div>
                   </div>
-                  <div class="col-lg-6 col-md-6">
-                    <div class="product-details-content pro-details-content-pl">
-                      <div class="pro-details-category">
+                  <div className="col-lg-6 col-md-6">
+                    <div className="product-details-content pro-details-content-pl">
+                      <div className="pro-details-category">
                         <ul>
                           <li>
                             <a href="shop-filter.html">
@@ -143,99 +144,99 @@ export default function Index() {
                         </ul>
                       </div>
                       <h1> Anti-septic Dry Hand Gel</h1>
-                      <div class="pro-details-brand-review">
-                        <div class="pro-details-brand">
+                      <div className="pro-details-brand-review">
+                        <div className="pro-details-brand">
                           <span>
                             {" "}
                             Brands: <a href="shop.html">BioZen</a>
                           </span>
                         </div>
-                        <div class="pro-details-rating-wrap">
+                        <div className="pro-details-rating-wrap">
                           <span>5.00</span>
-                          <div class="pro-details-rating">
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
+                          <div className="pro-details-rating">
+                            <i className="fas fa-star"></i>
+                            <i className="fas fa-star"></i>
+                            <i className="fas fa-star"></i>
+                            <i className="fas fa-star"></i>
+                            <i className="fas fa-star"></i>
                           </div>
                           <a href="#"> (2 reviews)</a>
                         </div>
                       </div>
-                      <div class="pro-details-price-short-description">
-                        <div class="pro-details-price">
-                          <span class="new-price">$19.00 - $29.00</span>
-                          <span class="old-price">$19.00 - $35.00</span>
+                      <div className="pro-details-price-short-description">
+                        <div className="pro-details-price">
+                          <span className="new-price">$19.00 - $29.00</span>
+                          <span className="old-price">$19.00 - $35.00</span>
                         </div>
-                        <div class="pro-details-short-description">
+                        <div className="pro-details-short-description">
                           <p>
                             Kills 99.99% of germs without water. With Aloe Vera
                             Extract.
                           </p>
                         </div>
                       </div>
-                      <div class="pro-details-color-wrap">
+                      <div className="pro-details-color-wrap">
                         <span>Color</span>
-                        <div class="pro-details-color-list pro-details-color-mrg tooltip-style-3">
+                        <div className="pro-details-color-list pro-details-color-mrg tooltip-style-3">
                           <ul>
                             <li>
-                              <a aria-label="Green" class="green" href="#">
+                              <a aria-label="Green" className="green" href="#">
                                 green
                               </a>
                             </li>
                             <li>
-                              <a aria-label="Pink" class="pink" href="#">
+                              <a aria-label="Pink" className="pink" href="#">
                                 pink
                               </a>
                             </li>
                             <li>
                               <a
                                 aria-label="Powder blue"
-                                class="powder-blue"
+                                className="powder-blue"
                                 href="#"
                               >
                                 powder-blue
                               </a>
                             </li>
                             <li>
-                              <a aria-label="Purple" class="purple" href="#">
+                              <a aria-label="Purple" className="purple" href="#">
                                 purple
                               </a>
                             </li>
                           </ul>
                         </div>
                       </div>
-                      <div class="pro-details-quality-stock-area">
+                      <div className="pro-details-quality-stock-area">
                         <span>Quantity</span>
-                        <div class="pro-details-quality-stock-wrap">
-                          <div class="product-quality">
+                        <div className="pro-details-quality-stock-wrap">
+                          <div className="product-quality">
                             <input
-                              class="cart-plus-minus-box input-text qty text"
+                              className="cart-plus-minus-box input-text qty text"
                               name="qtybutton"
                               value="1"
                             />
                           </div>
-                          <div class="pro-details-stock">
+                          <div className="pro-details-stock">
                             <span>
-                              <i class="fas fa-check-circle"></i> 6 in stock
+                              <i className="fas fa-check-circle"></i> 6 in stock
                             </span>
                           </div>
                         </div>
                       </div>
-                      <div class="pro-details-action-wrap">
-                        <div class="pro-details-add-to-cart">
+                      <div className="pro-details-action-wrap">
+                        <div className="pro-details-add-to-cart">
                           <button>Add to cart</button>
                         </div>
-                        <div class="pro-details-action tooltip-style-4">
+                        <div className="pro-details-action tooltip-style-4">
                           <button aria-label="Add To Wishlist">
-                            <i class="fad fa-heart"></i>{" "}
+                            <i className="fad fa-heart"></i>{" "}
                           </button>
                           <button aria-label="Add To Compare">
-                            <i class="far fa-signal"></i>{" "}
+                            <i className="far fa-signal"></i>{" "}
                           </button>
                         </div>
                       </div>
-                      <div class="product-details-meta">
+                      <div className="product-details-meta">
                         <ul>
                           <li>
                             <span>Sku:</span> SF1133569600-1{" "}
@@ -246,30 +247,31 @@ export default function Index() {
                           </li>
                         </ul>
                       </div>
-                      <div class="product-details-social tooltip-style-4">
-                        <a aria-label="Facebook" class="facebook" href="#">
-                          <i class="fab fa-facebook-f"></i>
+                      <div className="product-details-social tooltip-style-4">
+                        <a aria-label="Facebook" className="facebook" href="#">
+                          <i className="fab fa-facebook-f"></i>
                         </a>
-                        <a aria-label="Twitter" class="twitter" href="#">
-                          <i class="fab fa-twitter"></i>
+                        <a aria-label="Twitter" className="twitter" href="#">
+                          <i className="fab fa-twitter"></i>
                         </a>
-                        <a aria-label="Linkedin" class="linkedin" href="#">
-                          <i class="fab fa-linkedin"></i>
+                        <a aria-label="Linkedin" className="linkedin" href="#">
+                          <i className="fab fa-linkedin"></i>
                         </a>
-                        <a aria-label="Tumblr" class="tumblr" href="#">
-                          <i class="fab fa-tumblr-square"></i>
+                        <a aria-label="Tumblr" className="tumblr" href="#">
+                          <i className="fab fa-tumblr-square"></i>
                         </a>
-                        <a aria-label="Email" class="envelope" href="#">
-                          <i class="fas fa-envelope"></i>
+                        <a aria-label="Email" className="envelope" href="#">
+                          <i className="fas fa-envelope"></i>
                         </a>
                       </div>
                     </div>
                   </div>
                 </div>
-              </div>
-              <div class="product-details-wrap-bottom">
-                <div class="product-details-description">
-                  <div class="entry-product-section-heading">
+              </div> */}
+              <ProductDetail />
+              {/* <div className="product-details-wrap-bottom">
+                <div className="product-details-description">
+                  <div className="entry-product-section-heading">
                     <h2>Description</h2>
                   </div>
                   <p>
@@ -305,11 +307,11 @@ export default function Index() {
                     palm then briskly rub hands together thoroughly until dry.
                   </p>
                 </div>
-                <div class="pro-details-additional-information pro-details-mrg-tb">
-                  <div class="entry-product-section-heading">
+                <div className="pro-details-additional-information pro-details-mrg-tb">
+                  <div className="entry-product-section-heading">
                     <h2>Additional information</h2>
                   </div>
-                  <div class="additional-information">
+                  <div className="additional-information">
                     <ul>
                       <li>
                         <span>Type Of Packing</span> Bottle
@@ -329,28 +331,28 @@ export default function Index() {
                     </ul>
                   </div>
                 </div>
-                <div class="pro-details-review-wrap">
-                  <div class="entry-product-section-heading">
+                <div className="pro-details-review-wrap">
+                  <div className="entry-product-section-heading">
                     <h2> Reviews(2)</h2>
                   </div>
-                  <div class="pro-details-review">
+                  <div className="pro-details-review">
                     <p>
                       <span>5.00</span> average based on 2 ratings.
                     </p>
-                    <div class="single-pro-details-review">
-                      <div class="review-img">
+                    <div className="single-pro-details-review">
+                      <div className="review-img">
                         <img src="assets/images/client/client-1.jpg" alt="" />
                       </div>
-                      <div class="review-content">
-                        <div class="review-name-rating">
-                          <div class="review-rating">
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
+                      <div className="review-content">
+                        <div className="review-name-rating">
+                          <div className="review-rating">
+                            <i className="fas fa-star"></i>
+                            <i className="fas fa-star"></i>
+                            <i className="fas fa-star"></i>
+                            <i className="fas fa-star"></i>
+                            <i className="fas fa-star"></i>
                           </div>
-                          <div class="review-name">
+                          <div className="review-name">
                             <h6>Edna Watson</h6>
                           </div>
                         </div>
@@ -358,30 +360,30 @@ export default function Index() {
                           Very good and fast delivery during the week. Thank
                           you!
                         </p>
-                        <div class="review-date-btn">
-                          <div class="review-date">
+                        <div className="review-date-btn">
+                          <div className="review-date">
                             <span> April 16, 2020 at 3:08 am </span>
                           </div>
-                          <div class="review-btn">
+                          <div className="review-btn">
                             <a href="#">Reply</a>
                           </div>
                         </div>
                       </div>
                     </div>
-                    <div class="single-pro-details-review">
-                      <div class="review-img">
+                    <div className="single-pro-details-review">
+                      <div className="review-img">
                         <img src="assets/images/client/client-2.jpg" alt="" />
                       </div>
-                      <div class="review-content">
-                        <div class="review-name-rating">
-                          <div class="review-rating">
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
+                      <div className="review-content">
+                        <div className="review-name-rating">
+                          <div className="review-rating">
+                            <i className="fas fa-star"></i>
+                            <i className="fas fa-star"></i>
+                            <i className="fas fa-star"></i>
+                            <i className="fas fa-star"></i>
+                            <i className="fas fa-star"></i>
                           </div>
-                          <div class="review-name">
+                          <div className="review-name">
                             <h6>Edna Watson</h6>
                           </div>
                         </div>
@@ -389,53 +391,53 @@ export default function Index() {
                           Very good and fast delivery during the week. Thank
                           you!
                         </p>
-                        <div class="review-date-btn">
-                          <div class="review-date">
+                        <div className="review-date-btn">
+                          <div className="review-date">
                             <span> April 16, 2020 at 3:08 am </span>
                           </div>
-                          <div class="review-btn">
+                          <div className="review-btn">
                             <a href="#">Reply</a>
                           </div>
                         </div>
                       </div>
                     </div>
-                    <div class="ratting-form-wrapper">
+                    <div className="ratting-form-wrapper">
                       <h3>Add a review </h3>
                       <p>
                         Your email address will not be published. Required
                         fields are marked{" "}
                       </p>
-                      <div class="comment-form-rating-wrap">
+                      <div className="comment-form-rating-wrap">
                         <span>Your rating: *</span>
-                        <div class="comment-form-rating">
-                          <i class="fas fa-star"></i>
-                          <i class="fas fa-star"></i>
-                          <i class="fas fa-star"></i>
-                          <i class="fas fa-star"></i>
-                          <i class="fas fa-star"></i>
+                        <div className="comment-form-rating">
+                          <i className="fas fa-star"></i>
+                          <i className="fas fa-star"></i>
+                          <i className="fas fa-star"></i>
+                          <i className="fas fa-star"></i>
+                          <i className="fas fa-star"></i>
                         </div>
                       </div>
-                      <div class="rating-form-style">
+                      <div className="rating-form-style">
                         <form action="#">
-                          <div class="row">
-                            <div class="col-lg-6 col-md-6">
+                          <div className="row">
+                            <div className="col-lg-6 col-md-6">
                               <input type="text" placeholder="Name *" />
                             </div>
-                            <div class="col-lg-6 col-md-6">
+                            <div className="col-lg-6 col-md-6">
                               <input type="email" placeholder="Email *" />
                             </div>
-                            <div class="col-lg-12 col-md-12">
+                            <div className="col-lg-12 col-md-12">
                               <textarea placeholder="Your review"></textarea>
                             </div>
                           </div>
-                          <div class="cookies-consent">
+                          <div className="cookies-consent">
                             <input type="checkbox" value="yes" />
                             <p>
                               Save my name, email, and website in this browser
                               for the next time I comment.
                             </p>
                           </div>
-                          <div class="form-submit">
+                          <div className="form-submit">
                             <input type="submit" value="Submit" />
                           </div>
                         </form>
@@ -443,7 +445,8 @@ export default function Index() {
                     </div>
                   </div>
                 </div>
-              </div>
+              </div> */}
+              <Information />
             </div>
           </div>
         </div>

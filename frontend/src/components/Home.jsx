@@ -8,7 +8,7 @@ export default function Home() {
     const fetchNewProducts = async () => {
       try {
         const response = await axios.get(
-          "http://127.0.0.1:8000/api/new_products"
+          "/new_products"
         );
         setProducts(response.data.new_products);
       } catch (error) {

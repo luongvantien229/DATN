@@ -33,6 +33,21 @@ export default function Header() {
                 <i className="bi bi-cart-check"></i> Cart({cartItems.length})
               </Link>
             </li>
+            <li className="nav-item">
+              <Link className="navbar-brand" to="/login">
+                <i className="bi bi-user"> Login</i>
+              </Link>
+            </li>
+            <li className="nav-item">
+              <Link className="navbar-brand" to="/register">
+                <i className="bi bi-user"> Register</i>
+              </Link>
+            </li>
+            <li className="nav-item">
+              <Link className="navbar-brand" to="/your_profile">
+                <i className="bi bi-user"> Your profile</i>
+              </Link>
+            </li>
           </ul>
         </div>
       </div>

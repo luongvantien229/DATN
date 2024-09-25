@@ -3,7 +3,7 @@ import ProductArena2 from "./productArea2";
 import useSlick from "../../../hooks/user/slick";
 
 export default function Index() {
-  const { productArena1 } = useSlick(); // Lấy các ref từ hook
+  const { productArena2 } = useSlick(); // Lấy các ref từ hook
 
   return (
     <div className="product-area pb-70">
@@ -18,11 +18,12 @@ export default function Index() {
             </a>
           </div>
         </div>
-        <div ref={productArena1} className="product-slider-active-1 nav-style-2 nav-style-2-modify-2">
-          {[...Array(8)].map((_, index) => (
+        {/* <div ref={productArena2} className="product-slider-active-1 nav-style-2 nav-style-2-modify-2">
+          {[...Array(5)].map((_, index) => (
             <ProductArena2 key={index} />
           ))}
-        </div>
+        </div> */}
+        <ProductArena2 ref={productArena2} />
       </div>
     </div>
   );

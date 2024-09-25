@@ -37,11 +37,13 @@ export default function Index() {
               />
             </div>
           </div>
-          <div className="product-slider-active-1 nav-style-2 product-hm1-mrg" ref={productArena1}>
+          {/* <div className="product-slider-active-1 nav-style-2 product-hm1-mrg" ref={productArena1}>
             {[...Array(8)].map((_, index) => (
               <ProductArena1 key={index} />
             ))}
-          </div>
+          </div> */}
+          
+            <ProductArena1 ref={productArena1} />
         </div>
       </div>
     </div>

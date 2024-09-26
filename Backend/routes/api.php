@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\BrandController;
+use App\Http\Controllers\CallStringeeController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\CategoryPostController;
 use App\Http\Controllers\ForgotPasswordController;
@@ -12,6 +13,8 @@ use App\Http\Controllers\ProductTypeController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\SubCategoryController;
 use App\Http\Controllers\CartController;
+use App\Http\Controllers\WarehouseController;
+use App\Http\Controllers\WarehouseProductController;
 use App\Http\Middleware\AdminMiddleware;
 
 use Illuminate\Support\Facades\Route;
@@ -33,11 +36,27 @@ Route::group([
 // Roles CRUD routes
 Route::group(['prefix' => 'roles'], function ($router) {
     Route::controller(RoleController::class)->group(function () {
-        Route::get('index', 'index');
-        Route::get('show/{id}', 'show');
-        Route::post('store', 'store');
-        Route::put('update/{id}', 'update')->middleware('admin');
-        Route::delete('destroy/{id}', 'destroy');
+        Route::get('/index', 'index');
+        Route::get('/show/{id}', 'show');
+        Route::post('/store', 'store');
+        Route::put('/update/{id}', 'update')->middleware('admin');
+        Route::delete('/destroy/{id}', 'destroy');
+    });
+});
+
+// Warehouse CRUD routes
+Route::group(['prefix' => 'Warehouses','middleware' => [AdminMiddleware::class]], function ($router) {
+    Route::controller(WarehouseController::class)->group(function () {
+        Route::get('/index', 'index');
+        Route::get('/show/{id}', 'show');
+    });
+});
+// Warehouse Products CRUD routes
+Route::group(['prefix' => 'warehouse_products','middleware' => [AdminMiddleware::class]], function ($router) {
+    Route::controller(WarehouseProductController::class)->group(function () {
+        Route::post('/store/warehouses/{warehouse_id}/products', 'store');
+        Route::put('/update/warehouses/{warehouse_id}/products/{product_id}', 'update');
+        Route::delete('/destroy/warehouses/{warehouse_id}/products/{product_id}', 'destroy');
     });
 });
 
@@ -64,15 +83,15 @@ Route::group(['prefix' => 'categories','middleware' => [AdminMiddleware::class]]
 });
 
 // Sub Categories CRUD routes
-Route::group(['prefix' => 'sub_categories','middleware' => [AdminMiddleware::class]], function ($router) {
-    Route::controller(SubCategoryController::class)->group(function () {
-        Route::get('index', 'index');
-        Route::get('show/{id}', 'show');
-        Route::post('store', 'store');
-        Route::put('update/{id}', 'update');
-        Route::delete('destroy/{id}', 'destroy');
-    });
-});
+// Route::group(['prefix' => 'sub_categories','middleware' => [AdminMiddleware::class]], function ($router) {
+//     Route::controller(SubCategoryController::class)->group(function () {
+//         Route::get('index', 'index');
+//         Route::get('show/{id}', 'show');
+//         Route::post('store', 'store');
+//         Route::put('update/{id}', 'update');
+//         Route::delete('destroy/{id}', 'destroy');
+//     });
+// });
 
 // Product types CRUD routes
 Route::group(['prefix' => 'product_types','middleware' => [AdminMiddleware::class]], function ($router) {
@@ -123,17 +142,24 @@ Route::group(['prefix' => 'categories','middleware' => [AdminMiddleware::class]]
 
 
 // Site Users routes
-
+Route::get('/all_products',[IndexController::class,'all_products']);
+Route::get('/all_brands',[IndexController::class,'all_brands']);
+Route::get('/all_categories',[IndexController::class,'all_categories']);
 Route::get('/new_products',[IndexController::class,'new_products']);
 Route::get('/favorite_products',[IndexController::class,'favorite_products']);
+Route::get('/search', [IndexController::class, 'search']);
+
+Route::get('/sort_filter_shop', [IndexController::class, 'sort_filter_shop']);
+Route::get('/generate-token', [CallStringeeController::class, 'generateToken']);
 
 
 
 
-Route::post('/cart/add', [CartController::class, 'addToCart']);
-Route::get('/cart', [CartController::class, 'viewCart']);
-Route::delete('/cart/remove/{id}', [CartController::class, 'removeFromCart']);
-Route::delete('/cart/clear', [CartController::class, 'clearCart']);
+
+// Route::post('/cart/add', [CartController::class, 'addToCart']);
+// Route::get('/cart', [CartController::class, 'viewCart']);
+// Route::delete('/cart/remove/{id}', [CartController::class, 'removeFromCart']);
+// Route::delete('/cart/clear', [CartController::class, 'clearCart']);
 
 
 

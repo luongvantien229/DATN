@@ -6,6 +6,10 @@ import Nav from "./components/nav";
 import Dashboard from "./components/dashboard";
 import Categories from "./components/categories";
 import AddCategories from "./components/categories/add";
+import Product from "./components/product";
+import AddProduct from "./components/product/add";
+
+
 
 // Main layout wrapper component
 const MainLayout = ({ children }) => (
@@ -46,6 +50,22 @@ function App() {
           element={
             <MainLayout>
               <AddCategories />
+            </MainLayout>
+          }
+        />
+        <Route
+          path="/product"
+          element={
+            <MainLayout>
+              <Product />
+            </MainLayout>
+          }
+        />
+        <Route
+          path="/add-product"
+          element={
+            <MainLayout>
+              <AddProduct />
             </MainLayout>
           }
         />

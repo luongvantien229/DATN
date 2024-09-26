@@ -19,7 +19,7 @@ export default function Index() {
         </Link>
 
         <a
-          href="/"
+          href="index.jsx"
           className="layout-menu-toggle menu-link text-large ms-auto d-block d-xl-none"
         >
           <i className="bx bx-chevron-left bx-sm d-flex align-items-center justify-content-center"></i>
@@ -35,6 +35,8 @@ export default function Index() {
             <div className="text-truncate" data-i18n="Dashboards">
               Dashboards
             </div>
+            <span class="badge rounded-pill bg-danger ms-auto">0</span>
+            
           </Link>
         </li>
         <li className={`menu-item ${activeMenu === "/categories" ? "active open" : ""}`}>
@@ -42,6 +44,14 @@ export default function Index() {
             <i className="menu-icon tf-icons bx bx-layout"></i>
             <div className="text-truncate" data-i18n="Danh mục">
               Danh mục
+            </div>
+          </Link>
+        </li>
+        <li className={`menu-item ${activeMenu === "/product" ? "active open" : ""}`}>
+          <Link to="/product" className="menu-link" onClick={() => handleMenuClick("/product")}>
+            <i className="menu-icon tf-icons bx bx-layout"></i>
+            <div className="text-truncate" data-i18n="Product">
+              Product
             </div>
           </Link>
         </li>

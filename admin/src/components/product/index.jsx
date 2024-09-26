@@ -8,7 +8,7 @@ const Index = () => {
         <div>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
             <h5 className="card-header">Striped rows</h5>
-            <Link to="/add-categories">
+            <Link to="/add-product">
               <button type="button" className="btn rounded-pill btn-primary m-6">
                 Add
               </button>
@@ -20,10 +20,10 @@ const Index = () => {
           <table className="table table-striped">
             <thead>
               <tr>
-                <th>Project</th>
-                <th>Client</th>
-                <th>Users</th>
-                <th>Status</th>
+                <th>Name</th>
+                <th>Price</th>
+                <th>Image</th>
+                <th>Rating</th>
                 <th>Actions</th>
               </tr>
             </thead>
@@ -78,26 +78,21 @@ const Index = () => {
                   </ul>
                 </td>
                 <td>
-                  <span className="badge bg-label-primary me-1">Active</span>
+                  {/* <span className="badge bg-label-primary me-1">Active</span> */}
+                  <i class="far fa-star fa-xs">5</i>
                 </td>
                 <td>
-                  <div className="dropdown">
-                    <button
-                      type="button"
-                      className="btn p-0 dropdown-toggle hide-arrow"
-                      data-bs-toggle="dropdown"
-                    >
-                      <i className="bx bx-dots-vertical-rounded"></i>
-                    </button>
-                    <div className="dropdown-menu">
-                      <a className="dropdown-item" href="#">
-                        <i className="bx bx-edit-alt me-1"></i> Edit
-                      </a>
-                      <a className="dropdown-item" href="#">
-                        <i className="bx bx-trash me-1"></i> Delete
-                      </a>
-                    </div>
-                  </div>
+                <td>
+                    <a href="#" target="_blank" class="btn btn-primary btn-sm">
+                      <i class="fas fa-eye fa-fw"></i>
+                    </a>
+                    <a class="btn btn-outline-warning btn-sm">
+                      <i class="fas fa-pencil alt"></i>
+                    </a>
+                    <a href="#" class="btn btn-outline-danger btn-sm">
+                      <i class="fas fa-times fa-fw"></i>
+                    </a>
+                  </td>
                 </td>
               </tr>
               <tr>

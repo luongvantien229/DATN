@@ -11,14 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('coupons', function (Blueprint $table) {
+        Schema::create('warehouses', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
+            $table->string('location');
             $table->foreignId('user_id')->references('id')->on('users')->onDelete('cascade');
-            $table->integer('number');
-            $table->integer('time');
-            $table->integer('condition');
-            $table->string('code');
             $table->timestamps();
         });
     }
@@ -28,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('coupons');
+        Schema::dropIfExists('warehouses');
     }
 };

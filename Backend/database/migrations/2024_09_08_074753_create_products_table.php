@@ -18,7 +18,6 @@ return new class extends Migration
             $table->text('description')->nullable(); // Mô tả sản phẩm
             $table->decimal('price', 12); // Giá sản phẩm
             $table->foreignId('category_id')->constrained()->onDelete('cascade'); // Khóa ngoại đến bảng categories
-            $table->foreignId('sub_category_id')->constrained()->onDelete('cascade'); // Khóa ngoại đến bảng sub categories
             $table->foreignId('brand_id')->constrained()->onDelete('cascade'); // Khóa ngoại đến bảng brands
             $table->integer('favorite');
             $table->integer('view');

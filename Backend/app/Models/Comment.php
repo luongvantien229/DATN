@@ -5,20 +5,14 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class SubCategory extends Model
+class Comment extends Model
 {
     use HasFactory;
     protected $fillable = [
-        'name',
-        'slug',
-        'image',
+        'user_id',
+        'product_id',
+        'message',
+        'parent_id',
         'status',
-        'category_id',
-        'showHome',
     ];
-    protected $hidden = [
-        'created_at',
-        'updated_at'
-    ];
-
 }

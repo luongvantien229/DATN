@@ -15,7 +15,7 @@ class Product extends Model
         'description',
         'brand_id',
         'category_id',
-        'sub_category_id',
+        
         'favorite',
         'view',
         'sku',

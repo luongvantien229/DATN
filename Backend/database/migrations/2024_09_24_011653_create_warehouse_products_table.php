@@ -11,14 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('sub_categories', function (Blueprint $table) {
+        Schema::create('warehouse_products', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
-            $table->string('slug')->unique();
-            $table->string('image');
-            $table->integer('status');
-            $table->enum('showHome',['Yes','No'])->default('No');
-            $table->foreignId('category_id')->constrained()->onDelete('cascade');
+            $table->foreignId('warehouse_id')->references('id')->on('warehouses')->onDelete('cascade');
+            $table->foreignId('product_id')->references('id')->on('products')->onDelete('cascade');
+            $table->integer('quantity');
             $table->timestamps();
         });
     }
@@ -28,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('sub_categories');
+        Schema::dropIfExists('warehouse_products');
     }
 };

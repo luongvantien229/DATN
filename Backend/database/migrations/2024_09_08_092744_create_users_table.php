@@ -18,7 +18,7 @@ return new class extends Migration {
             $table->string('image')->nullable();
             $table->integer('phone')->nullable();
             $table->string('address')->nullable();
-            $table->enum('lock',['Yes','No'])->default('No');
+            $table->integer('lock')->default('0');
             $table->integer('points')->nullable();
             $table->string('password');
             $table->foreignId('role_id')->default(2)->constrained()->onDelete('cascade');

@@ -18,8 +18,4 @@ class Brand extends Model
         'created_at',
         'updated_at'
     ];
-    // quan he 1-n voi product
-    public function products(){
-        return $this->hasMany(Product::class);
-    }
 }

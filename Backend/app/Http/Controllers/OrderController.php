@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Coupon;
 use App\Models\Order;
 use App\Models\OrderItem;
 use App\Models\Product;
@@ -111,5 +112,80 @@ class OrderController extends Controller
             $order->update(['status' =>$request->status]);
             return response()->json('Status change successfully');
         } else return response()->json('Order was not found');
+    }
+    public function placeOrder(Request $request)
+    {
+        $user = Auth::user();
+        $totalPrice = 0;
+        $couponDiscount = 0;
+
+        // Validate request
+        $validatedData = $request->validate([
+            'products' => 'required|array', // Danh sách ID sản phẩm với số lượng
+            'payment_method' => 'required|string',
+            'coupon_code' => 'nullable|string',
+        ]);
+
+        // Kiểm tra xem phiếu giảm giá có hợp lệ không
+        if ($request->has('coupon_code') && !empty($request->code)) {
+            $coupon = Coupon::where('code', $request->code)->first();
+            if (!$coupon) {
+                return response()->json(['message' => 'Invalid coupon code'], 400);
+            }
+
+            if ($coupon->time <= 0) {
+                return response()->json(['message' => 'Coupon has been used up'], 400);
+            }
+        }
+
+        // Tính tổng giá sản phẩm
+        foreach ($request->products as $product_id => $qty) {
+            $product = Product::find($product_id);
+            if (!$product || $product->qty < $qty) {
+                return response()->json(['message' => 'Invalid product or insufficient stock'], 400);
+            }
+            $totalPrice += $product->price * $qty;
+        }
+
+        // Áp dụng giảm giá phiếu giảm giá
+        if (isset($coupon)) {
+            if ($coupon->condition === 'percentage') {  // percentage nghĩa là tỷ lệ phần trăm (%)
+                $couponDiscount = ($totalPrice * $coupon->number) / 100;
+            } elseif ($coupon->condition === 'fixed') {
+                $couponDiscount = $coupon->number;
+            }
+
+            $totalPrice -= $couponDiscount;
+            $coupon->time -= 1; // Giảm số lượng sử dụng phiếu giảm giá
+            $coupon->save();
+        }
+
+        // Tạo đơn hàng
+        $order = Order::create([
+            'user_id' => $user->id,
+            'total_price' => $totalPrice,
+            'payment_method' => $request->payment_method,
+            'date_deliver' => now()->addDays(7), // Ví dụ: Giao hàng trong 7 ngày
+            'status' => 'pending',
+        ]);
+
+        // Giảm lượng sản phẩm tồn kho
+        foreach ($request->products as $product_id => $qty) {
+            $product = Product::find($product_id);
+            $product->qty -= $qty;
+            $product->save();
+
+            $order->orderItems()->create([
+                'product_id' => $product_id,
+                'quantity' => $qty,
+                'price' => $product->price,
+            ]);
+        }
+
+        // cập nhật điểm
+        $user->points += floor($totalPrice / 1000); // Tiêu 1000 được 1 điểm
+        $user->save();
+
+        return response()->json(['message' => 'Order placed successfully', 'order' => $order]);
     }
 }

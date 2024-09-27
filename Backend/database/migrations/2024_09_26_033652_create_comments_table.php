@@ -11,16 +11,15 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('q_a', function (Blueprint $table) {
+        Schema::create('comments', function (Blueprint $table) {
             $table->id();
-            // $table->foreignId('product_id')->constrained()->onDelete('cascade'); // Khóa ngoại đến bảng products
-            $table->foreignId('user_id')->constrained()->onDelete('cascade');
-            $table->text('message'); // Câu hỏi
+            $table->foreignId('user_id')->references('id')->on('users')->onDelete('cascade');
+            $table->foreignId('product_id')->references('id')->on('products')->onDelete('cascade');
+            $table->text('message');
             $table->integer('parent_id')->nullable();
-            $table->integer('status')->default(1);
+            $table->integer('status')->default('1');
             $table->timestamps();
         });
-
     }
 
     /**
@@ -28,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('q_a');
+        Schema::dropIfExists('comments');
     }
 };

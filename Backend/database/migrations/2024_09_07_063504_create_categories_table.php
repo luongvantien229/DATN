@@ -17,6 +17,7 @@ return new class extends Migration
             $table->string('slug')->unique(); // Slug duy nhất cho danh mục
             $table->string('image');
             $table->integer('status');
+            $table->integer('parent_id')->nullable();
             $table->integer('sort_order'); // sắp xếp thứ tự
             $table->enum('showHome',['Yes','No'])->default('No');
             $table->timestamps();

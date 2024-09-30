@@ -12,7 +12,12 @@ const Breadcrumb = () => {
 
   // Tạo ra các tên tùy chỉnh cho các đường dẫn
   const breadcrumbNameMap = {
-    "/about": "About Us",
+    "/about": "Giới thiệu",
+    "/shop": "Cửa hàng",
+    "/contact": "Liên hệ",
+    "/blog": "Bài viết",
+    "/cart": "Giỏ hàng",
+    "/product-detail": "Chi tiết sản phẩm",
   };
 
   return (
@@ -21,7 +26,7 @@ const Breadcrumb = () => {
         <div className="breadcrumb-content text-center">
           <ul>
             <li>
-              <Link to="/">Home</Link>
+              <Link to="/">Trang chủ</Link>
             </li>
             {pathnames.map((value, index) => {
               const to = `/${pathnames.slice(0, index + 1).join("/")}`;

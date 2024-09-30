@@ -11,9 +11,9 @@ export default function SliderArena() {
         {/* Slider 1 */}
         <div
           className="single-hero-slider single-animation-wrap slider-height-1 custom-d-flex custom-align-item-end bg-img"
-          style={{ backgroundImage: "url(assets/images/slider/hm1-slider-1.jpg)" }}
+          style={{ backgroundImage: "url(assets/images/banner/1.png)" }}
         >
-          <div className="hero-slider-content-1 slider-animated-1">
+          {/* <div className="hero-slider-content-1 slider-animated-1">
             <h1 className="animated">COVID-19 Prevention <br />& Care Supplies</h1>
             <p className="animated">
               Collection of products that help you to protect you and your beloved. Take a good deal TODAY
@@ -24,15 +24,15 @@ export default function SliderArena() {
           </div>
           <div className="slider-product-price slider-product-position1 slider-animated-1 animated">
             <h3><span>From</span>$5*</h3>
-          </div>
+          </div> */}
         </div>
 
         {/* Slider 2 */}
         <div
-          className="single-hero-slider single-animation-wrap slider-height-1 custom-d-flex custom-align-item-end"
-          style={{ backgroundImage: "url(assets/images/slider/hm1-slider-2.jpg)" }}
+          className="single-hero-slider single-animation-wrap slider-height-1 custom-d-flex custom-align-item-end bg-img"
+          style={{ backgroundImage: "url(assets/images/banner/2.png)" }}
         >
-          <div className="hero-slider-content-1 slider-content-1-black slider-animated-1">
+          {/* <div className="hero-slider-content-1 slider-content-1-black slider-animated-1">
             <h4 className="animated">Best selling</h4>
             <h1 className="animated">COVID-19 Prevention <br />& Care Supplies</h1>
             <p className="animated">
@@ -44,15 +44,15 @@ export default function SliderArena() {
           </div>
           <div className="slider-product-price slider-product-position1 slider-animated-1 animated">
             <h3><span>From</span>$5*</h3>
-          </div>
+          </div> */}
         </div>
 
         {/* Slider 3 */}
         <div
-          className="single-hero-slider single-animation-wrap slider-height-1 custom-d-flex custom-align-item-end"
-          style={{ backgroundImage: "url(assets/images/slider/hm1-slider-3.jpg)" }}
+          className="single-hero-slider single-animation-wrap slider-height-1 custom-d-flex custom-align-item-end bg-img"
+          style={{ backgroundImage: "url(assets/images/banner/1.png)" }}
         >
-          <div className="hero-slider-content-1 slider-animated-1">
+          {/* <div className="hero-slider-content-1 slider-animated-1">
             <div className="slider-product-offer-wrap animated">
               <div className="slider-product-offer">
                 <span className="yellow">hot</span>
@@ -70,7 +70,7 @@ export default function SliderArena() {
           </div>
           <div className="slider-product-price slider-product-position2 slider-animated-1 animated">
             <h3><span>Only </span>$18</h3>
-          </div>
+          </div> */}
         </div>
       </div>
 

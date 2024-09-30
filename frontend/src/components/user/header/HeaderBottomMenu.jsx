@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import './header.scss';
 
 export default function HeaderBottomMenu() {
   return (
@@ -7,109 +8,102 @@ export default function HeaderBottomMenu() {
                 <ul>
                   <li>
                     <Link className="active" to="/">
-                      Home
+                      Trang chủ
                     </Link>
                   </li>
                   <li>
                     <Link to="/about">
-                      About
+                      Giới thiệu
                     </Link>
                   </li>
                   <li>
                     <Link to="/shop">
-                      Shop
+                      Cửa hàng
                     </Link>
                   </li>
                   <li className="position-static">
-                    <a href="#">
-                      Collection <i className="fa fa-chevron-down"></i>
-                    </a>
+                    <Link to="/shop">
+                      Danh mục <i className="fa fa-chevron-down"></i>
+                    </Link>
                     <ul className="mega-menu">
                       <li className="sub-mega-menu sub-mega-menu-width-22">
                         <a className="menu-title" href="#">
-                          Medical Accessories
+                          Thuốc
                         </a>
                         <ul>
                           <li>
-                            <a href="product-details.html">
-                              Ice Cold Water Therapy
-                            </a>
+                            <Link to="/shop">
+                              Thuốc không kê đơn           
+                            </Link>
                           </li>
                           <li>
-                            <a href="product-details.html">
-                              Oxygen Breathing Machine
-                            </a>
-                          </li>
-                          <li>
-                            <a href="product-details.html">
-                              Stainless Steel Kidney Tray
-                            </a>
-                          </li>
-                          <li>
-                            <a href="product-details.html">
-                              Stainless Steel Scissors
-                            </a>
+                            <Link to="/shop">
+                              Thuốc kê đơn
+                            </Link>
                           </li>
                         </ul>
                       </li>
                       <li className="sub-mega-menu sub-mega-menu-width-22">
                         <a className="menu-title" href="#">
-                          Face Mask
+                          Thực phẩm chức năng
                         </a>
                         <ul>
                           <li>
-                            <a href="product-details.html">
-                              Surgical Face Mask
-                            </a>
+                            <Link to="/shop">
+                              Chăm sóc sắc đẹp
+                            </Link>
                           </li>
                           <li>
-                            <a href="product-details.html">
-                              Search Lab N95 Face Mask
-                            </a>
+                            <Link to="/shop">
+                              Nhóm tim mạch
+                            </Link>
                           </li>
                           <li>
-                            <a href="product-details.html">N95 Face Mask</a>
+                            <Link to="/shop">Nhóm hô hấp</Link>
+                          </li>
+                          <li>
+                            <Link to="/shop">Chăm sóc tóc</Link>
                           </li>
                         </ul>
                       </li>
                       <li className="sub-mega-menu sub-mega-menu-width-22">
                         <a className="menu-title" href="#">
-                          Hospital Equipment
+                          Thiết bị y tế
                         </a>
                         <ul>
                           <li>
-                            <a href="product-details.html">Hospital Ward Bed</a>
+                            <Link to="/shop">Máy đo đường huyết</Link>
                           </li>
                           <li>
-                            <a href="product-details.html">
-                              Lightweight Transport Chair
-                            </a>
+                            <Link to="/shop">
+                              Nhiệt kế
+                            </Link>
                           </li>
                           <li>
-                            <a href="product-details.html">
-                              Men V-Neck Scrub Top
-                            </a>
+                            <Link to="/shop">
+                              Máy đo huyết áp
+                            </Link>
                           </li>
                           <li>
-                            <a href="product-details.html">
-                              Essentials Pocket Scrub
-                            </a>
+                            <Link to="/shop">
+                              Máy đo khí xung
+                            </Link>
                           </li>
                           <li>
-                            <a href="product-details.html">
-                              Manual Oxygen Device
-                            </a>
+                            <Link to="/shop">
+                              Thiết bị y tế khác
+                            </Link>
                           </li>
                         </ul>
                       </li>
                       <li className="sub-mega-menu sub-mega-menu-width-34">
                         <div className="menu-banner-wrap">
-                          <a href="product-details.html">
+                          <Link to="/shop">
                             <img
                               src="assets/images/banner/menu-banner.jpg"
                               alt=""
                             />
-                          </a>
+                          </Link>
                           <div className="menu-banner-content">
                             <h4>Personal</h4>
                             <h3>
@@ -120,7 +114,7 @@ export default function HeaderBottomMenu() {
                               <span className="old-price">$45.00</span>
                             </div>
                             <div className="menu-banner-btn">
-                              <a href="product-details.html">Shop now</a>
+                              <Link to="/shop">Shop now</Link>
                             </div>
                           </div>
                           <div className="menu-banner-discount">
@@ -135,11 +129,11 @@ export default function HeaderBottomMenu() {
                   </li>
                   <li>
                     <Link to="/blog">
-                      Blog 
+                      Bài viết 
                     </Link>
                   </li>
                   <li>
-                    <Link to="/contact">Contact</Link>
+                    <Link to="/contact">Liên hệ</Link>
                   </li>
                 </ul>
               </nav>

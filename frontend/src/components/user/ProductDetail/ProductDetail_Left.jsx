@@ -13,12 +13,12 @@ export default function ProductDetail_Left() {
                 >
                   <img
                     src="assets/images/product-details/pro-details-large-1.jpg"
-                    alt=""
+                    alt="Sản phẩm"
                   />
                 </a>
               </div>
               <div className="pro-details-badges product-badges-position">
-                <span className="red">Sale !</span>
+                <span className="red">Giảm giá!</span>
               </div>
             </div>
             <div className="single-big-img-style">
@@ -29,12 +29,12 @@ export default function ProductDetail_Left() {
                 >
                   <img
                     src="assets/images/product-details/pro-details-large-2.jpg"
-                    alt=""
+                    alt="Sản phẩm"
                   />
                 </a>
               </div>
               <div className="pro-details-badges product-badges-position">
-                <span className="red">Sale !</span>
+                <span className="red">Giảm giá!</span>
               </div>
             </div>
             <div className="single-big-img-style">
@@ -45,12 +45,12 @@ export default function ProductDetail_Left() {
                 >
                   <img
                     src="assets/images/product-details/pro-details-large-3.jpg"
-                    alt=""
+                    alt="Sản phẩm"
                   />
                 </a>
               </div>
               <div className="pro-details-badges product-badges-position">
-                <span className="red">Sale !</span>
+                <span className="red">Giảm giá!</span>
               </div>
             </div>
             <div className="single-big-img-style">
@@ -61,12 +61,12 @@ export default function ProductDetail_Left() {
                 >
                   <img
                     src="assets/images/product-details/pro-details-large-4.jpg"
-                    alt=""
+                    alt="Sản phẩm"
                   />
                 </a>
               </div>
               <div className="pro-details-badges product-badges-position">
-                <span className="red">Sale !</span>
+                <span className="red">Giảm giá!</span>
               </div>
             </div>
             <div className="single-big-img-style">
@@ -77,12 +77,12 @@ export default function ProductDetail_Left() {
                 >
                   <img
                     src="assets/images/product-details/pro-details-large-2.jpg"
-                    alt=""
+                    alt="Sản phẩm"
                   />
                 </a>
               </div>
               <div className="pro-details-badges product-badges-position">
-                <span className="red">Sale !</span>
+                <span className="red">Giảm giá!</span>
               </div>
             </div>
           </div>
@@ -90,31 +90,31 @@ export default function ProductDetail_Left() {
             <div className="product-dec-small active">
               <img
                 src="assets/images/product-details/pro-details-small-1.jpg"
-                alt=""
+                alt="Sản phẩm nhỏ"
               />
             </div>
             <div className="product-dec-small">
               <img
                 src="assets/images/product-details/pro-details-small-2.jpg"
-                alt=""
+                alt="Sản phẩm nhỏ"
               />
             </div>
             <div className="product-dec-small">
               <img
                 src="assets/images/product-details/pro-details-small-3.jpg"
-                alt=""
+                alt="Sản phẩm nhỏ"
               />
             </div>
             <div className="product-dec-small">
               <img
                 src="assets/images/product-details/pro-details-small-4.jpg"
-                alt=""
+                alt="Sản phẩm nhỏ"
               />
             </div>
             <div className="product-dec-small">
               <img
                 src="assets/images/product-details/pro-details-small-2.jpg"
-                alt=""
+                alt="Sản phẩm nhỏ"
               />
             </div>
           </div>

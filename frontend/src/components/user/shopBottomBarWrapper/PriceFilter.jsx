@@ -3,7 +3,7 @@ import React from "react";
 export default function PriceFilter() {
   return (
     <div className="sidebar-widget sidebar-widget-wrap sidebar-widget-padding-2 mb-20">
-      <h4 className="sidebar-widget-title">Filter by price </h4>
+      <h4 className="sidebar-widget-title">Lọc theo giá </h4>
       <div className="price-filter">
         <div id="slider-range"></div>
         <div className="price-slider-amount">
@@ -15,7 +15,7 @@ export default function PriceFilter() {
               placeholder="Add Your Price"
             />
           </div>
-          <button type="button">Filter</button>
+          <button type="button">Lọc</button>
         </div>
       </div>
     </div>

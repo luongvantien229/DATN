@@ -13,8 +13,8 @@ export default function Index() {
         <SidebarCategoriesList />
         <SidebarBrandList />
         <PriceFilter />
-        <SidebarRatingList />
-        <SidebarColorList />
+        {/* <SidebarRatingList /> */}
+        {/* <SidebarColorList /> */}
         <SlidebarProductContent />
       </div>
     </div>

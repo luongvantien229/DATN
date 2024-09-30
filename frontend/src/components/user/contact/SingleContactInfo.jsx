@@ -10,8 +10,10 @@ export default function SingleContactInfo() {
               <i className="fal fa-map-marker-alt"></i>
             </div>
             <div className="single-contact-info3-content">
-              <h3>Address</h3>
-              <p className="width-1"> 1800 Abbot Kinney Blvd. Unit D & E Venice</p>
+              <h3>Địa chỉ</h3>
+              <p className="width-1">
+                152 Đoàn Văn Bơ Phường 9 Quận 4
+              </p>
             </div>
           </div>
         </div>
@@ -21,18 +23,15 @@ export default function SingleContactInfo() {
               <i className="fal fa-phone"></i>
             </div>
             <div className="single-contact-info3-content">
-              <h3>Contact</h3>
+              <h3>Liên hệ</h3>
               <p>
-                {" "}
-                Mobile: <span>(+61) - 1990 - 6886</span>
+                Di động: <span>(+61) - 1990 - 6886</span>
               </p>
               <p>
-                {" "}
-                Hotline: <span>1800 - 1102</span>
+                Đường dây nóng: <span>1800 - 1102</span>
               </p>
               <p>
-                {" "}
-                Mail: <span>contact@medizin.com</span>
+                Email: <span>contact@medizin.com</span>
               </p>
             </div>
           </div>
@@ -43,9 +42,9 @@ export default function SingleContactInfo() {
               <i className="fal fa-clock"></i>
             </div>
             <div className="single-contact-info3-content">
-              <h3>Hour of operation</h3>
-              <p> Monday - Friday: 09:00 - 20:00 </p>
-              <p> Sunday & Saturday: 10:30 - 22:00</p>
+              <h3>Giờ làm việc</h3>
+              <p>Thứ Hai - Thứ Sáu: 09:00 - 20:00</p>
+              <p>Thứ Bảy & Chủ Nhật: 10:30 - 22:00</p>
             </div>
           </div>
         </div>

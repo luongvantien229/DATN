@@ -9,7 +9,7 @@ export default function SearchPopup() {
             </div>
             <div className="search-popup-content">
                 <form className="search-popup-form" action="#">
-                    <input type="text" placeholder="Search…" />
+                    <input type="text" placeholder="Tìm kiếm…" />
                 </form>
             </div>
         </div>

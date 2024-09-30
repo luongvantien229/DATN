@@ -9,14 +9,13 @@ export default function Index() {
     <div className="categories-area pb-70">
       <div className="custom-container">
         <div className="section-title-1 mb-40">
-          <h2>Shop by categories</h2>
+          <h2>Danh mục nổi bật</h2>
         </div>
-        {/* <div ref={categoriesArena1}  className="categories-slider-1 wow tmFadeInUp">
+        <div ref={categoriesArena1}  className="categories-slider-1 wow tmFadeInUp">
             {[...Array(6)].map((_, index) => (
                 <CategoriesArena1 key={index} />
             ))}
-        </div> */}
-        <CategoriesArena1 ref={categoriesArena1} />
+        </div>
       </div>
     </div>
   );

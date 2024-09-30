@@ -9,20 +9,20 @@ export default function Index() {
         <div className="totall-product">
           <p>
             {" "}
-            We found <span>51</span> products available for you
+            Chúng tôi đã tìm thấy <span>51</span> sản phẩm có sẵn cho bạn
           </p>
         </div>
         <div className="sort-by-product-area">
           <div className="sort-by-product-wrap">
             <div className="sort-by">
               <span>
-                <i className="far fa-align-left"></i>Sort by:
+                <i className="far fa-align-left"></i>Sắp xếp theo:
               </span>
             </div>
             <div className="sort-by-dropdown-wrap">
               <span>
                 {" "}
-                Default <i className="far fa-angle-down"></i>
+                Mặc định <i className="far fa-angle-down"></i>
               </span>
             </div>
           </div>
@@ -30,23 +30,23 @@ export default function Index() {
             <ul>
               <li>
                 <a className="active" href="#">
-                  Default
+                  Mặc định
                 </a>
               </li>
               <li>
-                <a href="#">Popularity</a>
+                <a href="#">Phổ biến</a>
               </li>
               <li>
-                <a href="#">Average rating</a>
+                <a href="#">Đánh giá trung bình</a>
               </li>
               <li>
-                <a href="#">Latest</a>
+                <a href="#">Mới nhất</a>
               </li>
               <li>
-                <a href="#">Price: low to high</a>
+                <a href="#">Giá: thấp đến cao</a>
               </li>
               <li>
-                <a href="#">Price: high to low</a>
+                <a href="#">Giá: cao đến thấp</a>
               </li>
             </ul>
           </div>

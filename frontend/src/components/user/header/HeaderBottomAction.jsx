@@ -56,7 +56,7 @@ export default function HeaderBottomAction() {
                   </h3>
                 </div>
                 <div className="shopping-cart-delete">
-                  <a href="#">
+                  <a href="/cart">
                     <i className="far fa-times"></i>
                   </a>
                 </div>
@@ -69,7 +69,7 @@ export default function HeaderBottomAction() {
                 </h4>
               </div>
               <div className="shopping-cart-button">
-                <a href="cart.html">View cart</a>
+                <a href="/cart">View cart</a>
                 <a href="checkout.html">Checkout</a>
               </div>
             </div>

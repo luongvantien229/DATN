@@ -14,12 +14,12 @@ export default function CartItem() {
     <tr>
       <td className="product-thumbnail">
         <Link to="/product-details">
-          <img src="assets/images/cart/cart-1.jpg" alt="Product" />
+          <img src="assets/images/cart/cart-1.jpg" alt="Sản phẩm" />
         </Link>
       </td>
       <td className="product-name">
         <h5>
-          <Link to="/product-details">Cara Portable Air Compressor</Link>
+          <Link to="/product-details">Máy nén khí di động Cara</Link>
         </h5>
       </td>
       <td className="product-price">
@@ -40,7 +40,7 @@ export default function CartItem() {
         <span>${(120 * quantity).toFixed(2)}</span>
       </td>
       <td className="product-remove">
-        <a href="#">Remove</a>
+        <a href="#">Xóa</a>
       </td>
     </tr>
   );

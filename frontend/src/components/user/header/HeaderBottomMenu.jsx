@@ -113,7 +113,7 @@ export default function HeaderBottomMenu() {
             </ul>
           </li>
           <li>
-            <Link to="/blog">Blog</Link>
+            <Link to="/blog">Bài viết</Link>
           </li>
           <li>
             <Link to="/contact">Liên hệ</Link>

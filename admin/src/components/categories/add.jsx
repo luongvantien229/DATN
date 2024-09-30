@@ -8,25 +8,25 @@ const Index = () => {
         <div className="col-xl">
           <div className="card mb-6">
             <div className="card-header d-flex justify-content-between align-items-center">
-              <h5 className="mb-0">Basic Layout</h5>
-              <small className="text-body float-end">Default label</small>
+              <h5 className="mb-0">Bố cục cơ bản</h5>
+              <small className="text-body float-end">Nhãn mặc định</small>
             </div>
             <div className="card-body">
               <form>
                 <div className="mb-6">
                   <label className="form-label" htmlFor="basic-default-fullname">
-                    Full Name
+                    Họ và Tên
                   </label>
                   <input
                     type="text"
                     className="form-control"
                     id="basic-default-fullname"
-                    placeholder="John Doe"
+                    placeholder="Nguyễn Văn A"
                   />
                 </div>
                 <div className="mb-6">
                   <label className="form-label" htmlFor="basic-default-company">
-                    Company
+                    Công ty
                   </label>
                   <input
                     type="text"
@@ -44,8 +44,8 @@ const Index = () => {
                       type="text"
                       id="basic-default-email"
                       className="form-control"
-                      placeholder="john.doe"
-                      aria-label="john.doe"
+                      placeholder="nguyen.vana"
+                      aria-label="nguyen.vana"
                       aria-describedby="basic-default-email2"
                     />
                     <span className="input-group-text" id="basic-default-email2">
@@ -53,32 +53,32 @@ const Index = () => {
                     </span>
                   </div>
                   <div className="form-text">
-                    You can use letters, numbers & periods
+                    Bạn có thể sử dụng chữ cái, số & dấu chấm
                   </div>
                 </div>
                 <div className="mb-6">
                   <label className="form-label" htmlFor="basic-default-phone">
-                    Phone No
+                    Số điện thoại
                   </label>
                   <input
                     type="text"
                     id="basic-default-phone"
                     className="form-control phone-mask"
-                    placeholder="658 799 8941"
+                    placeholder="012 345 6789"
                   />
                 </div>
                 <div className="mb-6">
                   <label className="form-label" htmlFor="basic-default-message">
-                    Message
+                    Tin nhắn
                   </label>
                   <textarea
                     id="basic-default-message"
                     className="form-control"
-                    placeholder="Hi, Do you have a moment to talk Joe?"
+                    placeholder="Xin chào, bạn có thể nói chuyện bây giờ không?"
                   ></textarea>
                 </div>
                 <button type="submit" className="btn btn-primary">
-                  Send
+                  Gửi
                 </button>
               </form>
             </div>

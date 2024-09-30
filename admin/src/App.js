@@ -6,6 +6,9 @@ import Nav from "./components/nav";
 import Dashboard from "./components/dashboard";
 import Categories from "./components/categories";
 import AddCategories from "./components/categories/add";
+import User from "./components/user";
+import AddUser from "./components/user/add";
+import EditUser from "./components/user/edit";
 
 // Main layout wrapper component
 const MainLayout = ({ children }) => (
@@ -46,6 +49,30 @@ function App() {
           element={
             <MainLayout>
               <AddCategories />
+            </MainLayout>
+          }
+        />
+        <Route
+          path="/user"
+          element={
+            <MainLayout>
+              <User />
+            </MainLayout>
+          }
+        />
+        <Route
+          path="/add-user"
+          element={
+            <MainLayout>
+              <AddUser />
+            </MainLayout>
+          }
+        />
+        <Route
+          path="/edit-user"
+          element={
+            <MainLayout>
+              <EditUser />
             </MainLayout>
           }
         />

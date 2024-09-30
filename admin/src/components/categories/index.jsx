@@ -7,10 +7,10 @@ const Index = () => {
       <div className="card">
         <div>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-            <h5 className="card-header">Striped rows</h5>
+            <h5 className="card-header">Hàng kẻ sọc</h5>
             <Link to="/add-categories">
               <button type="button" className="btn rounded-pill btn-primary m-6">
-                Add
+                Thêm
               </button>
             </Link>
           </div>
@@ -20,18 +20,18 @@ const Index = () => {
           <table className="table table-striped">
             <thead>
               <tr>
-                <th>Project</th>
-                <th>Client</th>
-                <th>Users</th>
-                <th>Status</th>
-                <th>Actions</th>
+                <th>Dự án</th>
+                <th>Khách hàng</th>
+                <th>Người dùng</th>
+                <th>Trạng thái</th>
+                <th>Hành động</th>
               </tr>
             </thead>
             <tbody className="table-border-bottom-0">
               <tr>
                 <td>
                   <i className="bx bxl-angular bx-md text-danger me-4"></i>{" "}
-                  <span>Angular Project</span>
+                  <span>Dự án Angular</span>
                 </td>
                 <td>Albert Cook</td>
                 <td>
@@ -78,7 +78,7 @@ const Index = () => {
                   </ul>
                 </td>
                 <td>
-                  <span className="badge bg-label-primary me-1">Active</span>
+                  <span className="badge bg-label-primary me-1">Hoạt động</span>
                 </td>
                 <td>
                   <div className="dropdown">
@@ -91,10 +91,10 @@ const Index = () => {
                     </button>
                     <div className="dropdown-menu">
                       <a className="dropdown-item" href="">
-                        <i className="bx bx-edit-alt me-1"></i> Edit
+                        <i className="bx bx-edit-alt me-1"></i> Chỉnh sửa
                       </a>
                       <a className="dropdown-item" href="">
-                        <i className="bx bx-trash me-1"></i> Delete
+                        <i className="bx bx-trash me-1"></i> Xóa
                       </a>
                     </div>
                   </div>
@@ -103,7 +103,7 @@ const Index = () => {
               <tr>
                 <td>
                   <i className="bx bxl-react bx-md text-info me-4"></i>{" "}
-                  <span>React Project</span>
+                  <span>Dự án React</span>
                 </td>
                 <td>Barry Hunter</td>
                 <td>
@@ -150,7 +150,7 @@ const Index = () => {
                   </ul>
                 </td>
                 <td>
-                  <span className="badge bg-label-success me-1">Completed</span>
+                  <span className="badge bg-label-success me-1">Hoàn thành</span>
                 </td>
                 <td>
                   <div className="dropdown">
@@ -163,10 +163,10 @@ const Index = () => {
                     </button>
                     <div className="dropdown-menu">
                       <a className="dropdown-item" href="">
-                        <i className="bx bx-edit-alt me-1"></i> Edit
+                        <i className="bx bx-edit-alt me-1"></i> Chỉnh sửa
                       </a>
                       <a className="dropdown-item" href="">
-                        <i className="bx bx-trash me-1"></i> Delete
+                        <i className="bx bx-trash me-1"></i> Xóa
                       </a>
                     </div>
                   </div>
@@ -175,7 +175,7 @@ const Index = () => {
               <tr>
                 <td>
                   <i className="bx bxl-vuejs bx-md text-success me-4"></i>{" "}
-                  <span>VueJs Project</span>
+                  <span>Dự án VueJs</span>
                 </td>
                 <td>Trevor Baker</td>
                 <td>
@@ -222,7 +222,7 @@ const Index = () => {
                   </ul>
                 </td>
                 <td>
-                  <span className="badge bg-label-info me-1">Scheduled</span>
+                  <span className="badge bg-label-info me-1">Đã lên lịch</span>
                 </td>
                 <td>
                   <div className="dropdown">
@@ -235,10 +235,10 @@ const Index = () => {
                     </button>
                     <div className="dropdown-menu">
                       <a className="dropdown-item" href="">
-                        <i className="bx bx-edit-alt me-1"></i> Edit
+                        <i className="bx bx-edit-alt me-1"></i> Chỉnh sửa
                       </a>
                       <a className="dropdown-item" href="">
-                        <i className="bx bx-trash me-1"></i> Delete
+                        <i className="bx bx-trash me-1"></i> Xóa
                       </a>
                     </div>
                   </div>
@@ -247,7 +247,7 @@ const Index = () => {
               <tr>
                 <td>
                   <i className="bx bxl-bootstrap bx-md text-primary me-4"></i>{" "}
-                  <span>Bootstrap Project</span>
+                  <span>Dự án Bootstrap</span>
                 </td>
                 <td>Jerry Milton</td>
                 <td>
@@ -294,7 +294,7 @@ const Index = () => {
                   </ul>
                 </td>
                 <td>
-                  <span className="badge bg-label-warning me-1">Pending</span>
+                  <span className="badge bg-label-warning me-1">Chưa hoàn thành</span>
                 </td>
                 <td>
                   <div className="dropdown">
@@ -307,10 +307,10 @@ const Index = () => {
                     </button>
                     <div className="dropdown-menu">
                       <a className="dropdown-item" href="">
-                        <i className="bx bx-edit-alt me-1"></i> Edit
+                        <i className="bx bx-edit-alt me-1"></i> Chỉnh sửa
                       </a>
                       <a className="dropdown-item" href="">
-                        <i className="bx bx-trash me-1"></i> Delete
+                        <i className="bx bx-trash me-1"></i> Xóa
                       </a>
                     </div>
                   </div>

@@ -13,7 +13,7 @@ export default function ProductDetail_Left() {
                 >
                   <img
                     src="assets/images/product-details/pro-details-large-1.jpg"
-                    alt="Sản phẩm"
+                    alt="Sản phẩm" 
                   />
                 </a>
               </div>

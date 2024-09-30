@@ -3,10 +3,11 @@ import { Link } from "react-router-dom";
 export default function SectionTitle() {
   return (
     <div className="section-title-2 mb-45 wow tmFadeInUp">
-      <h2>We're always eager to hear from you!</h2>
+      <h2>Chúng tôi luôn sẵn sàng lắng nghe bạn!</h2>
       <p>
-        You can call us in working time or visit our office. All mails will get
-        the response within 24 hours. Love to hear from you!{" "}
+        Bạn có thể gọi cho chúng tôi trong giờ làm việc hoặc đến văn phòng của
+        chúng tôi. Tất cả các email sẽ được phản hồi trong vòng 24 giờ. Rất vui
+        được nghe từ bạn!
       </p>
     </div>
   );

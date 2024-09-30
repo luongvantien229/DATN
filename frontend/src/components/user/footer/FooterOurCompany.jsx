@@ -4,23 +4,23 @@ export default function FooterOurCompany() {
   return (
     <div className="col-width-22 custom-common-column">
       <div className="footer-widget mb-40">
-        <h3 className="footer-title">Our Company</h3>
+        <h3 className="footer-title">Công Ty Chúng Tôi</h3>
         <div className="footer-info-list">
           <ul>
             <li>
-              <a href="about-us.html"> About Us</a>
+              <a href="about-us.html"> Về Chúng Tôi</a>
             </li>
             <li>
-              <a href="terms-of-service.html"> Terms of Service </a>
+              <a href="terms-of-service.html"> Điều Khoản Dịch Vụ </a>
             </li>
             <li>
-              <a href="privacy-policy.html"> Privacy Policy</a>
+              <a href="privacy-policy.html"> Chính Sách Bảo Mật</a>
             </li>
             <li>
-              <a href="blog.html"> Our Blogs</a>
+              <a href="blog.html"> Blog Của Chúng Tôi</a>
             </li>
             <li>
-              <a href="contact-us.html"> Contact Us </a>
+              <a href="contact-us.html"> Liên Hệ </a>
             </li>
           </ul>
         </div>

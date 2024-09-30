@@ -9,12 +9,12 @@ export default function Index() {
             <a href="product-details.html">
               <img
                 className="default-img"
-                src="assets/images/product/product-4.jpg"
+                src="assets/images/product/20240930044533-0-P27558.jpg"
                 alt=""
               />
               <img
                 className="hover-img"
-                src="assets/images/product/product-4-2.jpg"
+                src="assets/images/product/P27558_2.jpg"
                 alt=""
               />
             </a>
@@ -35,15 +35,12 @@ export default function Index() {
           </div>
         </div>
         <div className="product-content-wrap">
-          <div className="product-category">
-            <a href="shop.html">Hospital Equipment</a>
-          </div>
           <h2>
-            <a href="product-details.html">12-Ply Gauze Sponges</a>
+            <a href="product-details.html">Viên uống OPTIBAC Intimate Flora For Women</a>
           </h2>
           <div className="product-price">
-            <span className="new-price">$7.00</span>
-            <span className="old-price">$10.00</span>
+            <span className="new-price">400.000đ</span>
+            <span className="old-price">500.400đ</span>
           </div>
         </div>
       </div>

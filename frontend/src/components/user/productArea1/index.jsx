@@ -15,10 +15,10 @@ export default function Index() {
         <div className="product-area-border">
           <div className="section-title-timer-wrap">
             <div className="section-title-1">
-              <h2>Daily Deal Of The Day</h2>
+              <h2>Khuyến mãi hàng ngày</h2>
             </div>
             <div id="timer-1-active" className="timer-style-1">
-              <span>End in:</span>
+              <span>Kết thúc:</span>
               <Countdown
                 date={countdownDate}
                 renderer={({ hours, minutes, seconds, completed }) => {
@@ -37,13 +37,13 @@ export default function Index() {
               />
             </div>
           </div>
-          {/* <div className="product-slider-active-1 nav-style-2 product-hm1-mrg" ref={productArena1}>
+          <div className="product-slider-active-1 nav-style-2 product-hm1-mrg" ref={productArena1}>
             {[...Array(8)].map((_, index) => (
               <ProductArena1 key={index} />
             ))}
-          </div> */}
+          </div>
           
-            <ProductArena1 ref={productArena1} />
+            {/* <ProductArena1 ref={productArena1} /> */}
         </div>
       </div>
     </div>

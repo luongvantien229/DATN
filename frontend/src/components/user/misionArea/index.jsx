@@ -7,14 +7,13 @@ export default function Index() {
       <div className="container">
         <div className="section-title-2 mb-45 wow tmFadeInUp">
           <h2>
-            {" "}
-            We provide and extend personalized & innovative healthcare services
-            to its customers.
+            Chúng tôi cung cấp và mở rộng các dịch vụ chăm sóc sức khỏe cá nhân
+            hóa và sáng tạo cho khách hàng.
           </h2>
           <p>
-            We have recently organised a new office location at 33 Queens
-            Square, Leeds to cater for the growth of business for North of UK
-            and Scotland locations.{" "}
+            Chúng tôi vừa mới tổ chức một văn phòng mới tại 33 Queens Square,
+            Leeds để đáp ứng sự phát triển kinh doanh tại khu vực phía Bắc Vương
+            quốc Anh và Scotland.
           </p>
         </div>
         <div className="row">
@@ -30,14 +29,14 @@ export default function Index() {
                 </div>
                 <div className="icon-box-content">
                   <div className="title">
-                    <h3>Our Vision</h3>
+                    <h3>Tầm Nhìn Của Chúng Tôi</h3>
                   </div>
                   <ul>
-                    <li>Good Service</li>
-                    <li>For Community</li>
-                    <li>Long Term Development</li>
-                    <li>Save Our Planet</li>
-                    <li>Help People</li>
+                    <li>Dịch Vụ Tốt</li>
+                    <li>Vì Cộng Đồng</li>
+                    <li>Phát Triển Dài Hạn</li>
+                    <li>Bảo Vệ Hành Tinh</li>
+                    <li>Giúp Đỡ Mọi Người</li>
                   </ul>
                 </div>
               </div>
@@ -55,14 +54,14 @@ export default function Index() {
                 </div>
                 <div className="icon-box-content">
                   <div className="title">
-                    <h3>Our Promise</h3>
+                    <h3>Lời Hứa Của Chúng Tôi</h3>
                   </div>
                   <ul>
-                    <li>Sustainable Relationship</li>
-                    <li>Renew Commitment</li>
-                    <li>Provide The Best Solution</li>
-                    <li>Profitable Relationship</li>
-                    <li>Adapt With People's Needs</li>
+                    <li>Mối Quan Hệ Bền Vững</li>
+                    <li>Tái Cam Kết</li>
+                    <li>Cung Cấp Giải Pháp Tốt Nhất</li>
+                    <li>Mối Quan Hệ Có Lợi</li>
+                    <li>Thích Ứng Với Nhu Cầu Của Mọi Người</li>
                   </ul>
                 </div>
               </div>
@@ -80,14 +79,14 @@ export default function Index() {
                 </div>
                 <div className="icon-box-content">
                   <div className="title">
-                    <h3>Our Mision</h3>
+                    <h3>Sứ Mệnh Của Chúng Tôi</h3>
                   </div>
                   <ul>
-                    <li>Change The Habits</li>
-                    <li>Best Quality</li>
-                    <li>Think Big Do Bigger</li>
-                    <li>Stablity & competence</li>
-                    <li>Safer & Better Life</li>
+                    <li>Thay Đổi Thói Quen</li>
+                    <li>Chất Lượng Tốt Nhất</li>
+                    <li>Suy Nghĩ Lớn, Hành Động Lớn Hơn</li>
+                    <li>Ổn Định & Năng Lực</li>
+                    <li>Cuộc Sống An Toàn & Tốt Hơn</li>
                   </ul>
                 </div>
               </div>

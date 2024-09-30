@@ -6,10 +6,10 @@ export default function bannerArena1() {
       <div className="banner-wrap wow tmFadeInUp mb-30">
         <div className="banner-img banner-img-zoom">
           <a href="product-details.html">
-            <img src="assets/images/banner/banner-3.jpg" alt="" />
+            <img src="assets/images/banner/brand.webp" alt="" />
           </a>
         </div>
-        <div className="banner-content-1">
+        {/* <div className="banner-content-1">
           <span>Personal</span>
           <h2>Temperature Gun</h2>
           <h3>$35.00</h3>
@@ -21,7 +21,7 @@ export default function bannerArena1() {
               Shop now{" "}
             </a>
           </div>
-        </div>
+        </div> */}
       </div>
     </div>
   );

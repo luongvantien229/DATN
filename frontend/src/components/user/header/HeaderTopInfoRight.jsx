@@ -7,19 +7,22 @@ export default function HeaderTopHeaderInfoRight() {
         <ul>
           <li>
             <a className="language-dropdown-active" href="#">
-              English <i className="fa fa-chevron-down"></i>
+            Tiếng Anh <i className="fa fa-chevron-down"></i>
             </a>
             <ul className="language-dropdown">
               <li>
-                <a href="#">Français</a>
+                <a href="#">Tiếng Pháp</a>
               </li>
               <li>
-                <a href="#">Deutsch</a>
+                <a href="#">Tiếng Đức.</a>
+              </li>
+              <li>
+                <a href="#">Tiếng Việt</a>
               </li>
             </ul>
           </li>
           <li>
-            <Link to="/login-register">Log In / Sign Up</Link>
+            <Link to="/login-register">Đăng nhập / Đăng ký</Link>
           </li>
         </ul>
       </div>

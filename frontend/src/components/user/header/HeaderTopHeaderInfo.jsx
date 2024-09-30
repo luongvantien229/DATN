@@ -10,7 +10,7 @@ export default function HeaderTopHeaderInfo() {
           </li>
           <li>
             <a target="_blank" href="https://www.google.com/maps">
-              Store location
+              Địa chỉ cửa hàng
             </a>
           </li>
         </ul>

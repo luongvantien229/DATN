@@ -5,8 +5,7 @@ export default function HeaderTopCovidUpdate() {
     <div className="col-xl-6 col-lg-4">
       <div className="covid-update text-center">
         <p>
-          <a href="#">COVID-19 UPDATE</a> We are open with limited hours and
-          staff.
+          <a href="#">CẬP NHẬT COVID-19</a> Chúng tôi mở cửa với giờ làm việc và nhân viên hạn chế.
         </p>
       </div>
     </div>

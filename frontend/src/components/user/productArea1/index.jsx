@@ -15,7 +15,7 @@ export default function Index() {
         <div className="product-area-border">
           <div className="section-title-timer-wrap">
             <div className="section-title-1">
-              <h2>Daily Deal Of The Day</h2>
+              <h2>Ưu Đãi Hàng Ngày</h2>
             </div>
             <div id="timer-1-active" className="timer-style-1">
               <span>End in:</span>

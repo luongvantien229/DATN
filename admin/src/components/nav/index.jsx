@@ -23,7 +23,7 @@ export default function Index() {
             <input
               type="text"
               className="form-control border-0 shadow-none ps-1 ps-sm-2"
-              placeholder="Search..."
+              placeholder="Tìm kiếm..."
               aria-label="Search..."
             />
           </div>
@@ -37,9 +37,9 @@ export default function Index() {
               data-icon="octicon-star"
               data-size="large"
               data-show-count="true"
-              aria-label="Star themeselection/sneat-html-admin-template-free on GitHub"
+              aria-label="Star themeselection/sneat-html-admin-template-free trên GitHub"
             >
-              Star
+              Thả sao
             </a>
           </li>
 
@@ -53,6 +53,7 @@ export default function Index() {
                 <img
                   src="../assets/img/avatars/1.png"
                   className="w-px-40 h-auto rounded-circle"
+                  alt="Avatar"
                 />
               </div>
             </a>
@@ -65,12 +66,13 @@ export default function Index() {
                         <img
                           src="../assets/img/avatars/1.png"
                           className="w-px-40 h-auto rounded-circle"
+                          alt="Avatar"
                         />
                       </div>
                     </div>
                     <div className="flex-grow-1">
                       <h6 className="mb-0">John Doe</h6>
-                      <small className="text-muted">Admin</small>
+                      <small className="text-muted">Quản trị viên</small>
                     </div>
                   </div>
                 </a>
@@ -81,21 +83,20 @@ export default function Index() {
               <li>
                 <a className="dropdown-item" href="#">
                   <i className="bx bx-user bx-md me-3"></i>
-                  <span>My Profile</span>
+                  <span>Hồ sơ của tôi</span>
                 </a>
               </li>
               <li>
                 <a className="dropdown-item" href="#">
-                  {" "}
                   <i className="bx bx-cog bx-md me-3"></i>
-                  <span>Settings</span>{" "}
+                  <span>Cài đặt</span>
                 </a>
               </li>
               <li>
                 <a className="dropdown-item" href="#">
                   <span className="d-flex align-items-center align-middle">
                     <i className="flex-shrink-0 bx bx-credit-card bx-md me-3"></i>
-                    <span className="flex-grow-1 align-middle">Billing Plan</span>
+                    <span className="flex-grow-1 align-middle">Gói thanh toán</span>
                     <span className="flex-shrink-0 badge rounded-pill bg-danger">
                       4
                     </span>
@@ -108,13 +109,12 @@ export default function Index() {
               <li>
                 <a className="dropdown-item" href="/">
                   <i className="bx bx-power-off bx-md me-3"></i>
-                  <span>Log Out</span>
+                  <span>Đăng xuất</span>
                 </a>
               </li>
             </ul>
           </li>
         </ul>
-        
       </div>
     </nav>
   );

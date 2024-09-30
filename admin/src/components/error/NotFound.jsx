@@ -6,9 +6,9 @@ const NotFound = () => {
     <div className="container-xxl container-p-y" style={{ textAlign: "center" }}>
       <div className="misc-wrapper">
         <h1 className="mb-2 mx-2" style={{ lineHeight: "6rem", fontSize: "6rem" }}>404</h1>
-        <h4 className="mb-2 mx-2">Page Not Found️ ⚠️</h4>
-        <p className="mb-6 mx-2">We couldn't find the page you are looking for</p>
-        <Link to="/" className="btn btn-primary">Back to home</Link>
+        <h4 className="mb-2 mx-2">Trang không tìm thấy ⚠️</h4>
+        <p className="mb-6 mx-2">Chúng tôi không thể tìm thấy trang bạn đang tìm kiếm</p>
+        <Link to="/" className="btn btn-primary">Quay lại trang chính</Link>
         <div className="mt-6">
           <img
             src="../assets/img/illustrations/page-misc-error-light.png"

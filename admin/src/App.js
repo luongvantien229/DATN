@@ -6,6 +6,16 @@ import Nav from "./components/nav";
 import Dashboard from "./components/dashboard";
 import Categories from "./components/categories";
 import AddCategories from "./components/categories/add";
+import EditCategories from "./components/categories/edit";
+import Brands from "./components/brands";
+import AddBrands from "./components/brands/add";
+import EditBrands from "./components/brands/edit";
+import Products from "./components/products";
+import AddProducts from "./components/products/add";
+import EditProducts from "./components/products/edit";
+import Users from "./components/users";
+import AddUsers from "./components/users/add";
+import EditUsers from "./components/users/edit";
 
 // Main layout wrapper component
 const MainLayout = ({ children }) => (
@@ -46,6 +56,86 @@ function App() {
           element={
             <MainLayout>
               <AddCategories />
+            </MainLayout>
+          }
+        />
+        <Route
+          path="/edit-categories"
+          element={
+            <MainLayout>
+              <EditCategories />
+            </MainLayout>
+          }
+        />
+        <Route
+          path="/brands"
+          element={
+            <MainLayout>
+              <Brands />
+            </MainLayout>
+          }
+        />
+        <Route
+          path="/add-brands"
+          element={
+            <MainLayout>
+              <AddBrands />
+            </MainLayout>
+          }
+        />
+        <Route
+          path="/edit-brands"
+          element={
+            <MainLayout>
+              <EditBrands />
+            </MainLayout>
+          }
+        />
+        <Route
+          path="/products"
+          element={
+            <MainLayout>
+              <Products />
+            </MainLayout>
+          }
+        />
+        <Route
+          path="/add-products"
+          element={
+            <MainLayout>
+              <AddProducts />
+            </MainLayout>
+          }
+        />
+        <Route
+          path="/edit-products"
+          element={
+            <MainLayout>
+              <EditProducts />
+            </MainLayout>
+          }
+        />
+        <Route
+          path="/users"
+          element={
+            <MainLayout>
+              <Users />
+            </MainLayout>
+          }
+        />
+        <Route
+          path="/add-users"
+          element={
+            <MainLayout>
+              <AddUsers />
+            </MainLayout>
+          }
+        />
+        <Route
+          path="/edit-users"
+          element={
+            <MainLayout>
+              <EditUsers />
             </MainLayout>
           }
         />

@@ -8,77 +8,63 @@ const Index = () => {
         <div className="col-xl">
           <div className="card mb-6">
             <div className="card-header d-flex justify-content-between align-items-center">
-              <h5 className="mb-0">Basic Layout</h5>
-              <small className="text-body float-end">Default label</small>
+              <h5 className="mb-0">Thêm danh mục</h5>
+              {/* <small className="text-body float-end">Nhãn mặc định</small> */}
             </div>
             <div className="card-body">
               <form>
                 <div className="mb-6">
                   <label className="form-label" htmlFor="basic-default-fullname">
-                    Full Name
+                    Tên danh mục
                   </label>
                   <input
                     type="text"
                     className="form-control"
                     id="basic-default-fullname"
-                    placeholder="John Doe"
+                    placeholder="Nhap ten danh muc"
                   />
                 </div>
                 <div className="mb-6">
                   <label className="form-label" htmlFor="basic-default-company">
-                    Company
+                    Sắp xếp
                   </label>
                   <input
                     type="text"
                     className="form-control"
                     id="basic-default-company"
-                    placeholder="ACME Inc."
+                    placeholder="1"
                   />
                 </div>
                 <div className="mb-6">
                   <label className="form-label" htmlFor="basic-default-email">
-                    Email
+                    Chọn danh mục cha
                   </label>
                   <div className="input-group input-group-merge">
-                    <input
-                      type="text"
-                      id="basic-default-email"
-                      className="form-control"
-                      placeholder="john.doe"
-                      aria-label="john.doe"
-                      aria-describedby="basic-default-email2"
-                    />
-                    <span className="input-group-text" id="basic-default-email2">
-                      @example.com
-                    </span>
+                  <select class="form-select" id="exampleFormControlSelect1" aria-label="Default select example">
+                          <option selected>Chọn danh mục cha</option>
+                          <option value="1">Ẩn</option>
+                        </select>
                   </div>
                   <div className="form-text">
-                    You can use letters, numbers & periods
+                    Bạn có thể sử dụng chữ cái, số & dấu chấm
                   </div>
                 </div>
                 <div className="mb-6">
-                  <label className="form-label" htmlFor="basic-default-phone">
-                    Phone No
+                  <label className="form-label" htmlFor="basic-default-email">
+                    Hiển thị lên trang chủ
                   </label>
-                  <input
-                    type="text"
-                    id="basic-default-phone"
-                    className="form-control phone-mask"
-                    placeholder="658 799 8941"
-                  />
-                </div>
-                <div className="mb-6">
-                  <label className="form-label" htmlFor="basic-default-message">
-                    Message
-                  </label>
-                  <textarea
-                    id="basic-default-message"
-                    className="form-control"
-                    placeholder="Hi, Do you have a moment to talk Joe?"
-                  ></textarea>
+                  <div className="input-group input-group-merge">
+                  <select class="form-select" id="exampleFormControlSelect1" aria-label="Default select example">
+                          <option selected>Hiển thị</option>
+                          <option value="1">Ẩn</option>
+                        </select>
+                  </div>
+                  <div className="form-text">
+                    Bạn có thể sử dụng chữ cái, số & dấu chấm
+                  </div>
                 </div>
                 <button type="submit" className="btn btn-primary">
-                  Send
+                  Gửi
                 </button>
               </form>
             </div>

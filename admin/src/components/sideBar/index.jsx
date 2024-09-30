@@ -2,10 +2,10 @@ import React, { useState } from "react";
 import { Link } from "react-router-dom";
 
 export default function Index() {
-  // State to track the active menu item
+  // State để theo dõi mục menu đang hoạt động
   const [activeMenu, setActiveMenu] = useState("/");
 
-  // Function to handle menu item click
+  // Hàm xử lý khi nhấp vào mục menu
   const handleMenuClick = (path) => {
     setActiveMenu(path);
   };
@@ -33,15 +33,39 @@ export default function Index() {
           <Link to="/" className="menu-link" onClick={() => handleMenuClick("/")}>
             <i className="menu-icon tf-icons bx bx-home-smile"></i>
             <div className="text-truncate" data-i18n="Dashboards">
-              Dashboards
+              Bảng điều khiển
             </div>
           </Link>
         </li>
         <li className={`menu-item ${activeMenu === "/categories" ? "active open" : ""}`}>
-          <Link to="/categories" className="menu-link" onClick={() => handleMenuClick("/category")}>
+          <Link to="/categories" className="menu-link" onClick={() => handleMenuClick("/categories")}>
             <i className="menu-icon tf-icons bx bx-layout"></i>
             <div className="text-truncate" data-i18n="Danh mục">
               Danh mục
+            </div>
+          </Link>
+        </li>
+        <li className={`menu-item ${activeMenu === "/brands" ? "active open" : ""}`}>
+          <Link to="/brands" className="menu-link" onClick={() => handleMenuClick("/brands")}>
+            <i className="menu-icon tf-icons bx bx-layout"></i>
+            <div className="text-truncate" data-i18n="Thương hiệu">
+              Thương hiệu
+            </div>
+          </Link>
+        </li>
+        <li className={`menu-item ${activeMenu === "/products" ? "active open" : ""}`}>
+          <Link to="/products" className="menu-link" onClick={() => handleMenuClick("/products")}>
+            <i className="menu-icon tf-icons bx bx-layout"></i>
+            <div className="text-truncate" data-i18n="Sản phẩm">
+              Sản phầm
+            </div>
+          </Link>
+        </li>
+        <li className={`menu-item ${activeMenu === "/users" ? "active open" : ""}`}>
+          <Link to="/users" className="menu-link" onClick={() => handleMenuClick("/users")}>
+            <i className="menu-icon tf-icons bx bx-layout"></i>
+            <div className="text-truncate" data-i18n="Sản phẩm">
+              Người dùng
             </div>
           </Link>
         </li>

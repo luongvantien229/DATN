@@ -10,6 +10,9 @@ const useSlick = () => {
   const categoriesArena1 = useRef(null);
   const testimonialArea1 = useRef(null);
   const testimonialArea2 = useRef(null);
+  const proDecBigImgSlider = useRef(null);
+  const proDecSmallImgSlider = useRef(null);
+  const IngPopup = useRef(null);
 
   useEffect(() => {
     if (slider.current) {
@@ -182,6 +185,47 @@ const useSlick = () => {
         ],
       });
     }
+    if (proDecBigImgSlider.current) {
+      $(proDecBigImgSlider.current).slick({
+        slidesToShow: 1,
+        slidesToScroll: 1,
+        arrows: false,
+        draggable: false,
+        fade: false,
+        asNavFor: ".product-dec-slider-small , .product-dec-slider-small-2",
+      });
+    }
+    if (proDecSmallImgSlider.current) {
+      $(proDecSmallImgSlider.current).slick({
+        slidesToShow: 4,
+        slidesToScroll: 1,
+        asNavFor: ".pro-dec-big-img-slider",
+        dots: false,
+        focusOnSelect: true,
+        fade: false,
+        arrows: false,
+        responsive: [
+          {
+            breakpoint: 991,
+            settings: {
+              slidesToShow: 3,
+            },
+          },
+          {
+            breakpoint: 767,
+            settings: {
+              slidesToShow: 4,
+            },
+          },
+          {
+            breakpoint: 575,
+            settings: {
+              slidesToShow: 2,
+            },
+          },
+        ],
+      });
+    }
 
     return () => {
       if (slider.current) {
@@ -200,6 +244,12 @@ const useSlick = () => {
       if (testimonialArea2.current) {
         $(testimonialArea2.current).slick("unslick");
       }
+      if (proDecBigImgSlider.current) {
+        $(proDecBigImgSlider.current).slick("unslick");
+      }
+      if (proDecSmallImgSlider.current) {
+        $(proDecSmallImgSlider.current).slick("unslick");
+      }
     };
   }, []);
 
@@ -209,6 +259,8 @@ const useSlick = () => {
     categoriesArena1,
     testimonialArea1,
     testimonialArea2,
+    proDecBigImgSlider,
+    proDecSmallImgSlider,
   };
 };
 

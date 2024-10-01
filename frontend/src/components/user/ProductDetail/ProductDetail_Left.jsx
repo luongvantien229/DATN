@@ -1,10 +1,12 @@
 import React from "react";
-
+import useSlick from "../../../hooks/user/slick";
 export default function ProductDetail_Left() {
+  const { proDecBigImgSlider } = useSlick();
+  const { proDecSmallImgSlider } = useSlick();
   return (
     <div className="col-lg-6 col-md-6">
         <div className="product-details-slider-wrap">
-          <div className="pro-dec-big-img-slider">
+          <div className="pro-dec-big-img-slider" ref={proDecBigImgSlider}>
             <div className="single-big-img-style">
               <div className="pro-details-big-img">
                 <a
@@ -86,7 +88,7 @@ export default function ProductDetail_Left() {
               </div>
             </div>
           </div>
-          <div className="product-dec-slider-small product-dec-small-style1">
+          <div className="product-dec-slider-small product-dec-small-style1" ref={proDecSmallImgSlider}>
             <div className="product-dec-small active">
               <img
                 src="assets/images/product-details/pro-details-small-1.jpg"

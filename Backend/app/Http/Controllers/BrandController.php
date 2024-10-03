@@ -13,9 +13,10 @@ class BrandController extends Controller
     //
     public function index()
     {
-        $brands = Brand::paginate(10);
+        $brands = Brand::orderBy('created_at', 'desc')->paginate(10);
         return response()->json($brands, 200);
     }
+
 
     public function show($id)
     {
@@ -28,75 +29,73 @@ class BrandController extends Controller
     public function store(Request $request)
     {
         try {
-            $validated = $request->validate([
+            $request->validate([
                 'name' => 'required|unique:brands,name',
-                'slug' => 'required',
-                'image' => 'required',
+                'image' => 'nullable|image|mimes:jpg,png,jpeg,gif|max:2048',
             ]);
+
             $brand = new Brand();
-            if ($request->hasFile('image')) {
-                $path = 'assets/uploads/brand/' . $brand->image;
-                if (File::exists($path)) {
-                    File::delete($path);
-                }
-                $file = $request->file('image');
-                $ext = $file->getClientOriginalExtension();
-                $filename = time() . '.' . $ext;
-                try {
-                    $file->move('assets/uploads/brand' . $filename);
-                } catch (FileException $e) {
-                    dd($e);
-                }
-                $brand->image = $filename;
-            }
             $brand->name = $request->name;
             $brand->slug = $request->slug;
             $brand->status = $request->status;
-            $brand->save();
-            return response()->json('brand added', 201);
 
+            if ($request->hasFile('image')) {
+                $file = $request->file('image');
+                $filename = time() . '.' . $file->getClientOriginalExtension();
+                $file->move('assets/uploads/brand/', $filename);
+                $brand->image = $filename;
+            }
+
+            $brand->save();
+
+            return response()->json(['message' => 'Brand added successfully'], 201);
         } catch (Exception $e) {
-            return response()->json($e, 500);
+            return response()->json(['error' => 'Something went wrong'], 500);
         }
     }
+
     public function update($id, Request $request)
     {
         try {
-            $validated = $request->validate([
-                'name' => 'required|unique:brand,name',
-                'slug' => 'required',
-                'image' => 'required',
+            // Validation with the unique rule excluding the current brand ID
+            $request->validate([
+                'name' => 'required|unique:brands,name,'.$id,
+                'image' => 'nullable|image|mimes:jpg,png,jpeg,gif|max:2048',
             ]);
-            $brand = Brand::where('id', $id);
+
+            $brand = Brand::findOrFail($id); // Fetch the brand or throw a 404
+
+            // Handle image update
             if ($request->hasFile('image')) {
+                // Delete the existing image if it exists
                 $path = 'assets/uploads/brand/' . $brand->image;
                 if (File::exists($path)) {
-                    File::delete($path);
+                    File::delete($path); // Delete the old image
                 }
+
+                // Save the new image
                 $file = $request->file('image');
-                $ext = $file->getClientOriginalExtension();
-                $filename = time() . '.' . $ext;
-                try {
-                    $file->move('assets/uploads/brand' . $filename);
-                } catch (FileException $e) {
-                    dd($e);
-                }
-                $brand->image = $filename;
+                $filename = time() . '.' . $file->getClientOriginalExtension();
+                $file->move('assets/uploads/brand/', $filename);
+                $brand->image = $filename; // Update image field in the brand
             }
-            $brand->name = $request->name;
-            $brand->slug = $request->slug;
-            $brand->status = $request->status;
-            // ->update([
-            //     'name' => $request->name,
-            //     'slug' => $request->slug,
-            //     'status' => $request->status
-            // ]);
-            $brand->update();
-            return response()->json('brand updated', 200);
+
+            // Update the brand with new values
+            $brand->update([
+                'name' => $request->name,
+                'slug' => $request->slug,
+                'status' => $request->status,
+            ]);
+
+            return response()->json('Brand updated successfully', 200);
         } catch (Exception $e) {
-            return response()->json($e, 500);
+            return response()->json(['error' => $e->getMessage()], 500); // Handle errors
         }
     }
+
+
+
+
 
     public function destroy($id)
     {

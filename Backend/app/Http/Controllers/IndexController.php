@@ -31,7 +31,7 @@ class IndexController extends Controller
 
     public function all_brands()
     {
-        $brands = Product::where('status', 1)
+        $brands = Brand::all()->where('status', 1)
             ->orderBy('created_at', 'desc')->get();
 
 
@@ -42,7 +42,7 @@ class IndexController extends Controller
     }
     public function all_categories()
     {
-        $categories = Product::where('status', 1)
+        $categories = Brand::all()->where('status', 1)
             ->orderBy('created_at', 'desc')->get();
 
 

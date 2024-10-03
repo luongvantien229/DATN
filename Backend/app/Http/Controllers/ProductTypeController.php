@@ -26,57 +26,51 @@ class ProductTypeController extends Controller
     public function store(Request $request)
     {
         try {
-            $validated = $request->validate([
+            $request->validate([
                 'name' => 'required|unique:product_types,name',
-
                 'slug' => 'required',
-
                 'status' => 'nullable',
-
             ]);
 
             $product_type = new ProductType();
-
             $product_type->name = $request->name;
             $product_type->slug = $request->slug;
-
             $product_type->status = $request->status;
 
-
             $product_type->save();
-            return response()->json('product type added', 201);
+            return response()->json('Product type added', 201);
 
         } catch (Exception $e) {
-            return response()->json($e, 500);
+            return response()->json($e->getMessage(), 500);
         }
     }
+
     public function update($id, Request $request)
     {
         try {
-            $validated = $request->validate([
-                'name' => 'required|unique:product_types,name',
-
+            $request->validate([
+                'name' => 'required|unique:product_types,name,' . $id, // Exclude current record from unique check
                 'slug' => 'required',
-
                 'status' => 'nullable',
-
             ]);
 
             $product_type = ProductType::find($id);
-
+            if (!$product_type) {
+                return response()->json('Product type not found', 404);
+            }
 
             $product_type->name = $request->name;
             $product_type->slug = $request->slug;
-
             $product_type->status = $request->status;
 
+            $product_type->save(); // Using save to handle both new and existing records
+            return response()->json('Product type updated', 200);
 
-            $product_type->update();
-            return response()->json('product type updated', 200);
         } catch (Exception $e) {
-            return response()->json($e, 500);
+            return response()->json($e->getMessage(), 500);
         }
     }
+
 
     public function destroy($id)
     {

@@ -13,6 +13,7 @@ import Register from "./components/users/Register";
 import ForgotPassword from "./components/users/ForgotPassword";
 import ResetPassword from "./components/users/ResetPassword";
 import Dashboard from "./components/admin/Dashboard";
+import ProductFilter from "./components/products/ProductFilter";
 
 axios.defaults.baseURL = "http://localhost:8000/api";
 axios.defaults.headers.common["Authorization"] = `Bearer ${localStorage.getItem(
@@ -29,6 +30,7 @@ export default function App() {
             <Route path="/" element={<Home />} />
             <Route path="/admin/dashboard" element={<Dashboard />} />
             <Route path="/cart" element={<Cart />} />
+            <Route path="/product_shop" element={<ProductFilter />} />
             <Route
               path="/payment-success/:orderId"
               element={<PaymentSuccess />}

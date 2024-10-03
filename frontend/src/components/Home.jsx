@@ -1,21 +1,33 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import ProductList from "./products/ProductList";
+import BrandList from "./brands/Brandlist";
 
 export default function Home() {
   const [products, setProducts] = useState([]);
+  const [brands, setBrands] = useState([]);
+
   useEffect(() => {
-    const fetchNewProducts = async () => {
+    const fetchNewProductsAndBrands = async () => {
       try {
-        const response = await axios.get(
-          "/new_products"
-        );
-        setProducts(response.data.new_products);
+        const newProductsResponse = await axios.get("/new_products");
+        setProducts(newProductsResponse.data.new_products);
+
+        const allBrandsResponse = await axios.get("/all_brands");
+        setBrands(allBrandsResponse.data.brands);
       } catch (error) {
-        console.log(error);
+        console.error("Error fetching data:", error);
       }
     };
-    fetchNewProducts();
+
+    fetchNewProductsAndBrands();
   }, []);
-  return <ProductList products={products} />;
+
+  return (
+    <div>
+      
+      <ProductList products={products} />
+      <BrandList brands={brands} />
+    </div>
+  );
 }

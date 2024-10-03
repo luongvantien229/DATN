@@ -21,6 +21,7 @@ return new class extends Migration {
             $table->integer('lock')->default('0');
             $table->integer('points')->nullable();
             $table->string('password');
+            
             $table->foreignId('role_id')->default(2)->constrained()->onDelete('cascade');
             $table->rememberToken();
             $table->timestamps();

@@ -29,6 +29,11 @@ export default function Header() {
               </Link>
             </li>
             <li className="nav-item">
+              <Link className="navbar-brand" to="/product_shop">
+                <i className="bi bi-shop"> Shop</i>
+              </Link>
+            </li>
+            <li className="nav-item">
               <Link className="nav-link" to="/cart">
                 <i className="bi bi-cart-check"></i> Cart({cartItems.length})
               </Link>

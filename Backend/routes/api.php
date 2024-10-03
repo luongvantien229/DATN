@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\BrandController;
+use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use App\Http\Controllers\CallStringeeController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\CategoryPostController;
@@ -19,6 +20,7 @@ use App\Http\Middleware\AdminMiddleware;
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
+use PHPOpenSourceSaver\JWTAuth\Facades\JWTAuth;
 
 Route::group([
     'middleware' => 'api',
@@ -39,7 +41,7 @@ Route::group(['prefix' => 'roles'], function ($router) {
         Route::get('/index', 'index');
         Route::get('/show/{id}', 'show');
         Route::post('/store', 'store');
-        Route::put('/update/{id}', 'update')->middleware('admin');
+        Route::post('/update/{id}', 'update')->middleware('admin');
         Route::delete('/destroy/{id}', 'destroy');
     });
 });
@@ -55,7 +57,7 @@ Route::group(['prefix' => 'Warehouses','middleware' => [AdminMiddleware::class]]
 Route::group(['prefix' => 'warehouse_products','middleware' => [AdminMiddleware::class]], function ($router) {
     Route::controller(WarehouseProductController::class)->group(function () {
         Route::post('/store/warehouses/{warehouse_id}/products', 'store');
-        Route::put('/update/warehouses/{warehouse_id}/products/{product_id}', 'update');
+        Route::post('/update/warehouses/{warehouse_id}/products/{product_id}', 'update');
         Route::delete('/destroy/warehouses/{warehouse_id}/products/{product_id}', 'destroy');
     });
 });
@@ -66,7 +68,7 @@ Route::group(['prefix' => 'brands','middleware' => [AdminMiddleware::class]], fu
         Route::get('index', 'index');
         Route::get('show/{id}', 'show');
         Route::post('store', 'store');
-        Route::put('update/{id}', 'update');
+        Route::post('update/{id}', 'update');
         Route::delete('destroy/{id}', 'destroy');
     });
 });
@@ -77,7 +79,7 @@ Route::group(['prefix' => 'categories','middleware' => [AdminMiddleware::class]]
         Route::get('index', 'index');
         Route::get('show/{id}', 'show');
         Route::post('store', 'store');
-        Route::put('update/{id}', 'update');
+        Route::post('update/{id}', 'update');
         Route::delete('destroy/{id}', 'destroy');
     });
 });
@@ -99,7 +101,7 @@ Route::group(['prefix' => 'product_types','middleware' => [AdminMiddleware::clas
         Route::get('index', 'index');
         Route::get('show/{id}', 'show');
         Route::post('store', 'store');
-        Route::put('update/{id}', 'update');
+        Route::post('update/{id}', 'update');
         Route::delete('destroy/{id}', 'destroy');
     });
 });
@@ -110,7 +112,7 @@ Route::group(['prefix' => 'products','middleware' => [AdminMiddleware::class]], 
         Route::get('index', 'index');
         Route::get('show/{id}', 'show');
         Route::post('store', 'store');
-        Route::put('update/{id}', 'update');
+        Route::post('update/{id}', 'update');
         Route::delete('destroy/{id}', 'destroy');
     });
 });
@@ -122,7 +124,7 @@ Route::group(['prefix' => 'orders'], function ($router) {
         Route::get('index', 'index');
         Route::get('show/{id}', 'show');
         Route::post('store', 'store');
-        Route::put('update/{id}', 'update');
+        Route::post('update/{id}', 'update');
         Route::get('get_order_items/{id}', 'get_order_items')->middleware('admin');
         Route::get('get_user_orders/{id}', 'get_user_orders')->middleware('admin');
         Route::post('change_order_status/{id}', 'change_order_status')->middleware('admin');
@@ -130,12 +132,12 @@ Route::group(['prefix' => 'orders'], function ($router) {
 });
 
 // Categories Post CRUD routes
-Route::group(['prefix' => 'categories','middleware' => [AdminMiddleware::class]], function ($router) {
+Route::group(['prefix' => 'category_posts','middleware' => [AdminMiddleware::class]], function ($router) {
     Route::controller(CategoryPostController::class)->group(function () {
         Route::get('index', 'index');
         Route::get('show/{id}', 'show');
         Route::post('store', 'store');
-        Route::put('update/{id}', 'update');
+        Route::post('update/{id}', 'update');
         Route::delete('destroy/{id}', 'destroy');
     });
 });
@@ -153,6 +155,34 @@ Route::get('/sort_filter_shop', [IndexController::class, 'sort_filter_shop']);
 Route::get('/generate-token', [CallStringeeController::class, 'generateToken']);
 
 
+// Route::group([
+//     'middleware' => 'api',
+//     'prefix' => 'auth'
+// ], function ($router) {
+//     Route::get('/email/verify/{id}/{hash}', function (EmailVerificationRequest $request) {
+//         // Extract the user from the token to ensure they are authenticated
+//         $user = JWTAuth::parseToken()->authenticate();
+
+//         // Check if the user is authenticated
+//         if ($user) {
+//             // Fulfill the email verification request
+//             $request->fulfill();
+
+//             // Redirect or return a JSON response after successful verification
+//             return redirect('/')->with('message', 'Email verified successfully!');
+//         }
+
+//         // Return an error if the user is not authenticated
+//         return response()->json(['message' => 'Unauthorized'], 401);
+//     })->middleware(['signed'])->name('verification.verify');
+//     Route::get('/email/verify', function () {
+//         return response()->json([
+//             'message' => 'Please verify your email address.'
+//         ], 200);
+//     })->name('verification.notice');
+
+
+// });
 
 
 

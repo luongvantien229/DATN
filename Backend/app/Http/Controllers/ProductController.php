@@ -16,7 +16,7 @@ class ProductController extends Controller
     //
     public function index()
     {
-        $products = Product::paginate(10);
+        $products = Product::orderBy('created_at', 'desc')->paginate(20);
         if ($products) {
             return response()->json($products, 200);
         } else
@@ -42,7 +42,7 @@ class ProductController extends Controller
             'description' => 'required',
             'category_id' => 'required|numeric',
             'brand_id' => 'required|numeric',
-            'sub_category_id' => 'required|numeric',
+
             'favorite' => 'required',
             'view' => 'required',
             'sku' => 'required',
@@ -66,7 +66,7 @@ class ProductController extends Controller
         $product->description = $request->description;
         $product->category_id = $request->category_id;
         $product->brand_id = $request->brand_id;
-        $product->sub_category_id = $request->sub_category_id;
+
         $product->favorite = $request->favorite;
         $product->view = $request->view;
         $product->sku = $request->sku;
@@ -135,7 +135,7 @@ class ProductController extends Controller
             'description' => 'required',
             'category_id' => 'required|numeric',
             'brand_id' => 'required|numeric',
-            'sub_category_id' => 'required|numeric',
+
             'favorite' => 'required',
             'view' => 'required',
             'sku' => 'required',
@@ -162,7 +162,7 @@ class ProductController extends Controller
             $product->description = $request->description;
             $product->category_id = $request->category_id;
             $product->brand_id = $request->brand_id;
-            $product->sub_category_id = $request->sub_category_id;
+
             $product->favorite = $request->favorite;
             $product->view = $request->view;
             $product->sku = $request->sku;

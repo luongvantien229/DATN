@@ -27,10 +27,7 @@ class RoleController extends Controller
     {
         try {
             $validated = $request->validate([
-                'name' => 'required|unique:product_types,name',
-
-
-
+                'name' => 'required|unique:roles,name',
                 'status' => 'nullable',
 
             ]);
@@ -38,8 +35,6 @@ class RoleController extends Controller
             $role = new Role();
 
             $role->name = $request->name;
-
-
             $role->status = $request->status;
 
 
@@ -54,10 +49,7 @@ class RoleController extends Controller
     {
         try {
             $validated = $request->validate([
-                'name' => 'required|unique:product_types,name',
-
-
-
+                'name' => 'required|unique:roles,name',
                 'status' => 'nullable',
 
             ]);

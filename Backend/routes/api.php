@@ -31,7 +31,7 @@ Route::group([
     Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth:api')->name('logout');
     Route::post('/refresh', [AuthController::class, 'refresh'])->middleware('auth:api')->name('refresh');
     Route::get('/your_profile', [AuthController::class, 'your_profile'])->middleware('auth:api')->name('your_profile');
-    Route::post('forgot-password', [ForgotPasswordController::class, 'sendResetLinkEmail']);
+    Route::post('/forgot-password', [ForgotPasswordController::class, 'sendResetLinkEmail']);
 
 });
 
@@ -149,7 +149,7 @@ Route::get('/all_brands',[IndexController::class,'all_brands']);
 Route::get('/all_categories',[IndexController::class,'all_categories']);
 Route::get('/new_products',[IndexController::class,'new_products']);
 Route::get('/favorite_products',[IndexController::class,'favorite_products']);
-Route::get('/product_detail',[IndexController::class,'product_detail']);
+Route::get('/product_detail/{id}',[IndexController::class,'product_detail']);
 Route::get('/search', [IndexController::class, 'search']);
 
 Route::get('/sort_filter_shop', [IndexController::class, 'sort_filter_shop']);

@@ -127,7 +127,7 @@ const Index = () => {
               </div>
             </div>
           </div>
-          {/* <div className="col-12 col-xxl-8 order-2 order-md-3 order-xxl-2 mb-6">
+          <div className="col-12 col-xxl-8 order-2 order-md-3 order-xxl-2 mb-6">
             <div className="card">
               <div className="row row-bordered g-0">
                 <div className="col-lg-8">
@@ -247,8 +247,8 @@ const Index = () => {
                 </div>
               </div>
             </div>
-          </div> */}
-          {/* <div className="col-12 col-md-8 col-lg-12 col-xxl-4 order-3 order-md-2">
+          </div>
+          <div className="col-12 col-md-8 col-lg-12 col-xxl-4 order-3 order-md-2">
             <div className="row">
               <div className="col-6 mb-6">
                 <div className="card h-100">
@@ -299,7 +299,7 @@ const Index = () => {
                     <div className="card-title d-flex align-items-start justify-content-between mb-4">
                       <div className="avatar flex-shrink-0">
                         <img
-                          src="../assets/img/icons/unicons/paypal.png"
+                          src="../assets/img/icons/unicons/cc-visa.png"
                           alt="Visa"
                           className="rounded"
                         />
@@ -337,7 +337,7 @@ const Index = () => {
                 </div>
               </div>
             </div>
-          </div> */}
+          </div>
         </div>
 
         <div className="row">
@@ -577,7 +577,7 @@ const Index = () => {
                   <li className="d-flex align-items-center mb-6">
                     <div className="avatar flex-shrink-0 me-3">
                       <img
-                        src="../assets/img/icons/unicons/paypal.png"
+                        src="../assets/img/icons/unicons/stripe.png"
                         alt="Người dùng"
                         className="rounded"
                       />
@@ -595,7 +595,7 @@ const Index = () => {
                   <li className="d-flex align-items-center mb-6">
                     <div className="avatar flex-shrink-0 me-3">
                       <img
-                        src="../assets/img/icons/unicons/paypal.png"
+                        src="../assets/img/icons/unicons/visa.png"
                         alt="Người dùng"
                         className="rounded"
                       />
@@ -613,7 +613,7 @@ const Index = () => {
                   <li className="d-flex align-items-center mb-6">
                     <div className="avatar flex-shrink-0 me-3">
                       <img
-                        src="../assets/img/icons/unicons/paypal.png"
+                        src="../assets/img/icons/unicons/mastercard.png"
                         alt="Người dùng"
                         className="rounded"
                       />
@@ -631,7 +631,7 @@ const Index = () => {
                   <li className="d-flex align-items-center">
                     <div className="avatar flex-shrink-0 me-3">
                       <img
-                        src="../assets/img/icons/unicons/paypal.png"
+                        src="../assets/img/icons/unicons/btc.png"
                         alt="Người dùng"
                         className="rounded"
                       />

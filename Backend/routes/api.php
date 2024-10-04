@@ -149,6 +149,7 @@ Route::get('/all_brands',[IndexController::class,'all_brands']);
 Route::get('/all_categories',[IndexController::class,'all_categories']);
 Route::get('/new_products',[IndexController::class,'new_products']);
 Route::get('/favorite_products',[IndexController::class,'favorite_products']);
+Route::get('/product_detail',[IndexController::class,'product_detail']);
 Route::get('/search', [IndexController::class, 'search']);
 
 Route::get('/sort_filter_shop', [IndexController::class, 'sort_filter_shop']);

@@ -1,70 +1,175 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import "./style.scss";
+import axios from "axios";
 
-const Index = () => {
+const Brands = () => {
+  const [brands, setBrands] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const fetchBrands = async () => {
+      try {
+        const token = localStorage.getItem("token"); // Đảm bảo sử dụng token nhất quán
+        const response = await axios.get(
+          "http://localhost:8000/api/brands/index",
+          {
+            headers: {
+              Authorization: `Bearer ${token}`, // Bao gồm token trong header của yêu cầu
+            },
+          }
+        );
+        setBrands(response.data.data);
+      } catch (error) {
+        setError("Đã có lỗi xảy ra khi lấy danh sách thương hiệu!");
+        console.error(
+          "Lỗi khi lấy dữ liệu:",
+          error.response ? error.response.data : error.message
+        );
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchBrands();
+  }, []);
+
+  const deleteBrand = async (id) => {
+    const confirmDelete = window.confirm(
+      "Bạn có chắc chắn muốn xóa thương hiệu này không?"
+    );
+    if (!confirmDelete) return;
+
+    try {
+      const token = localStorage.getItem("token"); // Đảm bảo sử dụng token nhất quán
+      await axios.delete(`http://localhost:8000/api/brands/destroy/${id}`, {
+        headers: {
+          Authorization: `Bearer ${token}`, // Bao gồm token trong header của yêu cầu
+        },
+      });
+      setBrands(brands.filter((brand) => brand.id !== id)); // Cập nhật trạng thái để xóa thương hiệu đã xóa
+    } catch (error) {
+      setError("Đã có lỗi xảy ra khi xóa thương hiệu!");
+      console.error(
+        "Lỗi khi xóa:",
+        error.response ? error.response.data : error.message
+      );
+    }
+  };
+
+  if (loading) {
+    return <div>Đang tải thương hiệu...</div>;
+  }
+
+  if (error) {
+    return <div className="alert alert-danger">{error}</div>;
+  }
+
   return (
     <div className="container-xxl flex-grow-1 container-p-y">
       <div className="card">
-        <div>
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "center",
-            }}
-          >
-            <h5 className="card-header">Thương hiệu</h5>
-            <Link to="/add-brands">
-              <button
-                type="button"
-                className="btn rounded-pill btn-primary m-6"
-              >
-                Thêm
-              </button>
-            </Link>
-          </div>
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+          }}
+        >
+          <h5 className="card-header">Danh sách thương hiệu</h5>
+          <Link to="/add-brands">
+            <button type="button" className="btn rounded-pill btn-primary m-6">
+              Thêm thương hiệu
+            </button>
+          </Link>
         </div>
 
         <div className="table-responsive text-nowrap">
-          <table className="table table-striped">
+          <table className="table table-bordered">
             <thead>
               <tr>
-                <th>id</th>
+                <th>ID</th>
                 <th>Tên</th>
+                <th>Slug</th>
                 <th>Trạng thái</th>
                 <th>Hành động</th>
               </tr>
             </thead>
-            <tbody className="table-border-bottom-0">
-              <tr>
-                <td>1</td>
-                <td>
-                  {/* <i className="bx bxl-angular bx-md text-danger me-4"></i>{" "} */}
-                  <span>Listerine</span>
-                </td>
-                <td>
-                  <span className="badge bg-label-primary me-1">Hoạt động</span>
-                </td>
-                <td>
-                <Link to="/edit-brands">
-                  <button
-                    type="button"
-                    className="btn btn-primary me-2" // Primary button for Edit
-                  >
-                      <i className="bx bx-edit-alt me-1"></i> Sửa
-                  </button>
-                  </Link>
-                  <Link to="/">
-                  <button
-                    type="button"
-                    className="btn btn-danger" // Danger button for Delete
-                  >
-                    <i className="bx bx-trash me-1"></i> Xóa
-                  </button>
-                  </Link>
-                </td>
-              </tr>
+            <tbody>
+              {brands.map((brand) => (
+                <tr key={brand.id}>
+                  <td>{brand.id}</td>
+                  <td>
+                    {brand.image ? (
+                      // Nếu có ảnh, kiểm tra loại URL
+                      brand.image.includes("http") ? (
+                        <img
+                          src={brand.image} // Trường hợp URL đầy đủ
+                          alt={brand.name}
+                          style={{
+                            width: "50px",
+                            height: "50px",
+                            objectFit: "cover",
+                            marginRight: "10px",
+                          }}
+                        />
+                      ) : (
+                        <img
+                          src={`http://localhost:8000/assets/uploads/brand/${brand.image}`} // Trường hợp đường dẫn tương đối
+                          alt={brand.name}
+                          style={{
+                            width: "50px",
+                            height: "50px",
+                            objectFit: "cover",
+                            marginRight: "10px",
+                          }}
+                        />
+                      )
+                    ) : (
+                      // Nếu không có ảnh
+                      <p>Image not found</p>
+                    )}
+
+                    {/* Hiển thị tên thương hiệu */}
+                    {brand.name}
+                  </td>
+
+                  <td>{brand.slug}</td>
+                  <td>
+                    <span
+                      className={`badge ${
+                        brand.status ? "bg-label-primary" : "bg-label-secondary"
+                      }`}
+                    >
+                      {brand.status ? "Hoạt động" : "Ngưng hoạt động"}
+                    </span>
+                  </td>
+                  <td>
+                    <div>
+                      <Link
+                        className="btn btn-sm btn-outline-primary me-2"
+                        to={`/edit-brands/${brand.id}`}
+                      >
+                        <i
+                          className="bx bx-edit-alt me-1"
+                          style={{ color: "blue" }}
+                        ></i>{" "}
+                        Sửa
+                      </Link>
+                      <button
+                        className="btn btn-sm btn-outline-danger"
+                        onClick={() => deleteBrand(brand.id)}
+                        // style={{ background: "none", border: "none" }}
+                      >
+                        <i
+                          className="bx bx-trash me-1"
+                          style={{ color: "red" }}
+                        ></i>{" "}
+                        Xóa
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              ))}
             </tbody>
           </table>
         </div>
@@ -73,4 +178,4 @@ const Index = () => {
   );
 };
 
-export default Index;
+export default Brands;

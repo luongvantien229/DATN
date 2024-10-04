@@ -121,3 +121,43 @@
   text-align: center;
   margin-top: 1rem;
 }
+
+/* navbar */
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.navbar-nav-right {
+  animation: fadeIn 0.5s ease-in-out;
+}
+
+.layout-menu-toggle {
+  animation: fadeIn 0.5s ease-in-out;
+}
+
+.avatar {
+  animation: fadeIn 0.5s ease-in-out;
+}
+
+.nav-item {
+  animation: fadeIn 0.5s ease-in-out;
+}
+
+.dropdown-menu {
+  animation: fadeIn 0.3s ease-in-out;
+}
+/* td table */
+td{
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 200px;
+
+}

@@ -97,10 +97,10 @@ class IndexController extends Controller
         $related_products = Product::where('category_id', $category_id)
             ->orderBy('created_at', 'desc')
             ->limit(4)->get()->except($id);
-        $list_qa = QA::where('product_id', $id)->orderBy('created_at', 'asc')->get();
+        // $list_qa = QA::where('product_id', $id)->orderBy('created_at', 'asc')->get();
 
         return response()->json([
-            'list_qa' => $list_qa,
+            // 'list_qa' => $list_qa,
             'product' => $product,
             'related_products' => $related_products,
         ], 200);

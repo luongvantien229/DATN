@@ -41,6 +41,7 @@ export default function Index() {
             onClick={() => handleMenuClick("/")}
           >
             <i className="menu-icon tf-icons bx bx-home-smile"></i>
+<<<<<<< HEAD
             <div className="text-truncate" data-i18n="Bảng điều khiển">
               Bảng điều khiển
             </div>
@@ -137,6 +138,30 @@ export default function Index() {
           </ul>
         
       {/* </ul> */}
+=======
+            <div className="text-truncate" data-i18n="Dashboards">
+              Bảng điều khiển
+            </div>
+          </Link>
+        </li>
+        <li className={`menu-item ${activeMenu === "/categories" ? "active open" : ""}`}>
+          <Link to="/categories" className="menu-link" onClick={() => handleMenuClick("/categories")}>
+            <i className="menu-icon tf-icons bx bx-layout"></i>
+            <div className="text-truncate" data-i18n="Danh mục">
+              Danh mục
+            </div>
+          </Link>
+        </li>
+        <li className={`menu-item ${activeMenu === "/user" ? "active open" : ""}`}>
+          <Link to="/user" className="menu-link" onClick={() => handleMenuClick("/categories")}>
+            <i className="menu-icon tf-icons bx bx-layout"></i>
+            <div className="text-truncate" data-i18n="Danh mục">
+              Người dùng
+            </div>
+          </Link>
+        </li>
+      </ul>
+>>>>>>> db1e6f75e6617de2481a44874d250c7fe519e36f
     </aside>
   );
 }

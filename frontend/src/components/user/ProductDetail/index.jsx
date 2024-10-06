@@ -1,3 +1,4 @@
+
 import React from "react";
 import ProductDetail from "./ProductDetail";
 import Information from "./Information";
@@ -17,3 +18,4 @@ export default function Index() {
     </div>
   );
 }
+

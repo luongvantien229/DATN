@@ -26,11 +26,13 @@ export default function Index() {
       <div className="custom-container">
         <div className="section-title-btn-wrap mb-35">
           <div className="section-title-1">
+
             <h2>Sản phẩm yêu thích</h2>
+
           </div>
           <div className="btn-style-2">
             <a href="#">
-              View all products <i className="far fa-long-arrow-right"></i>
+            Xem tất cả sản phẩm <i className="far fa-long-arrow-right"></i>
             </a>
           </div>
         </div>

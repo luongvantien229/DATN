@@ -1,3 +1,4 @@
+
 import React from "react";
 import useSlick from "../../../hooks/user/slick";
 
@@ -31,3 +32,4 @@ export default function ProductDetail_Left({ product }) {
     </div>
   );
 }
+

@@ -1,3 +1,4 @@
+
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom"; // Import useParams
 import ProductDetail_Left from "./ProductDetail_Left";
@@ -37,3 +38,4 @@ export default function ProductDetail() {
     </div>
   );
 }
+

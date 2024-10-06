@@ -1,3 +1,4 @@
+
 import { Link } from "react-router-dom";
 
 export default function CartCollaterals() {
@@ -43,3 +44,4 @@ export default function CartCollaterals() {
     </div>
   );
 }
+

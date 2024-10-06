@@ -1,3 +1,4 @@
+
 import { Link } from "react-router-dom";
 import TeamArea from "./teamArea";
 
@@ -21,3 +22,4 @@ export default function Index() {
     </div>
   );
 }
+

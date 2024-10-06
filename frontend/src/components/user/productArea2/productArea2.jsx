@@ -31,7 +31,7 @@ export default function ProductArena2({ product }) {
             <Link to={`/product-detail/${product.id}`}>{product.name}</Link>
           </h2>
           <div className="product-price">
-            <span>{product.price} ₫</span>
+            <span>{new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(product.price)}</span>
           </div>
         </div>
       </div>

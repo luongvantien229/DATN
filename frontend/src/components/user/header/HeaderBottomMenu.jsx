@@ -28,7 +28,6 @@ export default function HeaderBottomMenu() {
                 </a>
                 <ul>
                   <li>
-<<<<<<< HEAD
                     <Link className="active" to="/">
                       Trang chủ
                     </Link>
@@ -156,20 +155,7 @@ export default function HeaderBottomMenu() {
                   </li>
                   <li>
                     <Link to="/contact">Liên hệ</Link>
-=======
-                    <a href="product-details.html">Liệu Pháp Nước Lạnh Băng</a>
-                  </li>
-                  <li>
-                    <a href="product-details.html">Máy Hô Hấp Oxy</a>
-                  </li>
-                  <li>
-                    <a href="product-details.html">
-                      Khay Thận Bằng Thép Không Gỉ
-                    </a>
-                  </li>
-                  <li>
-                    <a href="product-details.html">Kéo thép không gỉ</a>
->>>>>>> db1e6f75e6617de2481a44874d250c7fe519e36f
+
                   </li>
                 </ul>
               </li>

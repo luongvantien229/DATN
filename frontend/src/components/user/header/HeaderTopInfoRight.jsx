@@ -6,14 +6,6 @@ export default function HeaderTopHeaderInfoRight() {
       <div className="header-info header-info-right">
         <ul>
           <li>
-<<<<<<< HEAD
-            <Link className="language-dropdown-active" to="#">
-              Việt Nam <i className="fa fa-chevron-down"></i>
-            </Link>
-            <ul className="language-dropdown">
-              <li>
-                <Link to="#">English</Link>
-=======
             <a className="language-dropdown-active" href="#">
             Tiếng Anh <i className="fa fa-chevron-down"></i>
             </a>
@@ -26,16 +18,13 @@ export default function HeaderTopHeaderInfoRight() {
               </li>
               <li>
                 <a href="#">Tiếng Việt</a>
->>>>>>> db1e6f75e6617de2481a44874d250c7fe519e36f
               </li>
             </ul>
           </li>
           <li>
-<<<<<<< HEAD
+
             <Link to="/login-register">Đăng nhập / Đăng kí</Link>
-=======
-            <Link to="/login-register">Đăng nhập / Đăng ký</Link>
->>>>>>> db1e6f75e6617de2481a44874d250c7fe519e36f
+
           </li>
         </ul>
       </div>

@@ -1,22 +1,17 @@
-import React, {
-  forwardRef,
-  useImperativeHandle,
-  useState,
-  useEffect,
-} from "react";
+import React, { forwardRef } from "react";
 import { Link } from "react-router-dom";
 
-const ProductArena1 = forwardRef((props, ref) => {
+const ProductArena1 = forwardRef(({ product }, ref) => {
   return (
     <div className="product-plr-1">
       <div className="single-product-wrap">
         <div className="product-img-action-wrap">
           <div className="product-img product-img-zoom">
-            <Link to="/product-detail">
+            <Link to={`/product-detail/${product.id}`}>
               <img
                 className="default-img"
-                src="assets/images/product/P00641_1.png"
-                alt=""
+                src={product.image || "assets/images/product/default.png"} // Sử dụng ảnh từ sản phẩm
+                alt={product.name} // Tên sản phẩm
               />
             </Link>
           </div>
@@ -32,16 +27,13 @@ const ProductArena1 = forwardRef((props, ref) => {
             </button>
           </div>
         </div>
-        <div className="product-badges product-badges-mrg">
-          <span className="discount red">-26%</span>
-        </div>
         <div className="product-content-wrap">
           <h2>
-            <Link to="/product-detail">Hoạt Huyết Nhất Nhất</Link>
+            <Link to={`/product-detail/${product.id}`}>{product.name}</Link> {/* Tên sản phẩm */}
           </h2>
           <div className="product-price">
-            <span className="new-price">120.000đ</span>
-            <span className="old-price">100.000đ</span>
+            <span className="new-price">{Number(product.price).toLocaleString()}đ</span> {/* Giá sản phẩm */}
+            {/* Nếu có giá cũ, hiển thị tại đây */}
           </div>
         </div>
       </div>

@@ -1,89 +1,35 @@
 import React, { useState, useEffect } from "react";
 
 const BrandLogoArea = () => {
-  // Dữ liệu JSON chứa các logo thương hiệu
-  const brandLogosData = [
-    {
-      id: 1,
-      logo: "assets/images/brand-logo/brand-logo-1.png",
-      link: "shop.html",
-    },
-    {
-      id: 2,
-      logo: "assets/images/brand-logo/brand-logo-2.png",
-      link: "shop.html",
-    },
-    {
-      id: 3,
-      logo: "assets/images/brand-logo/brand-logo-3.png",
-      link: "shop.html",
-    },
-    {
-      id: 4,
-      logo: "assets/images/brand-logo/brand-logo-4.png",
-      link: "shop.html",
-    },
-    {
-      id: 5,
-      logo: "assets/images/brand-logo/brand-logo-5.png",
-      link: "shop.html",
-    },
-    {
-      id: 6,
-      logo: "assets/images/brand-logo/brand-logo-6.png",
-      link: "shop.html",
-    },
-    {
-      id: 7,
-      logo: "assets/images/brand-logo/brand-logo-7.png",
-      link: "shop.html",
-    },
-    {
-      id: 8,
-      logo: "assets/images/brand-logo/brand-logo-8.png",
-      link: "shop.html",
-    },
-    {
-      id: 9,
-      logo: "assets/images/brand-logo/brand-logo-9.png",
-      link: "shop.html",
-    },
-    {
-      id: 10,
-      logo: "assets/images/brand-logo/brand-logo-10.png",
-      link: "shop.html",
-    },
-    {
-      id: 11,
-      logo: "assets/images/brand-logo/brand-logo-11.png",
-      link: "shop.html",
-    },
-    {
-      id: 12,
-      logo: "assets/images/brand-logo/brand-logo-12.png",
-      link: "shop.html",
-    },
-  ];
+  const [brandLogos, setBrandLogos] = useState([]); // State để lưu logo thương hiệu
+  const apiUrl = "http://127.0.0.1:8000/api/all_brands"; // Địa chỉ API
 
-  const [brandLogos, setBrandLogos] = useState([]);
-
-  // Lấy dữ liệu logo khi component được mount
+  // Lấy dữ liệu logo từ API khi component được mount
   useEffect(() => {
-    if (brandLogos.length === 0) {
-      setBrandLogos(brandLogosData.slice(0, 5)); // Lấy 5 logo thương hiệu
-    }
-  }, [brandLogos]);
+    const fetchBrandLogos = async () => {
+      try {
+        const response = await fetch(apiUrl);
+        const data = await response.json();
+
+        // Kiểm tra xem dữ liệu có hợp lệ hay không
+        if (data.brands) {
+          setBrandLogos(data.brands.slice(0, 12)); // Lấy 12 thương hiệu
+        }
+      } catch (error) {
+        console.error("Lỗi khi lấy dữ liệu thương hiệu:", error);
+      }
+    };
+
+    fetchBrandLogos();
+  }, []); // Chỉ chạy một lần khi component được mount
 
   return (
     <div className="row align-items-center wow tmFadeInUp">
-      {brandLogosData.map((logoData, index) => (
-        <div
-          className="col-lg-2 col-md-4 col-6 col-sm-4"
-          key={logoData.id} {...logoData}
-        >
+      {brandLogos.map((brand) => (
+        <div className="col-lg-2 col-md-4 col-6 col-sm-4" key={brand.id}>
           <div className="single-brand-logo mb-30">
-            <a href={logoData.link}>
-              <img src={logoData.logo} alt={`Brand ${logoData.id}`} />
+            <a href={`shop.html?brand=${brand.slug}`}>
+              <img src={brand.image} alt={brand.name} />
             </a>
           </div>
         </div>

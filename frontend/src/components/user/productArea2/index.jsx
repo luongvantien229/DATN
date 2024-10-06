@@ -1,9 +1,25 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import ProductArena2 from "./productArea2";
 import useSlick from "../../../hooks/user/slick";
+import axios from "axios"; // Đảm bảo bạn đã cài đặt axios
 
 export default function Index() {
   const { productArena1 } = useSlick(); // Lấy các ref từ hook
+  const [favoriteProducts, setFavoriteProducts] = useState([]);
+
+  useEffect(() => {
+    // Hàm gọi API để lấy sản phẩm yêu thích
+    const fetchFavoriteProducts = async () => {
+      try {
+        const response = await axios.get("http://127.0.0.1:8000/api/favorite_products");
+        setFavoriteProducts(response.data.favorite_products);
+      } catch (error) {
+        console.error("Error fetching favorite products:", error);
+      }
+    };
+
+    fetchFavoriteProducts();
+  }, []);
 
   return (
     <div className="product-area pb-70">
@@ -18,9 +34,10 @@ export default function Index() {
             </a>
           </div>
         </div>
-        <div ref={productArena1} className="product-slider-active-1 nav-style-2 nav-style-2-modify-2">
-          {[...Array(8)].map((_, index) => (
-            <ProductArena2 key={index} />
+        <div ref={productArena1} className="product-slider-active-1 nav-style-2 nav-style-2-modify-2 d-flex">
+          {/* Render 5 sản phẩm yêu thích đầu tiên */}
+          {favoriteProducts.slice(0, 5).map((product) => (
+            <ProductArena2 key={product.id} product={product} />
           ))}
         </div>
       </div>

@@ -1,38 +1,47 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+import { useParams } from "react-router-dom"; // Thêm import useParams
 
 export default function ProductDetail_Description() {
+  const { id } = useParams(); // Lấy id từ URL
+  const [product, setProduct] = useState(null); // Khởi tạo state cho sản phẩm
+
+  useEffect(() => {
+    const fetchProductDetail = async () => {
+      try {
+        const response = await fetch(`http://127.0.0.1:8000/api/product_detail/${id}`);
+        const data = await response.json();
+        setProduct(data.product); // Giả sử dữ liệu trả về có cấu trúc như bạn đã cung cấp
+      } catch (error) {
+        console.error("Error fetching product detail:", error);
+      }
+    };
+
+    fetchProductDetail();
+  }, [id]);
+
+  // Nếu chưa có sản phẩm, có thể hiển thị thông báo đang tải
+  if (!product) {
+    return <p>Đang tải dữ liệu sản phẩm...</p>;
+  }
+
   return (
     <div className="product-details-description">
       <div className="entry-product-section-heading">
         <h2>Mô tả</h2>
       </div>
-      <p>
-        Dòng gel rửa tay kháng khuẩn nguyên bản có công thức tiên tiến giúp tiêu
-        diệt 99% vi khuẩn có hại trong vòng vài giây và để lại cảm giác sạch sẽ
-        cho tay và mùi hương dễ chịu. Đã được thử nghiệm và phê duyệt bởi da
-        liễu. Alcohol Denat., Aqua, Propylene Glycol, Carbomer, Triethanolamine,
-        Parfum, Benzyl Benzoate, Linalool, Thành phần hoạt tính Ethanol 57,6%
-      </p>
-      <p>
-        Sản phẩm này được công thức độc đáo để không làm khô và không gây kích
-        ứng cho da, ngay cả khi sử dụng nhiều lần trong ngày. Công thức giàu
-        chất làm mềm giúp ngăn ngừa sự suy giảm da và đã cho thấy cải thiện sự
-        tuân thủ vệ sinh tay khi được bao gồm như một phần của chương trình đa
-        chiều.
-      </p>
-      <ul>
-        <li>Được phê duyệt bởi da liễu</li>
-        <li>Tiêu diệt 99% vi khuẩn nhanh chóng</li>
-        <li>Công thức nhanh khô</li>
-        <li>Để lại mùi hương nhẹ nhàng và sự yên tâm cho cả gia đình</li>
-      </ul>
-      <p>
-        Tiêu diệt 99,99% vi trùng mà không cần nước. Với chiết xuất Lô Hội. Giúp
-        để lại cảm giác mềm mại và tươi mới cho tay. Không cần rửa và không
-        dính. Đã được thử nghiệm bởi da liễu. <br /> Hướng dẫn: Nhấn 1/2 thìa
-        gel rửa tay kháng khuẩn vào lòng bàn tay, sau đó xoa tay nhanh chóng cho
-        đến khi khô.
-      </p>
+      <p>{product.description}</p> {/* Hiển thị mô tả sản phẩm */}
+      <div>
+        <h4>Thành phần:</h4>
+        <p>{product.ingredient}</p>
+      </div>
+      <div>
+        <h4>Cách sử dụng:</h4>
+        <p>{product.uses}</p>
+      </div>
+      <div>
+        <h4>Hướng dẫn sử dụng:</h4>
+        <p>{product.user_manual}</p>
+      </div>
     </div>
   );
 }

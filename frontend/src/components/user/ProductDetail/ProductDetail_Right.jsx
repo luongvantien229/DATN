@@ -1,9 +1,10 @@
-import React, { useState } from "react"; // Import useState từ React
-// import React from "react";
+
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 
-export default function ProductDetail_Right() {
+export default function ProductDetail_Right({ product }) {
   const [quantity, setQuantity] = useState(1);
+  const [brands, setBrands] = useState([]); // State để lưu trữ thương hiệu
 
   const handleQuantityChange = (e) => {
     const value = e.target.value;
@@ -11,75 +12,69 @@ export default function ProductDetail_Right() {
       setQuantity(Number(value));
     }
   };
+
+  // Lấy danh sách thương hiệu
+  useEffect(() => {
+    const fetchBrands = async () => {
+      try {
+        const response = await fetch("http://127.0.0.1:8000/api/all_brands");
+        const data = await response.json();
+        setBrands(data.brands); // Giả sử data.brands chứa danh sách thương hiệu
+      } catch (error) {
+        console.error("Error fetching brands:", error);
+      }
+    };
+
+    fetchBrands();
+  }, []);
+
+  // Tìm thương hiệu tương ứng với sản phẩm
+  const brand = brands.find(brand => brand.id === product.brand_id); // Giả sử product.brand_id chứa ID thương hiệu
+
+  const formattedPrice = new Intl.NumberFormat("vi-VN", {
+    style: "currency",
+    currency: "VND",
+  }).format(product.price);
+
   return (
     <div className="col-lg-6 col-md-6">
       <div className="product-details-content pro-details-content-pl">
         <div className="pro-details-category">
           <ul>
             <li>
-              <a href="shop-filter.html">Dụng cụ y tế tại nhà </a> /{" "}
+              <a href="shop-filter.html">Dụng cụ y tế tại nhà</a> /
             </li>
             <li>
-              <a href="shop-filter.html">Nhà thuốc </a>
+              <a href="shop-filter.html">Nhà thuốc</a>
             </li>
           </ul>
         </div>
-        <h1> Gel tay khô kháng khuẩn</h1>
+        <h1>{product.name}</h1>
         <div className="pro-details-brand-review">
           <div className="pro-details-brand">
-            <span>
-              {" "}
-              Thương hiệu: <a href="shop.html">BioZen</a>
-            </span>
+            <span>Thương hiệu: <a href="shop.html">{brand ? brand.name : "Đang tải..."}</a></span>
           </div>
           <div className="pro-details-rating-wrap">
             <span>5.00</span>
             <div className="pro-details-rating">
+              {/* Hiển thị sao */}
               <i className="fas fa-star"></i>
               <i className="fas fa-star"></i>
               <i className="fas fa-star"></i>
               <i className="fas fa-star"></i>
               <i className="fas fa-star"></i>
             </div>
-            <a href="#"> (2 đánh giá)</a>
+            <a href="#">(2 đánh giá)</a>
           </div>
         </div>
         <div className="pro-details-price-short-description">
           <div className="pro-details-price">
-            <span className="new-price">$19.00 - $29.00</span>
-            <span className="old-price">$19.00 - $35.00</span>
+            <span className="new-price">{formattedPrice}</span>
+            {/* Nếu có giá cũ, có thể hiển thị */}
+            {/* <span className="old-price">$19.00 - $35.00</span> */}
           </div>
           <div className="pro-details-short-description">
-            <p>
-              Tiêu diệt 99.99% vi khuẩn mà không cần nước. Có chiết xuất lô hội.
-            </p>
-          </div>
-        </div>
-        <div className="pro-details-color-wrap">
-          <span>Màu sắc</span>
-          <div className="pro-details-color-list pro-details-color-mrg tooltip-style-3">
-            <ul>
-              <li>
-                <a aria-label="Xanh lá" className="green" href="#">
-                  xanh lá
-                </a>
-              </li>
-              <li>
-                <a aria-label="Hồng" className="pink" href="#">
-                  hồng
-                </a>
-              </li>
-              <li>
-                <a aria-label="Xanh bột" className="powder-blue" href="#">
-                  xanh bột
-                </a>
-              </li>
-              <li>
-                <a aria-label="Tím" className="purple" href="#">
-                  tím
-                </a>
-              </li>
-            </ul>
+            <p>{product.description}</p>
           </div>
         </div>
         <div className="pro-details-quality-stock-area">
@@ -89,14 +84,14 @@ export default function ProductDetail_Right() {
               <input
                 className="cart-plus-minus-box input-text qty text"
                 name="qtybutton"
-                type="number" // Thêm type để người dùng chỉ có thể nhập số
-                value={quantity} // Sử dụng state để điều khiển giá trị
-                onChange={handleQuantityChange} // Hàm xử lý khi giá trị thay đổi
+                type="number"
+                value={quantity}
+                onChange={handleQuantityChange}
               />
             </div>
             <div className="pro-details-stock">
               <span>
-                <i className="fas fa-check-circle"></i> 6 trong kho
+                <i className="fas fa-check-circle"></i> {product.qty} trong kho
               </span>
             </div>
           </div>
@@ -107,21 +102,18 @@ export default function ProductDetail_Right() {
           </div>
           <div className="pro-details-action tooltip-style-4">
             <button aria-label="Thêm vào danh sách yêu thích">
-              <i className="fad fa-heart"></i>{" "}
+              <i className="fad fa-heart"></i>
             </button>
             <button aria-label="Thêm vào so sánh">
-              <i className="far fa-signal"></i>{" "}
+              <i className="far fa-signal"></i>
             </button>
           </div>
         </div>
         <div className="product-details-meta">
           <ul>
+            <li><span>Mã sản phẩm:</span> {product.sku}</li>
             <li>
-              <span>Mã sản phẩm:</span> SF1133569600-1{" "}
-            </li>
-            <li>
-              <span>Thẻ: </span> <a href="#">covid19</a> /{" "}
-              <a href="#">chăm sóc tại nhà</a> / <a href="#">Nhà thuốc</a>
+              <span>Thẻ:</span> <a href="#">covid19</a> / <a href="#">chăm sóc tại nhà</a> / <a href="#">Nhà thuốc</a>
             </li>
           </ul>
         </div>
@@ -146,3 +138,4 @@ export default function ProductDetail_Right() {
     </div>
   );
 }
+

@@ -3,7 +3,6 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import "animate.css";
 
-
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import { motion } from "framer-motion";
@@ -55,7 +54,7 @@ export default function Index() {
       initial={{ opacity: 0, y: -20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
-    > 
+    >
       <nav
         className="layout-navbar container-xxl navbar navbar-expand-xl navbar-detached align-items-center bg-navbar-theme animate__animated animate__fadeInDown"
         id="layout-navbar"
@@ -75,7 +74,6 @@ export default function Index() {
               <i className="bx bx-search bx-md"></i>
               <input
                 type="text"
-                name="keywords"
                 className="form-control border-0 shadow-none ps-1 ps-sm-2"
                 placeholder="Tìm kiếm..."
                 aria-label="Search..."

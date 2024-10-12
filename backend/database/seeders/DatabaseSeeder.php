@@ -185,7 +185,7 @@ class DatabaseSeeder extends Seeder
                     'image' => $list_categories_images[$i],
                     'status' => 1,
                     'parent_id' =>  mt_rand(1, 3),
-                    'showHome' => 'YES'
+                    'showHome' => true
                 ]
             );
         }

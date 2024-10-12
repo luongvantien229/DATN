@@ -19,7 +19,7 @@ return new class extends Migration
             $table->integer('status');
             $table->integer('parent_id')->nullable();
             $table->integer('sort_order'); // sắp xếp thứ tự
-            $table->enum('showHome',['Yes','No'])->default('No');
+            $table->boolean('showHome'); // Hiển thị trên trang chủ
             $table->timestamps();
         });
 

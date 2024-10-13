@@ -1,3 +1,4 @@
+
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { useSelector } from "react-redux"; // Import useSelector
@@ -16,6 +17,7 @@ export default function CartItem({ product }) {
 
   console.log("Sản phẩm trong giỏ hàng:", product);
 
+
   const handleQuantityChange = (e) => {
     const value = e.target.value;
     if (!isNaN(value) && value > 0) {
@@ -27,10 +29,12 @@ export default function CartItem({ product }) {
     <tr>
       <td className="product-thumbnail">
         <Link to="/product-details">
+
           <img
             src={product.image || "assets/images/cart/cart-1.jpg"}
             alt="Sản phẩm"
           />
+
         </Link>
       </td>
       <td className="product-name">
@@ -79,6 +83,7 @@ export default function CartItem({ product }) {
         >
           Xóa
         </button>
+
       </td>
     </tr>
   );

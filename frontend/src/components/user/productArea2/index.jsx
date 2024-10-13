@@ -12,6 +12,7 @@ export default function Index() {
     const fetchFavoriteProducts = async () => {
       try {
         const response = await axios.get("/favorite_products");
+
         setFavoriteProducts(response.data.favorite_products);
       } catch (error) {
         console.error("Error fetching favorite products:", error);

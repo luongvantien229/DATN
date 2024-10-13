@@ -14,6 +14,7 @@ export default function Index() {
         const response = await axios.get("/all_categories"); // Thay đổi từ fetch sang axios
         console.log(response.data); // Kiểm tra dữ liệu
         setCategories(response.data.categories);
+
       } catch (error) {
         console.error("Error fetching categories:", error);
       }

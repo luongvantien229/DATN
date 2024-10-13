@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { useDispatch } from 'react-redux';
@@ -21,12 +22,15 @@ export default function ProductDetail_Right({ product }) {
     }
 };
 
+
   useEffect(() => {
     const fetchBrands = async () => {
       try {
         const response = await fetch("http://127.0.0.1:8000/api/all_brands");
         const data = await response.json();
+
         setBrands(data.brands);
+
       } catch (error) {
         console.error("Error fetching brands:", error);
       }
@@ -35,12 +39,15 @@ export default function ProductDetail_Right({ product }) {
     fetchBrands();
   }, []);
 
+
   const brand = brands.find(brand => brand.id === product.brand_id);
+
 
   const formattedPrice = new Intl.NumberFormat("vi-VN", {
     style: "currency",
     currency: "VND",
   }).format(product.price);
+
   
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -52,6 +59,7 @@ export default function ProductDetail_Right({ product }) {
     dispatch(addToCart(productWithQuantity));
     navigate('/cart');
   };
+
 
   return (
     <div className="col-lg-6 col-md-6">
@@ -111,7 +119,9 @@ export default function ProductDetail_Right({ product }) {
           </div>
         </div>
         <div className="pro-details-action-wrap">
+
           <div className="pro-details-add-to-cart" onClick={handleAddToCart}>
+
             <button>Thêm vào giỏ hàng</button>
           </div>
           <div className="pro-details-action tooltip-style-4">
@@ -152,3 +162,4 @@ export default function ProductDetail_Right({ product }) {
     </div>
   );
 }
+

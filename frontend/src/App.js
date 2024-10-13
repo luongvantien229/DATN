@@ -98,6 +98,7 @@ function App() {
         <Route
           path="/product-detail/:id"
           element={
+
             <MainLayout>
               <ProductDetail />
             </MainLayout>

@@ -1,3 +1,4 @@
+
 import React from "react"; // Đừng quên import React
 import { Link } from "react-router-dom";
 import { useSelector } from "react-redux"; // Import useSelector
@@ -6,6 +7,7 @@ import CartItem from "./CartItem";
 export default function CartTableContent() {
   const cartItems = useSelector((state) => state.cart.cartItems); // Lấy danh sách sản phẩm từ Redux store
   
+
   return (
     <div className="row">
       <div className="col-12">
@@ -24,8 +26,10 @@ export default function CartTableContent() {
                   </tr>
                 </thead>
                 <tbody>
+
                   {cartItems.map((item, index) => (
                     <CartItem key={index} product={item} /> // Truyền từng sản phẩm vào CartItem
+
                   ))}
                 </tbody>
               </table>

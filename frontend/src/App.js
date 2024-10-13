@@ -1,5 +1,9 @@
 import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { Provider } from 'react-redux'; // Nhập Provider
+import store from './redux/store'; // Đường dẫn đến store
+
+import axios from "axios"; // Nhập axios
 import Header from "./components/user/header";
 import { SearchPopup, MobileHeaderMenu } from "./components/user/common";
 import Breadcrumb from "./components/user/breadcrumb";
@@ -14,6 +18,13 @@ import Cart from "./pages/user/cart";
 import LoginAndRegister from "./pages/user/loginAndRegister";
 import ProductDetail from "./pages/user/productDetail";
 
+// Thiết lập baseURL cho axios
+axios.defaults.baseURL = "http://127.0.0.1:8000/api";
+
+// Thiết lập headers mặc định
+axios.defaults.headers.common["Authorization"] = "Bearer YOUR_TOKEN_HERE"; // Thay 'YOUR_TOKEN_HERE' bằng token thực tế của bạn
+axios.defaults.headers.common["Content-Type"] = "application/json"; // Thêm header cho kiểu nội dung
+
 const MainLayout = ({ children }) => (
   <div className="main-wrapper">
     <Header />
@@ -26,7 +37,7 @@ const MainLayout = ({ children }) => (
 
 function App() {
   return (
-    <>
+    <Provider store={store}> {/* Bọc ứng dụng trong Provider */}
       <Routes>
         <Route
           path="/"
@@ -86,7 +97,7 @@ function App() {
         />
         <Route
           path="/product-detail/:id"
-          element={ 
+          element={
             <MainLayout>
               <ProductDetail />
             </MainLayout>
@@ -97,7 +108,7 @@ function App() {
       <div className="mobile">
         <MobileHeaderMenu />
       </div>
-    </>
+    </Provider>
   );
 }
 

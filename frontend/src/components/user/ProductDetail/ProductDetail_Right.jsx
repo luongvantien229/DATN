@@ -1,25 +1,32 @@
-
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
+import { useDispatch } from 'react-redux';
+import { addToCart } from '../../../redux/slices/cartSlice';
+import { useNavigate } from 'react-router-dom';
 
 export default function ProductDetail_Right({ product }) {
   const [quantity, setQuantity] = useState(1);
-  const [brands, setBrands] = useState([]); // State để lưu trữ thương hiệu
+  const [brands, setBrands] = useState([]);
 
   const handleQuantityChange = (e) => {
     const value = e.target.value;
+    // Kiểm tra xem giá trị nhập vào có phải là số và lớn hơn 0 không
     if (!isNaN(value) && value > 0) {
-      setQuantity(Number(value));
+        const quantityValue = Number(value); // Chuyển đổi giá trị thành số
+        setQuantity(quantityValue); // Cập nhật state quantity
+        sessionStorage.setItem("productQuantity", quantityValue); // Lưu quantity vào session storage
+        console.log("Quantity:", quantityValue); // In ra giá trị quantity
+    } else {
+        console.log("Invalid quantity value:", value); // In ra thông báo nếu giá trị không hợp lệ
     }
-  };
+};
 
-  // Lấy danh sách thương hiệu
   useEffect(() => {
     const fetchBrands = async () => {
       try {
         const response = await fetch("http://127.0.0.1:8000/api/all_brands");
         const data = await response.json();
-        setBrands(data.brands); // Giả sử data.brands chứa danh sách thương hiệu
+        setBrands(data.brands);
       } catch (error) {
         console.error("Error fetching brands:", error);
       }
@@ -28,13 +35,23 @@ export default function ProductDetail_Right({ product }) {
     fetchBrands();
   }, []);
 
-  // Tìm thương hiệu tương ứng với sản phẩm
-  const brand = brands.find(brand => brand.id === product.brand_id); // Giả sử product.brand_id chứa ID thương hiệu
+  const brand = brands.find(brand => brand.id === product.brand_id);
 
   const formattedPrice = new Intl.NumberFormat("vi-VN", {
     style: "currency",
     currency: "VND",
   }).format(product.price);
+  
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  const handleAddToCart = () => {
+    const productWithQuantity = { ...product, quantity };
+    console.log(123);
+    console.log(productWithQuantity);
+    dispatch(addToCart(productWithQuantity));
+    navigate('/cart');
+  };
 
   return (
     <div className="col-lg-6 col-md-6">
@@ -57,7 +74,6 @@ export default function ProductDetail_Right({ product }) {
           <div className="pro-details-rating-wrap">
             <span>5.00</span>
             <div className="pro-details-rating">
-              {/* Hiển thị sao */}
               <i className="fas fa-star"></i>
               <i className="fas fa-star"></i>
               <i className="fas fa-star"></i>
@@ -70,8 +86,6 @@ export default function ProductDetail_Right({ product }) {
         <div className="pro-details-price-short-description">
           <div className="pro-details-price">
             <span className="new-price">{formattedPrice}</span>
-            {/* Nếu có giá cũ, có thể hiển thị */}
-            {/* <span className="old-price">$19.00 - $35.00</span> */}
           </div>
           <div className="pro-details-short-description">
             <p>{product.description}</p>
@@ -97,7 +111,7 @@ export default function ProductDetail_Right({ product }) {
           </div>
         </div>
         <div className="pro-details-action-wrap">
-          <div className="pro-details-add-to-cart">
+          <div className="pro-details-add-to-cart" onClick={handleAddToCart}>
             <button>Thêm vào giỏ hàng</button>
           </div>
           <div className="pro-details-action tooltip-style-4">
@@ -138,4 +152,3 @@ export default function ProductDetail_Right({ product }) {
     </div>
   );
 }
-

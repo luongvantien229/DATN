@@ -1,7 +1,5 @@
 # Dockerfile for Laravel Backend
 FROM php:8.2-fpm
-# Set working directory
-WORKDIR /var/www
 
 # Install system dependencies
 RUN apt-get update && apt-get install -y \
@@ -28,6 +26,8 @@ RUN apt-get update && apt-get install -y \
     && pecl install redis \
     && docker-php-ext-enable redis
 
+# Set working directory
+WORKDIR /var/www/html
 
 # Install Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
@@ -36,15 +36,17 @@ COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 COPY . .
 
 # Install Laravel dependencies
-RUN composer install
+RUN composer install --optimize-autoloader --no-dev
 
 # Set permissions
-RUN chown -R www-data:www-data /var/www/html \
-    && chmod -R 755 /var/www/html
+RUN chown -R www-data:www-data /var/www \
+    && chmod -R 775 /var/www
 
 # Expose port 8000
 EXPOSE 8000
-
+# Copy entrypoint script and give execute permissions
+COPY entrypoint.sh /usr/local/bin/entrypoint.sh
+RUN chmod +x /usr/local/bin/entrypoint.sh
 # Start PHP-FPM server
 ENTRYPOINT ["sh", "entrypoint.sh"]
 # CMD ["php-fpm"]

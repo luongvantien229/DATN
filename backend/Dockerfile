@@ -33,20 +33,18 @@ RUN apt-get update && apt-get install -y \
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
 # Copy existing application directory contents
-COPY . /var/www
+COPY . .
 
 # Install Laravel dependencies
-# RUN composer install --optimize-autoloader --no-dev
-
 RUN composer install
 
-# Set file permissions
-RUN mkdir -p /var/www/storage && \
-    chown -R www-data:www-data /var/www/storage && \
-    chmod -R 777 /var/www/storage 
+# Set permissions
+RUN chown -R www-data:www-data /var/www/html \
+    && chmod -R 755 /var/www/html
 
 # Expose port 8000
 EXPOSE 8000
 
 # Start PHP-FPM server
-CMD ["php-fpm"]
+ENTRYPOINT ["sh", "entrypoint.sh"]
+# CMD ["php-fpm"]

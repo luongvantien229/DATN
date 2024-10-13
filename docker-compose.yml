@@ -18,13 +18,6 @@ services:
     environment:
       - REDIS_HOST=redis
       - REDIS_PASSWORD=null
-      # - DB_CONNECTION=pgsql
-      # - DB_HOST=postgres
-      # - DB_PORT=5432
-      # - DB_DATABASE=  
-      # - DB_USERNAME=datn-user
-      # - DB_PASSWORD=12345678
-      
 
   frontend:
     build:

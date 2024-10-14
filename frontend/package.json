@@ -8,6 +8,7 @@
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
     "antd": "^5.20.6",
+    "axios": "^1.7.7",
     "jquery": "^3.7.1",
     "leaflet": "^1.9.4",
     "react": "^18.3.1",
@@ -19,7 +20,9 @@
     "react-slick": "^0.30.2",
     "sass": "^1.79.4",
     "slick-carousel": "^1.8.1",
-    "web-vitals": "^2.1.4"
+    "sweetalert2": "^11.14.2",
+    "web-vitals": "^2.1.4",
+    "yup": "^1.4.0"
   },
   "scripts": {
     "start": "react-scripts start",

@@ -11,7 +11,8 @@ export default function Index() {
     // Hàm gọi API để lấy sản phẩm yêu thích
     const fetchFavoriteProducts = async () => {
       try {
-        const response = await axios.get("http://127.0.0.1:8000/api/favorite_products");
+        const response = await axios.get("/favorite_products");
+
         setFavoriteProducts(response.data.favorite_products);
       } catch (error) {
         console.error("Error fetching favorite products:", error);

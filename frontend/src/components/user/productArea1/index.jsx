@@ -16,7 +16,8 @@ export default function Index() {
   // Hàm để lấy sản phẩm mới từ API
   const fetchNewProducts = async () => {
     try {
-      const response = await axios.get('http://127.0.0.1:8000/api/new_products');
+      const response = await axios.get('/new_products');
+
       console.log(response.data); // In ra để kiểm tra dữ liệu
       setNewProducts(response.data.new_products || []); // Đảm bảo new_products là một mảng
     } catch (error) {

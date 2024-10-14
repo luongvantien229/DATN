@@ -17,6 +17,7 @@ import Contact from "./pages/user/contact";
 import Cart from "./pages/user/cart";
 import LoginAndRegister from "./pages/user/loginAndRegister";
 import ProductDetail from "./pages/user/productDetail";
+import { useEffect } from "react";
 
 // Thiết lập baseURL cho axios
 axios.defaults.baseURL = "http://127.0.0.1:8000/api";
@@ -36,6 +37,14 @@ const MainLayout = ({ children }) => (
 );
 
 function App() {
+  useEffect(() => {
+  const fetchLogin = async () => {
+    const loginList = await fetch("http://localhost:3000/login");
+    // loginApi.getAll();
+    // console.log(loginList);
+  }
+  fetchLogin();
+  }, []);
   return (
     <Provider store={store}> {/* Bọc ứng dụng trong Provider */}
       <Routes>

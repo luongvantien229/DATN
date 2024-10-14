@@ -17,9 +17,6 @@ import EditProductTypes from "./components/productTypes/edit.jsx";
 import Products from "./components/products/index.jsx";
 import AddProducts from "./components/products/add.jsx";
 import EditProducts from "./components/products/edit.jsx";
-import Roles from "./components/roles/index.jsx";
-import AddRoles from "./components/roles/add.jsx";
-import EditRoles from "./components/roles/edit.jsx";
 import AdminLogin from "./components/login/AdminLogin";
 
 axios.defaults.headers.common["Authorization"] = `Bearer ${localStorage.getItem(
@@ -28,7 +25,7 @@ axios.defaults.headers.common["Authorization"] = `Bearer ${localStorage.getItem(
 
 // Main layout wrapper component
 const MainLayout = ({ children }) => (
-  <div className="layout-wrapper layout-content-navbar ">
+  <div className="layout-wrapper layout-content-navbar">
     <div className="layout-container">
       <SideBar />
       <div className="layout-page">
@@ -148,30 +145,6 @@ function App() {
           element={
             <MainLayout>
               <EditProducts />
-            </MainLayout>
-          }
-        />
-        <Route
-          path="/roles"
-          element={
-            <MainLayout>
-              <Roles />
-            </MainLayout>
-          }
-        />
-        <Route
-          path="/add-roles"
-          element={
-            <MainLayout>
-              <AddRoles />
-            </MainLayout>
-          }
-        />
-        <Route
-          path="/edit-roles/:id"
-          element={
-            <MainLayout>
-              <EditRoles />
             </MainLayout>
           }
         />

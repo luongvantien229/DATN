@@ -1,3 +1,4 @@
+
 import React from "react";
 import ProductDetail_Description from "./ProductDetail_Description";
 import ProductDetail_Additional from "./ProductDetail_Additional";
@@ -11,3 +12,4 @@ export default function ProductDetail_Right() {
     </div>
   );
 }
+

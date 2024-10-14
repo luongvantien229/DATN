@@ -1,3 +1,4 @@
+
 import React from "react";
 import CounterUp from "../../../hooks/user/counterUp";
 
@@ -61,3 +62,4 @@ export default function Index() {
     </div>
   );
 }
+

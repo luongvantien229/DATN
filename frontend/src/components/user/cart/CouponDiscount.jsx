@@ -1,3 +1,4 @@
+
 import { Link } from "react-router-dom";
 
 export default function CartItem() {
@@ -20,3 +21,4 @@ export default function CartItem() {
     </div>
   );
 }
+

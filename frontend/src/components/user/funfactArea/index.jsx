@@ -1,3 +1,4 @@
+
 import { Link } from "react-router-dom";
 import CounterUp from "../../../hooks/user/counterUp";
 
@@ -43,3 +44,4 @@ export default function ContactArea() {
     </div>
   );
 }
+

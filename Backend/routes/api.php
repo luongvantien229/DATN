@@ -1,6 +1,11 @@
 <?php
 
+use App\Http\Controllers\BannerController;
 use App\Http\Controllers\BrandController;
+use App\Http\Controllers\CommentController;
+use App\Http\Controllers\ContactController;
+use App\Http\Controllers\PostController;
+use App\Http\Controllers\UserController;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use App\Http\Controllers\CallStringeeController;
 use App\Http\Controllers\CategoryController;
@@ -16,6 +21,7 @@ use App\Http\Controllers\SubCategoryController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\WarehouseController;
 use App\Http\Controllers\WarehouseProductController;
+use App\Http\Controllers\ImageSearchController;
 use App\Http\Middleware\AdminMiddleware;
 
 use Illuminate\Support\Facades\Route;
@@ -32,6 +38,10 @@ Route::group([
     Route::post('/refresh', [AuthController::class, 'refresh'])->middleware('auth:api')->name('refresh');
     Route::get('/your_profile', [AuthController::class, 'your_profile'])->middleware('auth:api')->name('your_profile');
     Route::post('/forgot-password', [ForgotPasswordController::class, 'sendResetLinkEmail']);
+    Route::get('password/reset/{token}', [ForgotPasswordController::class, 'showResetForm'])->name('password.reset');
+
+    // Route để xử lý việc cập nhật mật khẩu
+    Route::post('password/reset', [ForgotPasswordController::class, 'reset'])->name('password.update');
 
 });
 
@@ -46,15 +56,27 @@ Route::group(['prefix' => 'roles'], function ($router) {
     });
 });
 
+// Users CRUD routes
+Route::group(['prefix' => 'users', 'middleware' => [AdminMiddleware::class]], function ($router) {
+    Route::controller(UserController::class)->group(function () {
+        Route::get('/index', 'index');
+        Route::get('/show/{id}', 'show');
+        Route::post('/store', 'store');
+        Route::post('/update/{id}', 'update');
+        Route::delete('/destroy/{id}', 'destroy');
+        Route::post('/change_user_lock/{id}', 'change_user_lock');
+    });
+});
+
 // Warehouse CRUD routes
-Route::group(['prefix' => 'Warehouses','middleware' => [AdminMiddleware::class]], function ($router) {
+Route::group(['prefix' => 'Warehouses', 'middleware' => [AdminMiddleware::class]], function ($router) {
     Route::controller(WarehouseController::class)->group(function () {
         Route::get('/index', 'index');
         Route::get('/show/{id}', 'show');
     });
 });
 // Warehouse Products CRUD routes
-Route::group(['prefix' => 'warehouse_products','middleware' => [AdminMiddleware::class]], function ($router) {
+Route::group(['prefix' => 'warehouse_products', 'middleware' => [AdminMiddleware::class]], function ($router) {
     Route::controller(WarehouseProductController::class)->group(function () {
         Route::post('/store/warehouses/{warehouse_id}/products', 'store');
         Route::post('/update/warehouses/{warehouse_id}/products/{product_id}', 'update');
@@ -63,24 +85,24 @@ Route::group(['prefix' => 'warehouse_products','middleware' => [AdminMiddleware:
 });
 
 // Brands CRUD routes
-Route::group(['prefix' => 'brands','middleware' => [AdminMiddleware::class]], function ($router) {
+Route::group(['prefix' => 'brands', 'middleware' => [AdminMiddleware::class]], function ($router) {
     Route::controller(BrandController::class)->group(function () {
-        Route::get('index', 'index');
-        Route::get('show/{id}', 'show');
-        Route::post('store', 'store');
-        Route::post('update/{id}', 'update');
-        Route::delete('destroy/{id}', 'destroy');
+        Route::get('/index', 'index');
+        Route::get('/show/{id}', 'show');
+        Route::post('/store', 'store');
+        Route::post('/update/{id}', 'update');
+        Route::delete('/destroy/{id}', 'destroy');
     });
 });
 
 // Categories CRUD routes
-Route::group(['prefix' => 'categories','middleware' => [AdminMiddleware::class]], function ($router) {
+Route::group(['prefix' => 'categories', 'middleware' => [AdminMiddleware::class]], function ($router) {
     Route::controller(CategoryController::class)->group(function () {
-        Route::get('index', 'index');
-        Route::get('show/{id}', 'show');
-        Route::post('store', 'store');
-        Route::post('update/{id}', 'update');
-        Route::delete('destroy/{id}', 'destroy');
+        Route::get('/index', 'index');
+        Route::get('/show/{id}', 'show');
+        Route::post('/store', 'store');
+        Route::post('/update/{id}', 'update');
+        Route::delete('/destroy/{id}', 'destroy');
     });
 });
 
@@ -96,24 +118,24 @@ Route::group(['prefix' => 'categories','middleware' => [AdminMiddleware::class]]
 // });
 
 // Product types CRUD routes
-Route::group(['prefix' => 'product_types','middleware' => [AdminMiddleware::class]], function ($router) {
+Route::group(['prefix' => 'product_types', 'middleware' => [AdminMiddleware::class]], function ($router) {
     Route::controller(ProductTypeController::class)->group(function () {
-        Route::get('index', 'index');
-        Route::get('show/{id}', 'show');
-        Route::post('store', 'store');
-        Route::post('update/{id}', 'update');
-        Route::delete('destroy/{id}', 'destroy');
+        Route::get('/index', 'index');
+        Route::get('/show/{id}', 'show');
+        Route::post('/store', 'store');
+        Route::post('/update/{id}', 'update');
+        Route::delete('/destroy/{id}', 'destroy');
     });
 });
 
 // Products CRUD routes
-Route::group(['prefix' => 'products','middleware' => [AdminMiddleware::class]], function ($router) {
+Route::group(['prefix' => 'products', 'middleware' => [AdminMiddleware::class]], function ($router) {
     Route::controller(ProductController::class)->group(function () {
-        Route::get('index', 'index');
-        Route::get('show/{id}', 'show');
-        Route::post('store', 'store');
-        Route::post('update/{id}', 'update');
-        Route::delete('destroy/{id}', 'destroy');
+        Route::get('/index', 'index');
+        Route::get('/show/{id}', 'show');
+        Route::post('/store', 'store');
+        Route::post('/update/{id}', 'update');
+        Route::delete('/destroy/{id}', 'destroy');
     });
 });
 
@@ -121,38 +143,79 @@ Route::group(['prefix' => 'products','middleware' => [AdminMiddleware::class]], 
 // Orders CRUD routes
 Route::group(['prefix' => 'orders'], function ($router) {
     Route::controller(OrderController::class)->group(function () {
-        Route::get('index', 'index');
-        Route::get('show/{id}', 'show');
-        Route::post('store', 'store');
-        Route::post('update/{id}', 'update');
-        Route::get('get_order_items/{id}', 'get_order_items')->middleware('admin');
-        Route::get('get_user_orders/{id}', 'get_user_orders')->middleware('admin');
-        Route::post('change_order_status/{id}', 'change_order_status')->middleware('admin');
+        Route::get('/index', 'index');
+        Route::get('/show/{id}', 'show');
+        Route::post('/store', 'store');
+        Route::post('/update/{id}', 'update');
+        Route::get('/get_order_items/{id}', 'get_order_items')->middleware('admin');
+        Route::get('/get_user_orders/{id}', 'get_user_orders')->middleware('admin');
+        Route::post('/change_order_status/{id}', 'change_order_status');
+        Route::post('/print_order/{checkout_code}', 'print_order');
+    });
+});
+
+// Banners CRUD routes
+Route::group(['prefix' => 'banners', 'middleware' => [AdminMiddleware::class]], function ($router) {
+    Route::controller(BannerController::class)->group(function () {
+        Route::get('/index', 'index');
+        Route::get('/show/{id}', 'show');
+        Route::post('/store', 'store');
+        Route::post('/update/{id}', 'update');
+        Route::delete('/destroy/{id}', 'destroy');
     });
 });
 
 // Categories Post CRUD routes
-Route::group(['prefix' => 'category_posts','middleware' => [AdminMiddleware::class]], function ($router) {
+Route::group(['prefix' => 'category_posts', 'middleware' => [AdminMiddleware::class]], function ($router) {
     Route::controller(CategoryPostController::class)->group(function () {
-        Route::get('index', 'index');
-        Route::get('show/{id}', 'show');
-        Route::post('store', 'store');
-        Route::post('update/{id}', 'update');
-        Route::delete('destroy/{id}', 'destroy');
+        Route::get('/index', 'index');
+        Route::get('/show/{id}', 'show');
+        Route::post('/store', 'store');
+        Route::post('/update/{id}', 'update');
+        Route::delete('/destroy/{id}', 'destroy');
+    });
+});
+
+// Post CRUD routes
+Route::group(['prefix' => 'posts'], function ($router) {
+    Route::controller(PostController::class)->group(function () {
+        Route::get('/index', 'index');
+        Route::get('/show/{id}', 'show');
+        Route::post('/store', 'store');
+        Route::post('/update/{id}', 'update');
+        Route::delete('/destroy/{id}', 'destroy');
+    });
+});
+
+// Contact routers
+Route::group(['prefix' => 'contacts', 'middleware' => [AdminMiddleware::class]], function ($router) {
+    Route::controller(ContactController::class)->group(function () {
+        Route::get('/index', 'index');
+        Route::get('/show/{id}', 'show');
+        Route::delete('/destroy/{id}', 'destroy');
     });
 });
 
 
-// Site Users routes
-Route::get('/all_products',[IndexController::class,'all_products']);
-Route::get('/all_brands',[IndexController::class,'all_brands']);
-Route::get('/all_categories',[IndexController::class,'all_categories']);
-Route::get('/new_products',[IndexController::class,'new_products']);
-Route::get('/favorite_products',[IndexController::class,'favorite_products']);
-Route::get('/product_detail/{id}',[IndexController::class,'product_detail']);
-Route::get('/search', [IndexController::class, 'search']);
 
-Route::get('/sort_filter_shop', [IndexController::class, 'sort_filter_shop']);
+// Site Users routes
+Route::get('/all_products', [IndexController::class, 'all_products']);
+Route::get('/all_brands', [IndexController::class, 'all_brands']);
+Route::get('/all_categories', [IndexController::class, 'all_categories']);
+Route::get('/all_category_posts', [IndexController::class, 'all_category_posts']);
+Route::get('/new_products', [IndexController::class, 'new_products']);
+Route::get('/favorite_products', [IndexController::class, 'favorite_products']);
+Route::get('/product_detail/{slug}/{id}', [IndexController::class, 'product_detail']);
+// Route::get('/search', [IndexController::class, 'search']);
+Route::get('/search-suggestions', [IndexController::class, 'searchSuggestions']);
+Route::post('/image-search', [ImageSearchController::class, 'searchByImage']);
+Route::post('/contacts', [ContactController::class, 'store']);  // Gửi liên hệ
+Route::post('/add_comments', [CommentController::class, 'store']);  // Gửi bình luận
+Route::post('/comments', [CommentController::class, 'index']);  // DS bình luận
+Route::post('/delete_comments', [CommentController::class, 'destroy']);  // xóa bình luận
+
+Route::get('/filter', [IndexController::class, 'filter']);
+Route::get('/filter_post', [IndexController::class, 'filter_post']);
 Route::get('/generate-token', [CallStringeeController::class, 'generateToken']);
 
 
@@ -193,5 +256,5 @@ Route::get('/generate-token', [CallStringeeController::class, 'generateToken']);
 // Route::delete('/cart/clear', [CartController::class, 'clearCart']);
 
 
-
+Route::post('/confirm_order', [OrderController::class, 'confirm_order']);
 Route::post('/pay/order', [PaymentController::class, 'payByStripe']);

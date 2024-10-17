@@ -6,52 +6,44 @@ use App\Models\Banner;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
+use Intervention\Image\ImageManager;
+use Intervention\Image\Drivers\Gd\Driver;
+use Intervention\Image\ImageManagerStatic as Image;
+// use Intervention\Image\Laravel\Facades\Image;
 
 class BannerController extends Controller
 {
-    //
     public function index()
     {
         $banners = Banner::orderBy('id', 'DESC')->paginate(10);
         return response()->json($banners);
     }
 
-    // Store a new slider
     public function store(Request $request)
     {
-        // Validate the request
-        $validator = Validator::make($request->all(), [
-            'name' => 'required|string|max:255',
-            'image_path' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
-            'status' => 'required|boolean',
-            'description' => 'nullable|string',
-        ]);
+        $validator = $this->validateBanner($request);
 
         if ($validator->fails()) {
             return response()->json(['errors' => $validator->errors()], 422);
         }
 
-        // Handle the image upload
         if ($request->hasFile('image_path')) {
-            $image_path = $request->file('image_path');
-            $path = $image_path->store('public/uploads/banner');
-            $imageName = basename($path);
+            $imageName = $this->handleImageUpload($request->file('image_path'), $request->input('size'));
 
-            // Create the slider
-            $banner = new Banner();
-            $banner->name = $request->input('name');
-            $banner->image_path = $imageName;
-            $banner->status = $request->input('status');
-            $banner->description = $request->input('description');
-            $banner->save();
+            $banner = Banner::create([
+                'name' => $request->input('name'),
+                'image_path' => $imageName,
+                'status' => $request->input('status'),
+                'description' => $request->input('description'),
+                'size' => $request->input('size'),
+            ]);
 
             return response()->json(['message' => 'Banner created successfully', 'banner' => $banner], 201);
-        } else {
-            return response()->json(['message' => 'Please upload an image'], 422);
         }
+
+        return response()->json(['message' => 'Please upload an image'], 422);
     }
 
-    // Display a specific slider
     public function show($id)
     {
         $banner = Banner::find($id);
@@ -63,7 +55,6 @@ class BannerController extends Controller
         return response()->json($banner);
     }
 
-    // Update a specific slider
     public function update(Request $request, $id)
     {
         $banner = Banner::find($id);
@@ -72,48 +63,34 @@ class BannerController extends Controller
             return response()->json(['message' => 'Banner not found'], 404);
         }
 
-        // Validate the request
-        $validator = Validator::make($request->all(), [
-            'name' => 'sometimes|required|string|max:255',
-            'image_path' => 'sometimes|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
-            'status' => 'sometimes|required|boolean',
-            'description' => 'nullable|string',
-        ]);
+        $validator = $this->validateBanner($request, true);
 
         if ($validator->fails()) {
             return response()->json(['errors' => $validator->errors()], 422);
         }
 
-        // Handle the image upload if present
         if ($request->hasFile('image_path')) {
-            // Delete the old image
             if ($banner->image_path) {
                 Storage::delete('public/uploads/banner/' . $banner->image_path);
             }
 
-            // Store the new image
-            $image_path = $request->file('image_path');
-            $path = $image_path->store('public/uploads/slider');
-            $imageName = basename($path);
+            $imageName = $this->handleImageUpload($request->file('image_path'), $request->input('size'));
             $banner->image_path = $imageName;
         }
 
-        // Update the slider data
-        $banner->update($request->only('name', 'status', 'description'));
+        $banner->update($request->only('name', 'status', 'description','size'));
 
         return response()->json(['message' => 'Banner updated successfully', 'banner' => $banner]);
     }
 
-    // Delete a specific slider
     public function destroy($id)
     {
         $banner = Banner::find($id);
 
         if (!$banner) {
-            return response()->json(['message' => 'Slider not found'], 404);
+            return response()->json(['message' => 'Banner not found'], 404);
         }
 
-        // Delete the image from storage
         if ($banner->image_path) {
             Storage::delete('public/uploads/banner/' . $banner->image_path);
         }
@@ -123,23 +100,17 @@ class BannerController extends Controller
         return response()->json(['message' => 'Banner deleted successfully']);
     }
 
-    // Activate a slider
     public function activate($id)
     {
-        $banner = Banner::find($id);
-
-        if (!$banner) {
-            return response()->json(['message' => 'Banner not found'], 404);
-        }
-
-        $banner->status = 1;
-        $banner->save();
-
-        return response()->json(['message' => 'Banner activated successfully']);
+        return $this->changeStatus($id, 1);
     }
 
-    // Deactivate a slider
     public function deactivate($id)
+    {
+        return $this->changeStatus($id, 0);
+    }
+
+    private function changeStatus($id, $status)
     {
         $banner = Banner::find($id);
 
@@ -147,9 +118,79 @@ class BannerController extends Controller
             return response()->json(['message' => 'Banner not found'], 404);
         }
 
-        $banner->status = 0;
+        $banner->status = $status;
         $banner->save();
 
-        return response()->json(['message' => 'Banner deactivated successfully']);
+        return response()->json(['message' => $status ? 'Banner activated successfully' : 'Banner deactivated successfully']);
+    }
+
+    private function validateBanner(Request $request, $update = false)
+    {
+        return Validator::make($request->all(), [
+            'name' => 'required|string|max:255',
+            'image_path' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'size' => 'required|integer|in:1,2,3,4,5',
+            'status' => 'required|boolean',
+            'description' => 'nullable|string',
+        ]);
+    }
+
+    private function handleImageUpload($image, $size)
+{
+    $imageName = time() . '.' . $image->getClientOriginalExtension();
+    list($width, $height) = $this->getImageDimensions($size);
+    $directory = $this->getSizeDirectory($size);
+
+    // Define the full path to the directory
+    $path = "assets/uploads/banner/{$directory}/";
+
+    // Check if the directory exists, if not, create it
+    if (!file_exists($path)) {
+        mkdir($path, 0755, true); // Create directory with the proper permissions
+    }
+
+    // Resize and save the image
+    $imageManager = new ImageManager(new Driver());
+    $imageManager->read($image)->resize($width, $height)
+        ->save($path . $imageName);
+
+    return $imageName;
+}
+
+
+    /**
+ * Get image dimensions based on the size parameter.
+ *
+ * @param int $size
+ * @return array
+ */
+private function getImageDimensions($size)
+{
+    switch ($size) {
+        case 1:
+            return [800, 600];  // Size 1: 800x600
+        case 2:
+            return [650, 250];  // Size 2: 650x250
+        case 3:
+            return [525, 425];  // Size 3: 525x425
+        case 4:
+            return [250, 200];  // Size 4: 250x200
+        case 5:
+            return [400, 125];  // Size 5: 400x125
+        default:
+            return [800, 600];  // Default to Size 1 if no match
+    }
+}
+
+    private function getSizeDirectory($size)
+    {
+        switch ($size) {
+            case 1: return 'banner800x600';
+            case 2: return 'banner650x250';
+            case 3: return 'banner525x425';
+            case 4: return 'banner250x200';
+            case 5: return 'banner400x125';
+            default: return 'banner800x600';
+        }
     }
 }

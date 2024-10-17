@@ -30,30 +30,33 @@ const EditProducts = () => {
   const generateSlug = (text) => {
     // Convert to lowercase
     text = text.toLowerCase();
-  
+
     // Replace accented characters with non-accented equivalents (similar to your PHP function)
     text = text
-      .replace(/á|à|ả|ã|ạ|ă|ắ|ằ|ẳ|ẵ|ặ|â|ấ|ầ|ẩ|ẫ|ậ/g, 'a')
-      .replace(/é|è|ẻ|ẽ|ẹ|ê|ế|ề|ể|ễ|ệ/g, 'e')
-      .replace(/i|í|ì|ỉ|ĩ|ị/g, 'i')
-      .replace(/ó|ò|ỏ|õ|ọ|ô|ố|ồ|ổ|ỗ|ộ|ơ|ớ|ờ|ở|ỡ|ợ/g, 'o')
-      .replace(/ú|ù|ủ|ũ|ụ|ư|ứ|ừ|ử|ữ|ự/g, 'u')
-      .replace(/ý|ỳ|ỷ|ỹ|ỵ/g, 'y')
-      .replace(/đ/g, 'd');
-  
+      .replace(/á|à|ả|ã|ạ|ă|ắ|ằ|ẳ|ẵ|ặ|â|ấ|ầ|ẩ|ẫ|ậ/g, "a")
+      .replace(/é|è|ẻ|ẽ|ẹ|ê|ế|ề|ể|ễ|ệ/g, "e")
+      .replace(/i|í|ì|ỉ|ĩ|ị/g, "i")
+      .replace(/ó|ò|ỏ|õ|ọ|ô|ố|ồ|ổ|ỗ|ộ|ơ|ớ|ờ|ở|ỡ|ợ/g, "o")
+      .replace(/ú|ù|ủ|ũ|ụ|ư|ứ|ừ|ử|ữ|ự/g, "u")
+      .replace(/ý|ỳ|ỷ|ỹ|ỵ/g, "y")
+      .replace(/đ/g, "d");
+
     // Remove special characters
-    text = text.replace(/[\'\"\`\~\!\@\#\$\%\^\&\*\(\)\+\=\[\]\{\}\|\\\;\:\,\.\/\?\>\<\-\_]/g, '');
-  
+    text = text.replace(
+      /[\'\"\`\~\!\@\#\$\%\^\&\*\(\)\+\=\[\]\{\}\|\\\;\:\,\.\/\?\>\<\-\_]/g,
+      ""
+    );
+
     // Replace spaces with dashes
-    text = text.replace(/\s+/g, '-');
-  
+    text = text.replace(/\s+/g, "-");
+
     // Replace multiple dashes with a single dash
-    text = text.replace(/-+/g, '-');
-  
+    text = text.replace(/-+/g, "-");
+
     // Trim dashes from the beginning and end
-    return text.trim('-');
+    return text.trim("-");
   };
-  
+
   const [mainImage, setMainImage] = useState(null); // For the main image
   const [relatedImages, setRelatedImages] = useState([]); // For related images
   const [existingMainImage, setExistingMainImage] = useState(null);
@@ -140,7 +143,7 @@ const EditProducts = () => {
     setProduct({
       ...product,
       [name]: type === "checkbox" ? checked : value,
-      ...(name === 'name' && { slug: generateSlug(value) }) // Automatically update slug when the name changes
+      ...(name === "name" && { slug: generateSlug(value) }), // Automatically update slug when the name changes
     });
   };
 
@@ -200,7 +203,7 @@ const EditProducts = () => {
             "Content-Type": "multipart/form-data", // For file uploads
           },
           data: {
-            _method: 'PUT',
+            _method: "PUT",
           },
         }
       );
@@ -271,7 +274,7 @@ const EditProducts = () => {
             {/* Main Image */}
             <div className="mb-3">
               <label className="form-label">Ảnh chính</label>
-              {existingMainImage && (
+              {/* {existingMainImage && (
                 <div className="mb-3">
                   <img
                     src={`${existingMainImage}`}
@@ -279,6 +282,33 @@ const EditProducts = () => {
                     width="100"
                   />
                 </div>
+              )} */}
+              {existingMainImage ? (
+                // Nếu có ảnh, kiểm tra loại URL
+                existingMainImage.includes("http") ? (
+                  <div className="mb-3">
+                    <img
+                      src={existingMainImage} // Trường hợp URL đầy đủ
+                      alt={product.name}
+                      style={{
+                        width: "100px",
+                      }}
+                    />
+                  </div>
+                ) : (
+                  <div className="mb-3">
+                    <img
+                      src={`http://localhost:8000/assets/uploads/product/${existingMainImage}`} // Trường hợp đường dẫn tương đối
+                      alt={product.name}
+                      style={{
+                        width: "100px",
+                      }}
+                    />
+                  </div>
+                )
+              ) : (
+                // Nếu không có ảnh
+                <p>Không có ảnh</p>
               )}
               <input
                 type="file"
@@ -291,24 +321,39 @@ const EditProducts = () => {
             {/* Related Images */}
             <div className="mb-3">
               <label className="form-label">Ảnh liên quan</label>
-              {existingRelatedImages.length > 0 && (
+
+              {/* Check if there are existing related images */}
+              {existingRelatedImages && existingRelatedImages.length > 0 ? (
                 <div className="mb-3">
                   {existingRelatedImages.map((img, index) => (
+                    // Display each related image
                     <img
                       key={index}
-                      src={`${img.image}`}
-                      alt="Sản phẩm liên quan"
-                      width="100"
+                      src={
+                        img.image.includes("http")
+                          ? img.image
+                          : `http://localhost:8000/assets/uploads/product/${img.image}`
+                      } // Handle full URL or relative path
+                      alt={ product.name`${index + 1}`}
+                      style={{
+                        width: "100px",
+                        marginRight: "10px", // Add some margin for spacing
+                      }}
                     />
                   ))}
                 </div>
+              ) : (
+                // If no images are found
+                <p>Không có ảnh</p>
               )}
+
+              {/* File input for uploading related images */}
               <input
                 type="file"
                 className="form-control"
                 accept="image/*"
                 multiple
-                onChange={handleRelatedImagesChange}
+                onChange={handleRelatedImagesChange} // Ensure this function is defined to handle file changes
               />
             </div>
 

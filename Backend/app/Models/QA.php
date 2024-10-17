@@ -11,9 +11,10 @@ class QA extends Model
 
     protected $fillable = [
         'user_id',
-        'product_id',
+        // 'product_id',
         'message',
         'status',
+        'parent_id',
 
     ];
     protected $hidden = [
@@ -25,8 +26,12 @@ class QA extends Model
     {
         return $this->belongsTo(User::class, 'user_id');
     }
-    public function products()
-    {
-        return $this->belongsTo(Product::class, 'product_id');
-    }
+    // public function products()
+    // {
+    //     return $this->belongsTo(Product::class, 'product_id');
+    // }
+    public function answers()
+{
+    return $this->hasMany(QA::class, 'parent_id');
+}
 }

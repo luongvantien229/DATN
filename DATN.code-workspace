@@ -1,0 +1,16 @@
+{
+	"folders": [
+		{
+			"path": "."
+		},
+		{
+			"path": "../../../../../../laragon/www/Shop_Ecommerce"
+		},
+		{
+			"path": "../../game/shopbanhanglaravel"
+		}
+	],
+	"settings": {
+		"php.version": "8.2"
+	}
+}

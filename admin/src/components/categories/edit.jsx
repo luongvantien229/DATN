@@ -157,10 +157,37 @@ const EditCategories = () => {
             </div>
             <div className="mb-3">
               <label className="form-label">Ảnh danh mục</label>
-              {existingImage && (
+              {/* {existingImage && (
                 <div className="mb-3">
                   <img src={`${existingImage}`} alt="Danh mục" width="100" />
                 </div>
+              )} */}
+              {existingImage ? (
+                // Nếu có ảnh, kiểm tra loại URL
+                existingImage.includes("http") ? (
+                  <div className="mb-3">
+                    <img
+                      src={existingImage} // Trường hợp URL đầy đủ
+                      alt={category.name}
+                      style={{
+                        width: "100px",
+                      }}
+                    />
+                  </div>
+                ) : (
+                  <div className="mb-3">
+                    <img
+                      src={`http://localhost:8000/assets/uploads/category/${existingImage}`} // Trường hợp đường dẫn tương đối
+                      alt={category.name}
+                      style={{
+                        width: "100px",
+                      }}
+                    />
+                  </div>
+                )
+              ) : (
+                // Nếu không có ảnh
+                <p>Không có ảnh</p>
               )}
               <input
                 type="file"

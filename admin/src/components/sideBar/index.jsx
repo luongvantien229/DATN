@@ -1,15 +1,31 @@
+import axios from "axios";
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 export default function Index() {
   // State để theo dõi mục menu đang hoạt động
   const [activeMenu, setActiveMenu] = useState("/");
-
+  const navigate = useNavigate();
   // Hàm xử lý khi nhấp vào mục menu
   const handleMenuClick = (path) => {
     setActiveMenu(path);
   };
+  const handleLogout = async () => {
+    try {
+      const response = await axios.post("/auth/logout", {}, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      });
+      
+      // Clear local storage and redirect
+      localStorage.removeItem("token");
+      navigate(response.data.redirect_url); // Redirect to login
 
+    } catch (error) {
+      console.error("Logout failed: ", error);
+    }
+  };
   return (
     <aside
       id="layout-menu"
@@ -127,6 +143,39 @@ export default function Index() {
                 </div>
               </Link>
             </li>
+            <li
+              className={`menu-item ${
+                activeMenu === "/users" ? "active open" : ""
+              }`}
+            >
+              <Link
+                to="/users"
+                className="menu-link"
+                onClick={() => handleMenuClick("/users")}
+              >
+                <i className="menu-icon tf-icons bx bx-layout"></i>
+                <div className="text-truncate" data-i18n="người dùng">
+                  Người dùng
+                </div>
+              </Link>
+            </li>
+
+            <li
+              className={`menu-item ${
+                activeMenu === "/banners" ? "active open" : ""
+              }`}
+            >
+              <Link
+                to="/banners"
+                className="menu-link"
+                onClick={() => handleMenuClick("/banners")}
+              >
+                <i className="menu-icon tf-icons bx bx-layout"></i>
+                <div className="text-truncate" data-i18n="quảng cáo trực tuyến">
+                  Quảng cáo trực tuyến
+                </div>
+              </Link>
+            </li>
             <li className="menu-item">
               <Link to="/login">
                 <button type="button" className="btn btn-primary">
@@ -134,6 +183,11 @@ export default function Index() {
                 </button>
               </Link>
             </li>
+            <li className="menu-item">
+          <button type="button" className="btn btn-secondary" onClick={handleLogout}>
+            Đăng Xuất
+          </button>
+        </li>
           </ul>
         
       {/* </ul> */}

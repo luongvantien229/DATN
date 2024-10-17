@@ -20,8 +20,15 @@ import EditProducts from "./components/products/edit.jsx";
 import Roles from "./components/roles/index.jsx";
 import AddRoles from "./components/roles/add.jsx";
 import EditRoles from "./components/roles/edit.jsx";
+import Users from "./components/users/index.jsx";
+// import AddUsers from "./components/users/add.jsx";
+// import EditUsers from "./components/users/edit.jsx";
+import Banners from "./components/banners/index.jsx";
+import AddBanners from "./components/banners/add.jsx";
+import EditBanners from "./components/banners/edit.jsx";
 import AdminLogin from "./components/login/AdminLogin";
 
+axios.defaults.baseURL = 'http://localhost:8000/api';
 axios.defaults.headers.common["Authorization"] = `Bearer ${localStorage.getItem(
   "token"
 )}`; // JWT setup
@@ -127,7 +134,7 @@ function App() {
             </MainLayout>
           }
         />
-         <Route
+        <Route
           path="/products"
           element={
             <MainLayout>
@@ -172,6 +179,56 @@ function App() {
           element={
             <MainLayout>
               <EditRoles />
+            </MainLayout>
+          }
+        />
+
+        <Route
+          path="/users"
+          element={
+            <MainLayout>
+              <Users />
+            </MainLayout>
+          }
+        />
+        {/* <Route
+          path="/add-users"
+          element={
+            <MainLayout>
+              <AddUsers />
+            </MainLayout>
+          }
+        />
+        <Route
+          path="/edit-users/:id"
+          element={
+            <MainLayout>
+              <EditUsers />
+            </MainLayout>
+          }
+        /> */}
+
+        <Route
+          path="/banners"
+          element={
+            <MainLayout>
+              <Banners />
+            </MainLayout>
+          }
+        />
+        <Route
+          path="/add-banners"
+          element={
+            <MainLayout>
+              <AddBanners />
+            </MainLayout>
+          }
+        />
+        <Route
+          path="/edit-banners/:id"
+          element={
+            <MainLayout>
+              <EditBanners />
             </MainLayout>
           }
         />

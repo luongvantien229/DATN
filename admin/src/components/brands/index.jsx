@@ -12,7 +12,7 @@ const Brands = () => {
       try {
         const token = localStorage.getItem("token"); // Đảm bảo sử dụng token nhất quán
         const response = await axios.get(
-          "http://localhost:8000/api/brands/index",
+          "/brands/index",
           {
             headers: {
               Authorization: `Bearer ${token}`, // Bao gồm token trong header của yêu cầu
@@ -42,7 +42,7 @@ const Brands = () => {
 
     try {
       const token = localStorage.getItem("token"); // Đảm bảo sử dụng token nhất quán
-      await axios.delete(`http://localhost:8000/api/brands/destroy/${id}`, {
+      await axios.delete(`/brands/destroy/${id}`, {
         headers: {
           Authorization: `Bearer ${token}`, // Bao gồm token trong header của yêu cầu
         },

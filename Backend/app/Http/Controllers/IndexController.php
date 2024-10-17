@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\Banner;
 use App\Models\Brand;
 use App\Models\Category;
+use App\Models\CategoryPost;
+use App\Models\Post;
 use App\Models\Product;
 use App\Models\QA;
 use App\Models\SubCategory;
@@ -42,7 +44,7 @@ class IndexController extends Controller
     }
     public function all_categories()
     {
-        $categories = Brand::all()->where('status', 1)
+        $categories = Category::all()->where('status', 1)
             ->orderBy('created_at', 'desc')->get();
 
 
@@ -60,6 +62,18 @@ class IndexController extends Controller
 
         return response()->json([
             'products' => $products,
+
+        ], 200);
+    }
+
+    public function all_category_posts()
+    {
+        $categoryPosts = CategoryPost::all()->where('status', 1)
+            ->orderBy('created_at', 'desc')->get();
+
+
+        return response()->json([
+            'categoryPosts' => $categoryPosts,
 
         ], 200);
     }
@@ -86,7 +100,7 @@ class IndexController extends Controller
         ], 200);
     }
 
-    public function product_detail($id, Request $request)
+    public function product_detail($slug, $id, Request $request)
     {
 
         $product = Product::find($id);
@@ -106,6 +120,9 @@ class IndexController extends Controller
         ], 200);
     }
 
+
+
+
     // public function related_products($id, Request $request)
     // {
 
@@ -121,51 +138,42 @@ class IndexController extends Controller
     // }
 
 
-    public function search(Request $request)
+    // public function search(Request $request)
+    // {
+
+
+
+    //     // Keywords for search
+    //     $keywords = $request->input('keywords_submit', '');
+
+
+
+    //     // Search products by name
+    //     $searchResults = Product::where('name', 'like', '%' . $keywords . '%')
+    //         ->get();
+
+    //     // Return JSON response
+    //     return response()->json([
+
+    //         'searchResults' => $searchResults
+    //     ]);
+    // }
+
+    public function searchSuggestions(Request $request)
     {
+        // Nhận từ khóa tìm kiếm từ request
+        $searchTerm = $request->query('keywords_suggest');
 
-        $banners = Banner::where('status', 1)
-            ->orderBy('id', 'DESC')
-            ->take(4)
-            ->get();
+        // Tìm kiếm sản phẩm dựa trên tên hoặc mô tả
+        $suggestions = Product::where('name', 'LIKE', '%' . $searchTerm . '%')
+            ->orWhere('description', 'LIKE', '%' . $searchTerm . '%')
+            ->take(10) // Lấy tối đa 10 kết quả
+            ->get(['id', 'name', 'image', 'price']); // Lấy các trường cần thiết cho gợi ý
 
-        // Meta data (SEO)
-        // $metaData = [
-        //     'meta_desc' => "Tìm kiếm sản phẩm",
-        //     'meta_keywords' => "Tìm kiếm sản phẩm",
-        //     'meta_title' => "Tìm kiếm sản phẩm",
-        //     'url_canonical' => $request->url()
-        // ];
-
-        // Keywords for search
-        $keywords = $request->input('keywords_submit', '');
-
-        // Fetch categories and brands
-        $categories = Category::where('status', 1)
-            ->orderBy('id', 'desc')
-            ->get();
-        // $sub_categories = SubCategory::where('status', 1)
-        //     ->orderBy('id', 'desc')
-        //     ->get();
-
-        $brands = Brand::where('status', 1)
-            ->orderBy('id', 'desc')
-            ->get();
-
-        // Search products by name
-        $searchResults = Product::where('name', 'like', '%' . $keywords . '%')
-            ->get();
-
-        // Return JSON response
-        return response()->json([
-            'banners' => $banners,
-            // 'meta' => $metaData,
-            'categories' => $categories,
-            // 'sub_categories' => $sub_categories,
-            'brands' => $brands,
-            'searchResults' => $searchResults
-        ]);
+        // Trả về kết quả dưới dạng JSON
+        return response()->json($suggestions);
     }
+
 
 
 
@@ -220,78 +228,153 @@ class IndexController extends Controller
 
 
 
-    public function sort_filter_shop(Request $request)
-{
+    public function filter(Request $request)
+    {
 
-    $query = Product::query();
+        $query = Product::query();
 
-     // Filtering by brand
-     if ($request->has('brand_id') && !empty($request->brand_id)) {
-        $query->where('brand_id', $request->brand_id);
-    }
-
-     // Filtering by category
-     if ($request->has('category_id') && !empty($request->category_id)) {
-        $query->where('category_id', $request->category_id);
-    }
-
-    // Filtering by subcategory
-    // if ($request->has('sub_category_id') && !empty($request->sub_category_id)) {
-    //     $query->where('sub_category_id', $request->sub_category_id);
-    // }
-
-    // Sorting products
-    if ($request->has('sort_by')) {
-        $sort_by = $request->query('sort_by');
-        switch ($sort_by) {
-            case 'DESC':
-                $query->orderBy('price', 'DESC');
-                break;
-            case 'ASC':
-                $query->orderBy('price', 'ASC');
-                break;
-            case 'Sort_A_Z':
-                $query->orderBy('name', 'ASC');
-                break;
-            case 'Sort_Z_A':
-                $query->orderBy('name', 'DESC');
-                break;
+        // Filtering by brand
+        if ($request->has('brand_id') && !empty($request->brand_id)) {
+            $query->where('brand_id', $request->brand_id);
         }
+
+        // Filtering by category
+        if ($request->has('category_id') && !empty($request->category_id)) {
+            $query->where('category_id', $request->category_id);
+        }
+
+
+
+        // Sorting products
+        if ($request->has('sort_by')) {
+            $sort_by = $request->query('sort_by');
+            switch ($sort_by) {
+                case 'DESC':
+                    $query->orderBy('price', 'DESC');
+                    break;
+                case 'ASC':
+                    $query->orderBy('price', 'ASC');
+                    break;
+                case 'Sort_A_Z':
+                    $query->orderBy('name', 'ASC');
+                    break;
+                case 'Sort_Z_A':
+                    $query->orderBy('name', 'DESC');
+                    break;
+            }
+        }
+
+
+        if ($request->has('price')) {
+            $price = $request->query('price');
+            switch ($price) {
+                case '1':
+                    $query->where('price', '<', 20000);
+                    break;
+                case '2':
+                    $query->whereBetween('price', [20000, 50000]);
+                    break;
+                case '3':
+                    $query->whereBetween('price', [50000, 100000]);
+                    break;
+                case '4':
+                    $query->whereBetween('price', [100000, 200000]);
+                    break;
+                case '5':
+                    $query->whereBetween('price', [200000, 300000]);
+                    break;
+                case '6':
+                    $query->where('price', '>', 300000);
+                    break;
+            }
+        }
+
+        // // Filtering by price range
+        // if ($request->has('start_price') && $request->has('end_price')) {
+        //     $min_price = (float) $request->query('start_price');
+        //     $max_price = (float) $request->query('end_price');
+        //     $query->whereBetween('price', [$min_price, $max_price]);
+        // }
+
+        // // Default ordering if no filter is applied
+        // if (!$request->has('sort_by') && !$request->has('start_price') && !$request->has('end_price') && !$request->has('brand_id') && !$request->has('subcategory_id')) {
+        //     $query->orderBy('id', 'DESC');
+        // }
+
+        // Paginate the results
+        $products = $query->paginate(6);
+
+        // // Min and Max price for filters
+        // $min_price = Product::min('price');
+        // $max_price = Product::max('price');
+        // $min_price_range = $min_price + 500000;
+        // $max_price_range = $max_price + 10000000;
+
+        // Prepare the response data
+        $response = [
+            'products' => $products,
+            // 'min_price' => $min_price,
+            // 'max_price' => $max_price,
+            // 'min_price_range' => $min_price_range,
+            // 'max_price_range' => $max_price_range,
+        ];
+
+        // Return JSON response
+        return response()->json($response);
     }
 
-    // Filtering by price range
-    if ($request->has('start_price') && $request->has('end_price')) {
-        $min_price = (float) $request->query('start_price');
-        $max_price = (float) $request->query('end_price');
-        $query->whereBetween('price', [$min_price, $max_price]);
+
+    public function filter_post(Request $request)
+    {
+
+        $query = Post::query();
+
+
+
+        // Filtering by category
+        if ($request->has('category_id') && !empty($request->category_id)) {
+            $query->where('category_id', $request->category_id);
+        }
+
+
+
+        // Sorting products
+        if ($request->has('sort_by')) {
+            $sort_by = $request->query('sort_by');
+            switch ($sort_by) {
+                case 'DESC':
+                    $query->orderBy('created_at', 'DESC');
+                    break;
+                case 'ASC':
+                    $query->orderBy('created_at', 'ASC');
+                    break;
+                case 'Sort_A_Z':
+                    $query->orderBy('title', 'ASC');
+                    break;
+                case 'Sort_Z_A':
+                    $query->orderBy('title', 'DESC');
+                    break;
+            }
+        }
+
+
+
+
+
+        // Paginate the results
+        $posts = $query->paginate(6);
+
+
+
+
+        $response = [
+            'posts' => $posts,
+
+        ];
+
+        // Return JSON response
+        return response()->json($response);
     }
-
-    // Default ordering if no filter is applied
-    if (!$request->has('sort_by') && !$request->has('start_price') && !$request->has('end_price') && !$request->has('brand_id') && !$request->has('subcategory_id')) {
-        $query->orderBy('id', 'DESC');
-    }
-
-    // Paginate the results
-    $products = $query->paginate(6);
-
-    // Min and Max price for filters
-    $min_price = Product::min('price');
-    $max_price = Product::max('price');
-    $min_price_range = $min_price + 500000;
-    $max_price_range = $max_price + 10000000;
-
-    // Prepare the response data
-    $response = [
-        'products' => $products,
-        'min_price' => $min_price,
-        'max_price' => $max_price,
-        'min_price_range' => $min_price_range,
-        'max_price_range' => $max_price_range,
-    ];
-
-    // Return JSON response
-    return response()->json($response);
-}
 
 
 }

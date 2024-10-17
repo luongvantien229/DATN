@@ -50,7 +50,7 @@ class AuthController extends Controller
         // event(new Registered($user));
 
         // Send email after registration
-        // Mail::to($user->email)->send(new WelcomeMail($user));
+        Mail::to($user->email)->send(new WelcomeMail($user));
 
         return response()->json([
             'message' => 'Đăng ký hoàn tất!',
@@ -91,8 +91,8 @@ class AuthController extends Controller
         } else if ($user->id_role == 3) {
             // Redirect to admin
             return response()->json([
-                'message' => 'Welcome to the website',
-                
+                'message' => 'Welcome Admin',
+
                 'token' => $token
             ]);
         }

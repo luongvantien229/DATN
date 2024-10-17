@@ -11,14 +11,11 @@ const Brands = () => {
     const fetchBrands = async () => {
       try {
         const token = localStorage.getItem("token"); // Đảm bảo sử dụng token nhất quán
-        const response = await axios.get(
-          "/brands/index",
-          {
-            headers: {
-              Authorization: `Bearer ${token}`, // Bao gồm token trong header của yêu cầu
-            },
-          }
-        );
+        const response = await axios.get("/brands/index", {
+          headers: {
+            Authorization: `Bearer ${token}`, // Bao gồm token trong header của yêu cầu
+          },
+        });
         setBrands(response.data.data);
       } catch (error) {
         setError("Đã có lỗi xảy ra khi lấy danh sách thương hiệu!");

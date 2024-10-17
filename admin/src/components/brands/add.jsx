@@ -15,47 +15,51 @@ const AddBrands = () => {
   const generateSlug = (text) => {
     // Convert to lowercase
     text = text.toLowerCase();
-  
+
     // Replace accented characters with non-accented equivalents (similar to your PHP function)
     text = text
-      .replace(/á|à|ả|ã|ạ|ă|ắ|ằ|ẳ|ẵ|ặ|â|ấ|ầ|ẩ|ẫ|ậ/g, 'a')
-      .replace(/é|è|ẻ|ẽ|ẹ|ê|ế|ề|ể|ễ|ệ/g, 'e')
-      .replace(/i|í|ì|ỉ|ĩ|ị/g, 'i')
-      .replace(/ó|ò|ỏ|õ|ọ|ô|ố|ồ|ổ|ỗ|ộ|ơ|ớ|ờ|ở|ỡ|ợ/g, 'o')
-      .replace(/ú|ù|ủ|ũ|ụ|ư|ứ|ừ|ử|ữ|ự/g, 'u')
-      .replace(/ý|ỳ|ỷ|ỹ|ỵ/g, 'y')
-      .replace(/đ/g, 'd');
-  
+      .replace(/á|à|ả|ã|ạ|ă|ắ|ằ|ẳ|ẵ|ặ|â|ấ|ầ|ẩ|ẫ|ậ/g, "a")
+      .replace(/é|è|ẻ|ẽ|ẹ|ê|ế|ề|ể|ễ|ệ/g, "e")
+      .replace(/i|í|ì|ỉ|ĩ|ị/g, "i")
+      .replace(/ó|ò|ỏ|õ|ọ|ô|ố|ồ|ổ|ỗ|ộ|ơ|ớ|ờ|ở|ỡ|ợ/g, "o")
+      .replace(/ú|ù|ủ|ũ|ụ|ư|ứ|ừ|ử|ữ|ự/g, "u")
+      .replace(/ý|ỳ|ỷ|ỹ|ỵ/g, "y")
+      .replace(/đ/g, "d");
+
     // Remove special characters
-    text = text.replace(/[\'\"\`\~\!\@\#\$\%\^\&\*\(\)\+\=\[\]\{\}\|\\\;\:\,\.\/\?\>\<\-\_]/g, '');
-  
+    text = text.replace(
+      /[\'\"\`\~\!\@\#\$\%\^\&\*\(\)\+\=\[\]\{\}\|\\\;\:\,\.\/\?\>\<\-\_]/g,
+      ""
+    );
+
     // Replace spaces with dashes
-    text = text.replace(/\s+/g, '-');
-  
+    text = text.replace(/\s+/g, "-");
+
     // Replace multiple dashes with a single dash
-    text = text.replace(/-+/g, '-');
-  
+    text = text.replace(/-+/g, "-");
+
     // Trim dashes from the beginning and end
-    return text.trim('-');
+    return text.trim("-");
   };
-  
+
   const handleChange = (e) => {
     const { name, value, type, checked, files } = e.target;
     if (name === "image") {
       const file = files[0];
-      if (file && file.size > 2 * 1024 * 1024) { // Example: 2MB max size
+      if (file && file.size > 2 * 1024 * 1024) {
+        // Example: 2MB max size
         setError("File size exceeds 2MB");
         return;
       }
       setBrand({ ...brand, image: file });
     } else {
-      setBrand({ ...brand, [name]: type === "checkbox" ? checked : value,
-        ...(name === 'name' && { slug: generateSlug(value) }) // Automatically update slug when the name changes
-       });
-      
+      setBrand({
+        ...brand,
+        [name]: type === "checkbox" ? checked : value,
+        ...(name === "name" && { slug: generateSlug(value) }), // Automatically update slug when the name changes
+      });
     }
   };
-  
 
   // const handleChange = (e) => {
   //   const { name, value, type, checked } = e.target;
@@ -95,7 +99,9 @@ const AddBrands = () => {
       alert("Thương hiệu được thêm thành công!");
       navigate("/brands"); // Chuyển hướng đến danh sách thương hiệu sau khi thêm thành công
     } catch (error) {
-      const errMsg = error.response?.data?.message || "Đã có lỗi xảy ra khi thêm thương hiệu!";
+      const errMsg =
+        error.response?.data?.message ||
+        "Đã có lỗi xảy ra khi thêm thương hiệu!";
       setError(errMsg);
     }
   };

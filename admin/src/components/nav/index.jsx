@@ -10,29 +10,7 @@ import { motion } from "framer-motion";
 export default function Index() {
   const navigate = useNavigate();
   const [userDetails, setUserDetails] = useState({}); // Khởi tạo dưới dạng đối tượng rỗng
-  const [query, setQuery] = useState("");
-  const [suggestions, setSuggestions] = useState([]);
 
-  const handleInputChange = (e) => {
-    const value = e.target.value;
-    setQuery(value);
-
-    // Nếu từ khóa có độ dài lớn hơn 2 thì bắt đầu tìm kiếm
-    if (value.length > 2) {
-      axios
-        .get(
-          `http://127.0.0.1:8000/api/search-suggestions?keywords_suggest=${value}`
-        )
-        .then((response) => {
-          setSuggestions(response.data);
-        })
-        .catch((error) => {
-          console.error("Error fetching suggestions: ", error);
-        });
-    } else {
-      setSuggestions([]);
-    }
-  };
   useEffect(() => {
     const fetchUserDetails = async () => {
       try {
@@ -92,41 +70,16 @@ export default function Index() {
           id="navbar-collapse"
         >
           <div className="navbar-nav align-items-center">
-    <div className="nav-item d-flex align-items-center position-relative">
-        <i className="bx bx-search bx-md"></i>
-        <input
-            type="text"
-            name="keywords_suggest"
-            className="form-control border-0 shadow-none ps-1 ps-sm-2"
-            placeholder="Tìm kiếm..."
-            aria-label="Search..."
-            value={query}
-            onChange={handleInputChange}
-        />
-        {suggestions.length > 0 && (
-            <ul className="suggestions-list position-absolute">
-                {suggestions.map((suggestion) => (
-                    <li key={suggestion.id} className="suggestion-item d-flex align-items-center">
-                        <img
-                            src={suggestion.image}
-                            alt={suggestion.name}
-                            width="50"
-                            className="suggestion-img"
-                        />
-                        <div className="suggestion-info">
-                            <span className="suggestion-name">{suggestion.name}</span>
-                            <span className="suggestion-price">{suggestion.price} VND</span>
-                        </div>
-                    </li>
-                ))}
-            </ul>
-        )}
-    </div>
-</div>
-
-
-
-          
+            <div className="nav-item d-flex align-items-center">
+              <i className="bx bx-search bx-md"></i>
+              <input
+                type="text"
+                className="form-control border-0 shadow-none ps-1 ps-sm-2"
+                placeholder="Tìm kiếm..."
+                aria-label="Search..."
+              />
+            </div>
+          </div>
 
           <ul className="navbar-nav flex-row align-items-center ms-auto">
             <li className="nav-item lh-1 me-4">

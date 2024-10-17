@@ -4,9 +4,6 @@ import axios from "axios";
 
 const Products = () => {
   const [products, setProducts] = useState([]);
-  const [categories, setCategories] = useState([]);
-  const [brands, setBrands] = useState([]);
-  const [productTypes, setProductTypes] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
@@ -14,33 +11,6 @@ const Products = () => {
     const fetchProducts = async () => {
       try {
         const token = localStorage.getItem("token");
-        // Fetch categories
-        const categoryRes = await axios.get(
-          "http://localhost:8000/api/categories/index",
-          {
-            headers: { Authorization: `Bearer ${token}` },
-          }
-        );
-        setCategories(categoryRes.data.data);
-
-        // Fetch brands
-        const brandRes = await axios.get(
-          "http://localhost:8000/api/brands/index",
-          {
-            headers: { Authorization: `Bearer ${token}` },
-          }
-        );
-        setBrands(brandRes.data.data);
-
-        // Fetch product types
-        const productTypeRes = await axios.get(
-          "http://localhost:8000/api/product_types/index",
-          {
-            headers: { Authorization: `Bearer ${token}` },
-          }
-        );
-        setProductTypes(productTypeRes.data.data);
-
         const response = await axios.get(
           "http://localhost:8000/api/products/index",
           {
@@ -121,9 +91,6 @@ const Products = () => {
                 <th>Tên</th>
                 <th>Slug</th>
                 <th>Giá</th>
-                <th>Thương hiệu</th>
-                <th>Dạnh mục</th>
-                <th>Dạng sản phẩm</th>
                 <th>Trạng thái</th>
                 <th>Hành động</th>
               </tr>
@@ -169,26 +136,9 @@ const Products = () => {
                   <td>{product.slug}</td>
                   <td>{product.price}</td>
                   <td>
-                    {brands.find((brand) => brand.id === product.brand_id)
-                      ?.name || "Chưa phân loại"}
-                  </td>
-                  <td>
-                    {categories.find(
-                      (category) => category.id === product.category_id
-                    )?.name || "Chưa phân loại"}
-                  </td>
-                  <td>
-                    {productTypes.find(
-                      (product_type) =>
-                        product_type.id === product.product_type_id
-                    )?.name || "Chưa phân loại"}
-                  </td>
-                  <td>
                     <span
                       className={`badge ${
-                        product.status
-                          ? "bg-label-primary"
-                          : "bg-label-secondary"
+                        product.status ? "bg-label-primary" : "bg-label-secondary"
                       }`}
                     >
                       {product.status ? "Hoạt động" : "Ngưng hoạt động"}

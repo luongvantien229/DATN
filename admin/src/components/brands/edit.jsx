@@ -20,20 +20,17 @@ const EditBrands = () => {
   const generateSlug = (text) => {
     text = text.toLowerCase();
     text = text
-      .replace(/á|à|ả|ã|ạ|ă|ắ|ằ|ẳ|ẵ|ặ|â|ấ|ầ|ẩ|ẫ|ậ/g, "a")
-      .replace(/é|è|ẻ|ẽ|ẹ|ê|ế|ề|ể|ễ|ệ/g, "e")
-      .replace(/i|í|ì|ỉ|ĩ|ị/g, "i")
-      .replace(/ó|ò|ỏ|õ|ọ|ô|ố|ồ|ổ|ỗ|ộ|ơ|ớ|ờ|ở|ỡ|ợ/g, "o")
-      .replace(/ú|ù|ủ|ũ|ụ|ư|ứ|ừ|ử|ữ|ự/g, "u")
-      .replace(/ý|ỳ|ỷ|ỹ|ỵ/g, "y")
-      .replace(/đ/g, "d")
-      .replace(
-        /[\'\"\`\~\!\@\#\$\%\^\&\*\(\)\+\=\[\]\{\}\|\\\;\:\,\.\/\?\>\<\-\_]/g,
-        ""
-      )
-      .replace(/\s+/g, "-")
-      .replace(/-+/g, "-")
-      .trim("-");
+      .replace(/á|à|ả|ã|ạ|ă|ắ|ằ|ẳ|ẵ|ặ|â|ấ|ầ|ẩ|ẫ|ậ/g, 'a')
+      .replace(/é|è|ẻ|ẽ|ẹ|ê|ế|ề|ể|ễ|ệ/g, 'e')
+      .replace(/i|í|ì|ỉ|ĩ|ị/g, 'i')
+      .replace(/ó|ò|ỏ|õ|ọ|ô|ố|ồ|ổ|ỗ|ộ|ơ|ớ|ờ|ở|ỡ|ợ/g, 'o')
+      .replace(/ú|ù|ủ|ũ|ụ|ư|ứ|ừ|ử|ữ|ự/g, 'u')
+      .replace(/ý|ỳ|ỷ|ỹ|ỵ/g, 'y')
+      .replace(/đ/g, 'd')
+      .replace(/[\'\"\`\~\!\@\#\$\%\^\&\*\(\)\+\=\[\]\{\}\|\\\;\:\,\.\/\?\>\<\-\_]/g, '')
+      .replace(/\s+/g, '-')
+      .replace(/-+/g, '-')
+      .trim('-');
     return text;
   };
 
@@ -42,14 +39,11 @@ const EditBrands = () => {
     const fetchBrand = async () => {
       try {
         const token = localStorage.getItem("token");
-        const response = await axios.get(
-          `http://localhost:8000/api/brands/show/${id}`,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
+        const response = await axios.get(`http://localhost:8000/api/brands/show/${id}`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
         setBrand(response.data); // Set the fetched brand data
         setExistingImage(response.data.image); // Store the existing image
       } catch (error) {
@@ -66,7 +60,7 @@ const EditBrands = () => {
     setBrand((prev) => ({
       ...prev,
       [name]: type === "checkbox" ? checked : value,
-      ...(name === "name" && { slug: generateSlug(value) }), // Generate slug automatically from name
+      ...(name === 'name' && { slug: generateSlug(value) }) // Generate slug automatically from name
     }));
   };
 
@@ -87,34 +81,29 @@ const EditBrands = () => {
     formData.append("name", brand.name);
     formData.append("slug", brand.slug);
     formData.append("status", brand.status ? 1 : 0);
-
+    
     // Only append the new image if it's different from the existing one
     if (image && image !== existingImage) {
       formData.append("image", image);
     }
 
     try {
-      await axios.post(
-        `brands/update/${id}`,
-        formData,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "multipart/form-data",
-          },
-          data: {
-            _method: "PUT",
-          },
-        }
-      );
+      await axios.post(`http://localhost:8000/api/brands/update/${id}`, formData, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "multipart/form-data",
+        },
+        data: {
+          _method: 'PUT',
+        },
+      });
       alert("Cập nhật thành công!"); // Alert on success
       navigate("/brands"); // Redirect to the brands page
     } catch (error) {
-      const errMsg =
-        error.response?.data?.message ||
-        "Đã có lỗi xảy ra khi cập nhật thương hiệu!";
+      const errMsg = error.response?.data?.message || "Đã có lỗi xảy ra khi cập nhật thương hiệu!";
       setError(errMsg);
     }
+    
   };
 
   return (
@@ -149,37 +138,10 @@ const EditBrands = () => {
             </div>
             <div className="mb-3">
               <label className="form-label">Ảnh thương hiệu</label>
-              {/* {existingImage && (
+              {existingImage && (
                 <div className="mb-3">
                   <img src={`${existingImage}`} alt="Thương hiệu" width="100" />
                 </div>
-              )} */}
-              {existingImage ? (
-                // Nếu có ảnh, kiểm tra loại URL
-                existingImage.includes("http") ? (
-                  <div className="mb-3">
-                    <img
-                      src={existingImage} // Trường hợp URL đầy đủ
-                      alt={brand.name}
-                      style={{
-                        width: "100px",
-                      }}
-                    />
-                  </div>
-                ) : (
-                  <div className="mb-3">
-                    <img
-                      src={`http://localhost:8000/assets/uploads/brand/${existingImage}`} // Trường hợp đường dẫn tương đối
-                      alt={brand.name}
-                      style={{
-                        width: "100px",
-                      }}
-                    />
-                  </div>
-                )
-              ) : (
-                // Nếu không có ảnh
-                <p>Không có ảnh</p>
               )}
               <input
                 type="file"

@@ -3,19 +3,19 @@ import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 
 const EditRoles = () => {
-  const { id } = useParams(); // Get product type ID from URL
-  const [role,setRole] = useState({
+  const { id } = useParams(); // Get role ID from URL
+  const [role, setRole] = useState({
     name: "",
     status: false,
   });
   const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(false); // Loading state
   const navigate = useNavigate();
-
-  
 
   useEffect(() => {
     const fetchRole = async () => {
       const token = localStorage.getItem("token");
+      setLoading(true); // Start loading
       try {
         const response = await axios.get(
           `http://localhost:8000/api/roles/show/${id}`,
@@ -32,6 +32,8 @@ const EditRoles = () => {
           "Error:",
           error.response ? error.response.data : error.message
         );
+      } finally {
+        setLoading(false); // End loading
       }
     };
 
@@ -43,13 +45,13 @@ const EditRoles = () => {
     setRole({
       ...role,
       [name]: type === "checkbox" ? checked : value,
-     
     });
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     const token = localStorage.getItem("token");
+    setLoading(true); // Start loading
 
     try {
       await axios.post(
@@ -72,6 +74,8 @@ const EditRoles = () => {
         "Error:",
         error.response ? error.response.data : error.message
       );
+    } finally {
+      setLoading(false); // End loading
     }
   };
 
@@ -80,6 +84,7 @@ const EditRoles = () => {
       <div className="card">
         <h5 className="card-header">Chỉnh sửa vai trò</h5>
         <div className="card-body">
+          {loading && <div>Loading...</div>}
           {error && <div className="alert alert-danger">{error}</div>}
           <form onSubmit={handleSubmit}>
             <div className="mb-3">
@@ -93,7 +98,6 @@ const EditRoles = () => {
                 required
               />
             </div>
-           
             <div className="mb-3 form-check">
               <input
                 type="checkbox"

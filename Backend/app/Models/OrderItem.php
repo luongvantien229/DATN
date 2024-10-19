@@ -15,11 +15,11 @@ class OrderItem extends Model
         'quantity',
     ];
 
-    public function orders(){
+    public function order(){
         $this->belongsTo(Order::class, 'order_id');
     }
 
-    public function products(){
+    public function product(){
         $this->belongsTo(Product::class, 'product_id');
     }
 }

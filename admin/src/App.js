@@ -5,7 +5,6 @@ import NotFound from "./components/error/NotFound";
 import SideBar from "./components/sideBar";
 import Nav from "./components/nav";
 import Dashboard from "./components/dashboard";
-<<<<<<< HEAD
 import Brands from "./components/brands/index.jsx";
 import AddBrands from "./components/brands/add.jsx";
 import EditBrands from "./components/brands/edit.jsx";
@@ -23,13 +22,6 @@ import AdminLogin from "./components/login/AdminLogin";
 axios.defaults.headers.common["Authorization"] = `Bearer ${localStorage.getItem(
   "token"
 )}`; // JWT setup
-=======
-import Categories from "./components/categories";
-import AddCategories from "./components/categories/add";
-import User from "./components/user";
-import AddUser from "./components/user/add";
-import EditUser from "./components/user/edit";
->>>>>>> db1e6f75e6617de2481a44874d250c7fe519e36f
 
 // Main layout wrapper component
 const MainLayout = ({ children }) => (
@@ -100,7 +92,6 @@ function App() {
           }
         />
         <Route
-<<<<<<< HEAD
           path="/edit-categories/:id"
           element={
             <MainLayout>
@@ -114,32 +105,18 @@ function App() {
           element={
             <MainLayout>
               <ProductTypes />
-=======
-          path="/user"
-          element={
-            <MainLayout>
-              <User />
->>>>>>> db1e6f75e6617de2481a44874d250c7fe519e36f
             </MainLayout>
           }
         />
         <Route
-<<<<<<< HEAD
           path="/add-product-types"
           element={
             <MainLayout>
               <AddProductTypes />
-=======
-          path="/add-user"
-          element={
-            <MainLayout>
-              <AddUser />
->>>>>>> db1e6f75e6617de2481a44874d250c7fe519e36f
             </MainLayout>
           }
         />
         <Route
-<<<<<<< HEAD
           path="/edit-product-types/:id"
           element={
             <MainLayout>
@@ -173,15 +150,6 @@ function App() {
         />
 
 
-=======
-          path="/edit-user"
-          element={
-            <MainLayout>
-              <EditUser />
-            </MainLayout>
-          }
-        />
->>>>>>> db1e6f75e6617de2481a44874d250c7fe519e36f
         <Route path="*" element={<NotFound />} /> {/* Trang 404 */}
       </Routes>
     </>

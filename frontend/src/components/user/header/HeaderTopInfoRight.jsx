@@ -106,9 +106,6 @@ export default function HeaderTopHeaderInfoRight() {
                 Thoát
               </a>
             </li>
-          <li>
-            <Link to="/login-register">Đăng nhập / Đăng kí</Link>
-          </li>
         </ul>
         
       </div>

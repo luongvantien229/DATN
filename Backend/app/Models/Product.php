@@ -15,7 +15,6 @@ class Product extends Model
         'description',
         'brand_id',
         'category_id',
-        
         'favorite',
         'view',
         'sku',
@@ -36,6 +35,10 @@ class Product extends Model
 
     public function product_images(){
         return $this->hasMany(ProductImage::class);
+    }
+    public function category()
+    {
+        return $this->belongsTo(Category::class);
     }
 
     public function categories()

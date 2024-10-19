@@ -2,12 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\ExcelExports;
+use App\Imports\ExcelImports;
 use App\Models\Category;
 use Exception;
 use Illuminate\Support\Facades\File;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
-
+use Excel;
 class CategoryController extends Controller
 {
     //
@@ -126,4 +128,30 @@ class CategoryController extends Controller
         } else
             return response()->json('category not found');
     }
+
+    public function export_csv()
+{
+    return Excel::download(new ExcelExports, 'category.xlsx');
+}
+
+public function import_csv(Request $request)
+{
+    try {
+        $file = $request->file('file');
+
+        if (!$file) {
+            return response()->json(['message' => 'No file uploaded'], 400);
+        }
+
+        $path = $file->getRealPath();
+
+        Excel::import(new ExcelImports, $path);
+
+        return response()->json(['message' => 'File imported successfully'], 200);
+    } catch (\Exception $e) {
+        return response()->json(['message' => 'Error during import', 'error' => $e->getMessage()], 500);
+    }
+}
+
+
 }

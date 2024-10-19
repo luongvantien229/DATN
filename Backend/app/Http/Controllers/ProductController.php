@@ -6,6 +6,7 @@ use App\Models\Product;
 use App\Models\ProductImage;
 use Illuminate\Support\Facades\File;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
@@ -99,6 +100,7 @@ class ProductController extends Controller
             try {
                 $file->move('assets/uploads/product', $filename);
             } catch (FileException $e) {
+                Log::error('File upload failed: ' . $e->getMessage());
                 return response()->json(['error' => 'File upload failed'], 500);
             }
             $product->image = $filename;
@@ -122,7 +124,10 @@ class ProductController extends Controller
             }
         }
 
-        return response()->json('Product added', 201);
+        return response()->json([
+            'message' => 'Product added',
+            'product' => $product
+        ], 201);
     }
 
     public function update($id, Request $request)
@@ -130,7 +135,8 @@ class ProductController extends Controller
         // Xác thực dữ liệu yêu cầu
         Validator::make($request->all(), [
             'name' => 'required',
-            'slug' => 'required',
+            'slug' => 'required|unique:products,slug',
+
             'price' => 'required|numeric',
             'description' => 'required',
             'category_id' => 'required|numeric',
@@ -138,13 +144,14 @@ class ProductController extends Controller
 
             'favorite' => 'required',
             'view' => 'required',
-            'sku' => 'required',
+            'sku' => 'required|unique:products,sku',
+            'barcode' => 'required|unique:products,barcode',
             'product_type_id' => 'required',
             'image' => 'nullable|file|image|mimes:jpeg,png,gif,webp|max:2048',
             'uses' => 'required',
             'user_manual' => 'required',
             'ingredient' => 'required',
-            'barcode' => 'required',
+
             'track_qty' => 'required',
             'qty' => 'required',
             'status' => 'required',
@@ -187,6 +194,7 @@ class ProductController extends Controller
                 try {
                     $file->move('assets/uploads/product/', $filename);
                 } catch (FileException $e) {
+                    Log::error('File upload failed: ' . $e->getMessage());
                     return response()->json(['error' => 'File upload failed'], 500);
                 }
                 $product->image = $filename;

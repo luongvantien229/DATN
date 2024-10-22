@@ -11,11 +11,14 @@ const Banners = () => {
     const fetchBanners = async () => {
       try {
         const token = localStorage.getItem("token");
-        const response = await axios.get("http://localhost:8000/api/banners/index", {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
+        const response = await axios.get(
+          "http://localhost:8000/api/banners/index",
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
         setBanners(response.data.data);
       } catch (error) {
         setError(
@@ -32,7 +35,8 @@ const Banners = () => {
   }, []);
 
   const deleteBanner = async (id) => {
-    if (!window.confirm("Bạn có chắc chắn muốn xóa quảng cáo này không?")) return;
+    if (!window.confirm("Bạn có chắc chắn muốn xóa quảng cáo này không?"))
+      return;
 
     try {
       const token = localStorage.getItem("token");
@@ -85,40 +89,38 @@ const Banners = () => {
                   <td>{banner.id}</td>
                   <td>
                     {banner.image_path ? (
-                      banner.image_path.startsWith("http") ? (
-                        <img
-                          src={banner.image_path}
-                          alt={banner.name}
-                          style={{
-                            width: "50px",
-                            height: "50px",
-                            objectFit: "cover",
-                            marginRight: "10px",
-                          }}
-                        />
-                      ) : (
-                        <img
-                          src={`http://localhost:8000/assets/uploads/banner/banner525x425/${banner.image_path}`}
-                          alt={banner.name}
-                          style={{
-                            width: "50px",
-                            height: "50px",
-                            objectFit: "cover",
-                            marginRight: "10px",
-                          }}
-                        />
-                      )
+                      <img
+                        src={`http://localhost:8000/assets/uploads/banner/${
+                          banner.size === 1
+                            ? "banner800x600"
+                            : banner.size === 2
+                            ? "banner650x250"
+                            : banner.size === 3
+                            ? "banner525x425"
+                            : banner.size === 4
+                            ? "banner250x200"
+                            : "banner400x125"
+                        }/${banner.image_path}`}
+                        alt={banner.name}
+                        style={{
+                          width: "50px",
+                          height: "50px",
+                          objectFit: "cover",
+                          marginRight: "10px",
+                        }}
+                      />
                     ) : (
                       <p>Không có ảnh</p>
                     )}
                     {banner.name}
                   </td>
+
                   <td>{banner.description}</td>
                   <td>
                     <select
                       name="size"
                       value={banner.size}
-                      className="form-control" 
+                      className="form-control"
                       disabled
                     >
                       <option value={1}>800x600</option>
@@ -131,7 +133,9 @@ const Banners = () => {
                   <td>
                     <span
                       className={`badge ${
-                        banner.status ? "bg-label-primary" : "bg-label-secondary"
+                        banner.status
+                          ? "bg-label-primary"
+                          : "bg-label-secondary"
                       }`}
                     >
                       {banner.status ? "Hoạt động" : "Ngưng hoạt động"}

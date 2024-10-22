@@ -206,6 +206,8 @@ Route::get('/all_category_posts', [IndexController::class, 'all_category_posts']
 Route::get('/new_products', [IndexController::class, 'new_products']);
 Route::get('/favorite_products', [IndexController::class, 'favorite_products']);
 Route::get('/product_detail/{slug}/{id}', [IndexController::class, 'product_detail']);
+Route::get('banners/size/{size}', [BannerController::class, 'getBannersBySize']); // ví dụ: GET /api/banners/size/1 để lấy các banner có kích thước 800x600;
+                                                                                               // GET /api/banners/size/2 để lấy các banner có kích thước 650x250.
 // Route::get('/search', [IndexController::class, 'search']);
 Route::get('/search-suggestions', [IndexController::class, 'searchSuggestions']);
 Route::post('/image-search', [ImageSearchController::class, 'searchByImage']);

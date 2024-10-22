@@ -86,7 +86,7 @@ const AddBrands = () => {
     formData.append("image", brand.image); // Thêm hình ảnh
 
     try {
-      await axios.post("/brands/store", formData, {
+      await axios.post("http://localhost:8000/api/brands/store", formData, {
         headers: {
           Authorization: `Bearer ${token}`, // Bao gồm token trong header của yêu cầu
           "Content-Type": "multipart/form-data", // Đặt content type thành multipart/form-data

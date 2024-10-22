@@ -11,7 +11,7 @@ const Banners = () => {
     const fetchBanners = async () => {
       try {
         const token = localStorage.getItem("token");
-        const response = await axios.get("/banners/index", {
+        const response = await axios.get("http://localhost:8000/api/banners/index", {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -36,7 +36,7 @@ const Banners = () => {
 
     try {
       const token = localStorage.getItem("token");
-      await axios.delete(`/banners/destroy/${id}`, {
+      await axios.delete(`http://localhost:8000/api/banners/destroy/${id}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },

@@ -39,7 +39,7 @@ const AddBanners = () => {
     formData.append("image_path", banner.image_path); 
   
     try {
-      await axios.post("/banners/store", formData, {
+      await axios.post("http://localhost:8000/api/banners/store", formData, {
         headers: {
           Authorization: `Bearer ${token}`,
           "Content-Type": "multipart/form-data",

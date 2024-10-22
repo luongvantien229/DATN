@@ -69,6 +69,30 @@ export default function Index() {
             </div>
           </Link>
         </li>
+        <li className={`menu-item ${activeMenu === "/roles" ? "active open" : ""}`}>
+          <Link to="/roles" className="menu-link" onClick={() => handleMenuClick("/roles")}>
+            <i className="menu-icon tf-icons bx bx-layout"></i>
+            <div className="text-truncate" data-i18n="Vai trò">
+              Vai trò
+            </div>
+          </Link>
+        </li>
+        <li className={`menu-item ${activeMenu === "/users" ? "active open" : ""}`}>
+          <Link to="/users" className="menu-link" onClick={() => handleMenuClick("/users")}>
+            <i className="menu-icon tf-icons bx bx-layout"></i>
+            <div className="text-truncate" data-i18n="Người dùng">
+              Người dùng
+            </div>
+          </Link>
+        </li>
+        <li className={`menu-item ${activeMenu === "/banners" ? "active open" : ""}`}>
+          <Link to="/banners" className="menu-link" onClick={() => handleMenuClick("/banners")}>
+            <i className="menu-icon tf-icons bx bx-layout"></i>
+            <div className="text-truncate" data-i18n="Quảng cáo">
+              Banners
+            </div>
+          </Link>
+        </li>
         <li className="menu-item">
           <Link to="/login">
             <button type="button" className="btn btn-primary">

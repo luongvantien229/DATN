@@ -17,7 +17,14 @@ import EditProductTypes from "./components/productTypes/edit.jsx";
 import Products from "./components/products/index.jsx";
 import AddProducts from "./components/products/add.jsx";
 import EditProducts from "./components/products/edit.jsx";
+import Roles from "./components/roles/index.jsx";
+import AddRoles from "./components/roles/add.jsx";
+import EditRoles from "./components/roles/edit.jsx";
+import Banners from "./components/banners/index.jsx";
+import AddBanners from "./components/banners/add.jsx";
+import EditBanners from "./components/banners/edit.jsx";
 import AdminLogin from "./components/login/AdminLogin";
+import Users from "./components/users/index.jsx";
 
 axios.defaults.headers.common["Authorization"] = `Bearer ${localStorage.getItem(
   "token"
@@ -145,6 +152,62 @@ function App() {
           element={
             <MainLayout>
               <EditProducts />
+            </MainLayout>
+          }
+        />
+         <Route
+          path="/roles"
+          element={
+            <MainLayout>
+              <Roles />
+            </MainLayout>
+          }
+        />
+        <Route
+          path="/add-roles"
+          element={
+            <MainLayout>
+              <AddRoles />
+            </MainLayout>
+          }
+        />
+        <Route
+          path="/edit-roles/:id"
+          element={
+            <MainLayout>
+              <EditRoles />
+            </MainLayout>
+          }
+        />
+         <Route
+          path="/users"
+          element={
+            <MainLayout>
+              <Users />
+            </MainLayout>
+          }
+        />
+        <Route
+          path="/banners"
+          element={
+            <MainLayout>
+              <Banners />
+            </MainLayout>
+          }
+        />
+        <Route
+          path="/add-banners"
+          element={
+            <MainLayout>
+              <AddBanners />
+            </MainLayout>
+          }
+        />
+        <Route
+          path="/edit-banners/:id"
+          element={
+            <MainLayout>
+              <EditBanners />
             </MainLayout>
           }
         />

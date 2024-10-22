@@ -70,18 +70,27 @@ class BannerController extends Controller
         }
 
         if ($request->hasFile('image_path')) {
+            // Xóa ảnh cũ nếu có
             if ($banner->image_path) {
-                Storage::delete('public/uploads/banner/' . $banner->image_path);
+                $oldDirectory = $this->getSizeDirectory($banner->size); // Lấy thư mục cũ từ size cũ
+                $oldImagePath = "assets/uploads/banner/{$oldDirectory}/" . $banner->image_path;
+
+                if (file_exists($oldImagePath)) {
+                    unlink($oldImagePath); // Xóa ảnh cũ
+                }
             }
 
+            // Tải ảnh mới và thay đổi kích thước theo size mới
             $imageName = $this->handleImageUpload($request->file('image_path'), $request->input('size'));
             $banner->image_path = $imageName;
         }
 
-        $banner->update($request->only('name', 'status', 'description','size'));
+        // Cập nhật các thông tin khác của banner
+        $banner->update($request->only('name', 'status', 'description', 'size'));
 
         return response()->json(['message' => 'Banner updated successfully', 'banner' => $banner]);
     }
+
 
     public function destroy($id)
     {
@@ -156,6 +165,24 @@ class BannerController extends Controller
 
     return $imageName;
 }
+
+public function getBannersBySize($size)
+{
+    // Validate that size is valid
+    if (!in_array($size, [1, 2, 3, 4, 5])) {
+        return response()->json(['message' => 'Invalid size parameter'], 422);
+    }
+
+    // Fetch banners by size
+    $banners = Banner::where('size', $size)->where('status', 1)->get();
+
+    if ($banners->isEmpty()) {
+        return response()->json(['message' => 'No banners found for the specified size'], 404);
+    }
+
+    return response()->json($banners);
+}
+
 
 
     /**

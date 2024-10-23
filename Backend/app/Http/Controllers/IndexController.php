@@ -33,18 +33,17 @@ class IndexController extends Controller
 
     public function all_brands()
     {
-        $brands = Brand::all()->where('status', 1)
-            ->orderBy('created_at', 'desc')->get();
-
+        $brands = Brand::where('status', 1)
+            ->orderBy('created_at', 'desc')
+            ->get();
 
         return response()->json([
             'brands' => $brands,
-
         ], 200);
     }
     public function all_categories()
     {
-        $categories = Category::all()->where('status', 1)
+        $categories = Category::where('status', 1)
             ->orderBy('created_at', 'desc')->get();
 
 
@@ -68,7 +67,7 @@ class IndexController extends Controller
 
     public function all_category_posts()
     {
-        $categoryPosts = CategoryPost::all()->where('status', 1)
+        $categoryPosts = CategoryPost::where('status', 1)
             ->orderBy('created_at', 'desc')->get();
 
 

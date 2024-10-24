@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Auth\GoogleController;
 use App\Http\Controllers\BannerController;
 use App\Http\Controllers\BrandController;
 use App\Http\Controllers\CommentController;
@@ -219,6 +220,15 @@ Route::post('/delete_comments', [CommentController::class, 'destroy']);  // xóa
 Route::get('/filter', [IndexController::class, 'filter']);
 Route::get('/filter_post', [IndexController::class, 'filter_post']);
 Route::get('/generate-token', [CallStringeeController::class, 'generateToken']);
+
+// Login Google Account
+
+Route::get('/login-google', [GoogleController::class, 'login_google']);
+Route::get('/login/google/callback', [GoogleController::class, 'callback_google']);
+
+Route::get('/login-customer-google', [GoogleController::class, 'login_customer_google']);
+Route::get('/customer/google/callback', [GoogleController::class, 'callback_customer_google']);
+
 
 
 // Route::group([

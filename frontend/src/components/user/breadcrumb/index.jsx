@@ -18,12 +18,13 @@ const Breadcrumb = () => {
   const [slug, setSlug] = useState("");
 
   // Lấy slug từ API dựa trên ID trong đường dẫn
-  useEffect(() => {
+  useEffect(() => { 
     const fetchProduct = async () => {
       const id = pathnames[pathnames.length - 1]; // Lấy ID từ đường dẫn
+      const slug = pathnames[pathnames.length - 2]; // Lấy slug từ đường dẫn
       if (!isNaN(id)) {
         try {
-          const response = await fetch(`http://127.0.0.1:8000/api/product_detail/${id}`);
+          const response = await fetch(`http://127.0.0.1:8000/api/product_detail/${slug}/${id}`);
           const data = await response.json();
           setSlug(data.product.slug); // Lưu slug từ API
         } catch (error) {
@@ -44,30 +45,16 @@ const Breadcrumb = () => {
     <div className="breadcrumb-area breadcrumb-area-padding-2 bg-gray-2">
       <div className="custom-container">
         <div className="breadcrumb-content text-center">
-          <ul>
+        <ul>
             <li>
               <Link to="/">Trang chủ</Link>
             </li>
-            {pathnames.map((value, index) => {
-              const to = `/${pathnames.slice(0, index + 1).join("/")}`;
-              const isLast = index === pathnames.length - 1; // Kiểm tra xem có phải mục cuối cùng không
-              const name =
-                breadcrumbNameMap[to] ||
-                (isLast && slug ? slug.charAt(0).toUpperCase() + slug.slice(1) : value.charAt(0).toUpperCase() + value.slice(1));
-
-              return (
-                <li
-                  key={to}
-                  className={`${isLast ? "active" : ""}`} // Thêm class "active" nếu là mục cuối
-                >
-                  {isLast ? (
-                    name
-                  ) : (
-                    <Link to={to}>{name}</Link>
-                  )}
-                </li>
-              );
-            })}
+            <li>
+              <Link to="/product">Product-detail</Link> {/* Thêm liên kết đến Product-detail */}
+            </li>
+            <li className="active">
+              {slug.charAt(0).toUpperCase() + slug.slice(1)} {/* Hiển thị slug ở cuối cùng */}
+            </li>
           </ul>
         </div>
       </div>

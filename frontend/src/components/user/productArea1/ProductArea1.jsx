@@ -7,7 +7,7 @@ const ProductArena1 = forwardRef(({ product }, ref) => {
       <div className="single-product-wrap">
         <div className="product-img-action-wrap">
           <div className="product-img product-img-zoom">
-            <Link to={`/product-detail/${product.id}`}>
+            <Link to={`/product-detail/${product.slug}/${product.id}`}>
               <img
                 className="default-img"
                 src={product.image || "assets/images/product/default.png"} // Sử dụng ảnh từ sản phẩm
@@ -29,7 +29,7 @@ const ProductArena1 = forwardRef(({ product }, ref) => {
         </div>
         <div className="product-content-wrap">
           <h2>
-            <Link to={`/product-detail/${product.id}`}>{product.name}</Link> {/* Tên sản phẩm */}
+            <Link to={`/product-detail/${product.slug}/${product.id}`}>{product.name}</Link> {/* Tên sản phẩm */}
           </h2>
           <div className="product-price">
             <span className="new-price">{Number(product.price).toLocaleString()}đ</span> {/* Giá sản phẩm */}

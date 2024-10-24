@@ -101,7 +101,7 @@ class IndexController extends Controller
 
     public function product_detail($slug, $id, Request $request)
     {
-
+        
         $product = Product::find($id);
         if ($product === null) {
             return response()->json('Product not found', 404);

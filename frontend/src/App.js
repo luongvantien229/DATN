@@ -105,7 +105,7 @@ function App() {
           }
         />
         <Route
-          path="/product-detail/:id"
+          path="/product-detail/:slug/:id"
           element={
 
             <MainLayout>

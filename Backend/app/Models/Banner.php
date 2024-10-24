@@ -12,6 +12,7 @@ class Banner extends Model
         'name',
         'status',
         'image_path',
+        'size',
         'description',
     ];
 }

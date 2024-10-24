@@ -49,17 +49,16 @@ class RoleController extends Controller
     {
         try {
             $validated = $request->validate([
-                'name' => 'required|unique:roles,name',
+                'name' => 'required|unique:roles,name,'.$id,
                 'status' => 'nullable',
-
             ]);
 
             $role = Role::find($id);
-
+            if (!$role) {
+                return response()->json('Role not found', 404);
+            }
 
             $role->name = $request->name;
-
-
             $role->status = $request->status;
 
 

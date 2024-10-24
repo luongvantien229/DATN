@@ -41,12 +41,12 @@ class CartController extends Controller
         return response()->json($cart, 200);
     }
 
-    public function removeFromCart($productId)
+    public function removeFromCart($product_id)
     {
         $cart = session()->get('cart', []);
 
-        if (isset($cart[$productId])) {
-            unset($cart[$productId]);
+        if (isset($cart[$product_id])) {
+            unset($cart[$product_id]);
             session()->put('cart', $cart);
             return response()->json(['message' => 'Product removed from cart!'], 200);
         }

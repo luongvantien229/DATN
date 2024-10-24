@@ -1,4 +1,7 @@
 <?php
+use Carbon\Laravel\ServiceProvider;
+use Google\Api\Service;
+use Illuminate\Support\Facades\Facade;
 
 return [
 
@@ -123,4 +126,19 @@ return [
         'store' => env('APP_MAINTENANCE_STORE', 'database'),
     ],
 
+
+    'provider' => ServiceProvider::defaultProviders()->merge([
+
+        Intervention\Image\ImageServiceProvider::class,
+        App\Providers\AppServiceProvider::class,
+        App\Providers\AuthServiceProvider::class,
+        App\Providers\BroadcastServiceProvider::class,
+        App\Providers\EventServiceProvider::class,
+        App\Providers\RouteServiceProvider::class,
+    ])->toArray(),
+
+
+    'aliases' => Facade::defaultAliases()->merge([
+        'Image' => Intervention\Image\Facades\Image::class,
+    ])->toArray(),
 ];

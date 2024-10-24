@@ -5,7 +5,6 @@ import NotFound from "./components/error/NotFound";
 import SideBar from "./components/sideBar";
 import Nav from "./components/nav";
 import Dashboard from "./components/dashboard";
-<<<<<<< HEAD
 import Brands from "./components/brands/index.jsx";
 import AddBrands from "./components/brands/add.jsx";
 import EditBrands from "./components/brands/edit.jsx";
@@ -18,18 +17,18 @@ import EditProductTypes from "./components/productTypes/edit.jsx";
 import Products from "./components/products/index.jsx";
 import AddProducts from "./components/products/add.jsx";
 import EditProducts from "./components/products/edit.jsx";
+import Roles from "./components/roles/index.jsx";
+import AddRoles from "./components/roles/add.jsx";
+import EditRoles from "./components/roles/edit.jsx";
+import Banners from "./components/banners/index.jsx";
+import AddBanners from "./components/banners/add.jsx";
+import EditBanners from "./components/banners/edit.jsx";
 import AdminLogin from "./components/login/AdminLogin";
+import Users from "./components/users/index.jsx";
 
 axios.defaults.headers.common["Authorization"] = `Bearer ${localStorage.getItem(
   "token"
 )}`; // JWT setup
-=======
-import Categories from "./components/categories";
-import AddCategories from "./components/categories/add";
-import User from "./components/user";
-import AddUser from "./components/user/add";
-import EditUser from "./components/user/edit";
->>>>>>> db1e6f75e6617de2481a44874d250c7fe519e36f
 
 // Main layout wrapper component
 const MainLayout = ({ children }) => (
@@ -100,7 +99,6 @@ function App() {
           }
         />
         <Route
-<<<<<<< HEAD
           path="/edit-categories/:id"
           element={
             <MainLayout>
@@ -114,32 +112,18 @@ function App() {
           element={
             <MainLayout>
               <ProductTypes />
-=======
-          path="/user"
-          element={
-            <MainLayout>
-              <User />
->>>>>>> db1e6f75e6617de2481a44874d250c7fe519e36f
             </MainLayout>
           }
         />
         <Route
-<<<<<<< HEAD
           path="/add-product-types"
           element={
             <MainLayout>
               <AddProductTypes />
-=======
-          path="/add-user"
-          element={
-            <MainLayout>
-              <AddUser />
->>>>>>> db1e6f75e6617de2481a44874d250c7fe519e36f
             </MainLayout>
           }
         />
         <Route
-<<<<<<< HEAD
           path="/edit-product-types/:id"
           element={
             <MainLayout>
@@ -171,17 +155,64 @@ function App() {
             </MainLayout>
           }
         />
-
-
-=======
-          path="/edit-user"
+         <Route
+          path="/roles"
           element={
             <MainLayout>
-              <EditUser />
+              <Roles />
             </MainLayout>
           }
         />
->>>>>>> db1e6f75e6617de2481a44874d250c7fe519e36f
+        <Route
+          path="/add-roles"
+          element={
+            <MainLayout>
+              <AddRoles />
+            </MainLayout>
+          }
+        />
+        <Route
+          path="/edit-roles/:id"
+          element={
+            <MainLayout>
+              <EditRoles />
+            </MainLayout>
+          }
+        />
+         <Route
+          path="/users"
+          element={
+            <MainLayout>
+              <Users />
+            </MainLayout>
+          }
+        />
+        <Route
+          path="/banners"
+          element={
+            <MainLayout>
+              <Banners />
+            </MainLayout>
+          }
+        />
+        <Route
+          path="/add-banners"
+          element={
+            <MainLayout>
+              <AddBanners />
+            </MainLayout>
+          }
+        />
+        <Route
+          path="/edit-banners/:id"
+          element={
+            <MainLayout>
+              <EditBanners />
+            </MainLayout>
+          }
+        />
+
+
         <Route path="*" element={<NotFound />} /> {/* Trang 404 */}
       </Routes>
     </>

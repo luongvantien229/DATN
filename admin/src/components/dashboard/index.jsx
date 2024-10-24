@@ -299,11 +299,7 @@ const Index = () => {
                     <div className="card-title d-flex align-items-start justify-content-between mb-4">
                       <div className="avatar flex-shrink-0">
                         <img
-<<<<<<< HEAD
                           src="../assets/img/icons/unicons/cc-visa.png"
-=======
-                          src="../assets/img/icons/unicons/paypal.png"
->>>>>>> db1e6f75e6617de2481a44874d250c7fe519e36f
                           alt="Visa"
                           className="rounded"
                         />

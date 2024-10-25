@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Auth\FacebookController;
 use App\Http\Controllers\Auth\GoogleController;
 use App\Http\Controllers\BannerController;
 use App\Http\Controllers\BrandController;
@@ -229,6 +230,13 @@ Route::get('/login/google/callback', [GoogleController::class, 'callback_google'
 Route::get('/login-customer-google', [GoogleController::class, 'login_customer_google']);
 Route::get('/customer/google/callback', [GoogleController::class, 'callback_customer_google']);
 
+// Login Facebook Account
+
+Route::get('/login-facebook', [FacebookController::class, 'login_facebook']);
+Route::get('/login/facebook/callback', [FacebookController::class, 'callback_facebook']);
+
+Route::get('/login-customer-facebook', [FacebookController::class, 'login_customer_facebook']);
+Route::get('/customer/facebook/callback', [FacebookController::class, 'callback_customer_facebook']);
 
 
 // Route::group([
@@ -270,3 +278,4 @@ Route::get('/customer/google/callback', [GoogleController::class, 'callback_cust
 
 Route::post('/confirm_order', [OrderController::class, 'confirm_order']);
 Route::post('/pay/order', [PaymentController::class, 'payByStripe']);
+Route::post('/pay', [PaymentController::class, 'pay']);

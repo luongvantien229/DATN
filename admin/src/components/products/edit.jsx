@@ -509,7 +509,7 @@ const EditProducts = () => {
             </div>
 
             <button type="submit" className="btn btn-primary">
-              Thêm sản phẩm
+              Cập nhật sản phẩm
             </button>
           </form>
         </div>

@@ -1,6 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import axios from "axios";
+import 'datatables.net-dt/css/dataTables.dataTables.css';
+import $ from 'jquery';
+import 'datatables.net';
 
 const Banners = () => {
   const [banners, setBanners] = useState([]);
@@ -33,6 +36,21 @@ const Banners = () => {
 
     fetchBanners();
   }, []);
+
+  useEffect(() => {
+    if (!loading && banners.length > 0) {
+      // Kiểm tra nếu DataTable đã được khởi tạo trước đó
+      if ($.fn.DataTable.isDataTable("#myTable")) {
+        $('#myTable').DataTable().clear().destroy(); // Phá hủy DataTable trước khi khởi tạo lại
+      }
+
+      // Khởi tạo lại DataTable
+      $('#myTable').DataTable({
+        paging: true,
+        searching: true,
+      });
+    }
+  }, [loading, banners]);
 
   const deleteBanner = async (id) => {
     if (!window.confirm("Bạn có chắc chắn muốn xóa quảng cáo này không?"))
@@ -72,7 +90,7 @@ const Banners = () => {
         </div>
 
         <div className="table-responsive text-nowrap">
-          <table className="table table-bordered">
+          <table id="myTable" className="table table-bordered">
             <thead>
               <tr>
                 <th>ID</th>

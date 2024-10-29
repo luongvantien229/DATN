@@ -26,11 +26,12 @@ class FacebookController extends Controller
             Session::put('name',$account_name->name);
             Session::put('id',$account_name->id);
             $token = JWTAuth::fromUser($account_name);
-            return response()->json([
-                'user' => $account_name,
-                'token' => $token,
-                'message' =>'đăng nhập Admin bằng facebook thành công'
-            ]);
+            // return response()->json([
+            //     'user' => $account_name,
+            //     'token' => $token,
+            //     'message' =>'đăng nhập Admin bằng facebook thành công'
+            // ]);
+            return redirect()->to("http://localhost:3000/?token={$token}");
         }else{
 
             $than = new Social([
@@ -38,7 +39,7 @@ class FacebookController extends Controller
                 'provider' => 'facebook'
             ]);
 
-            $orang = User::where('admin_email',$provider->getEmail())->first();
+            $orang = User::where('email',$provider->getEmail())->first();
 
             if(!$orang){
                 $orang = User::create([

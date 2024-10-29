@@ -16,8 +16,8 @@ return new class extends Migration
             $table->string('name'); // Tên sản phẩm
             $table->string('slug')->unique(); // Slug duy nhất
             $table->text('description')->nullable(); // Mô tả sản phẩm
-            $table->decimal('price', 12); // Giá sản phẩm
-            $table->foreignId('category_id')->constrained()->onDelete('cascade'); // Khóa ngoại đến bảng categories
+            $table->integer('price'); // Giá sản phẩm
+            $table->text('category_id'); // Thay đổi từ foreignId sang text
             $table->foreignId('brand_id')->constrained()->onDelete('cascade'); // Khóa ngoại đến bảng brands
             $table->integer('favorite');
             $table->integer('view');

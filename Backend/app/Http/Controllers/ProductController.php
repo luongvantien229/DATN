@@ -17,7 +17,7 @@ class ProductController extends Controller
     //
     public function index()
     {
-        $products = Product::orderBy('created_at', 'desc')->paginate(20);
+        $products = Product::with('category_product')->orderBy('id', 'desc')->paginate(20);
         if ($products) {
             return response()->json($products, 200);
         } else
@@ -41,7 +41,8 @@ class ProductController extends Controller
             'slug' => 'required',
             'price' => 'required|numeric',
             'description' => 'required',
-            'category_id' => 'required|numeric',
+            'category_id' => 'required|array', // This ensures category_id is an array
+            'category_id.*' => 'integer|exists:categories,id', // Checks each array item
             'brand_id' => 'required|numeric',
 
             'favorite' => 'required',
@@ -65,7 +66,7 @@ class ProductController extends Controller
         $product->slug = $request->slug; // You missed the slug
         $product->price = $request->price;
         $product->description = $request->description;
-        $product->category_id = $request->category_id;
+        $product->category_id = json_encode($request->category_id); // Chuyển đổi mảng thành JSON
         $product->brand_id = $request->brand_id;
 
         $product->favorite = $request->favorite;
@@ -108,6 +109,9 @@ class ProductController extends Controller
         // lưu sản phẩm
         $product->save();
 
+        //thêm nhiều loại cho sản phẩm
+        $product->category_product()->attach($request->category_id);
+
         // Xử lý tải lên hình ảnh liên quan
         if ($request->hasFile('product_images')) {
             $files = $request->file('product_images');
@@ -135,7 +139,7 @@ class ProductController extends Controller
         // Xác thực dữ liệu yêu cầu
         Validator::make($request->all(), [
             'name' => 'required',
-            'slug' => 'required|unique:products,slug',
+            'slug' => 'required',
 
             'price' => 'required|numeric',
             'description' => 'required',
@@ -144,8 +148,8 @@ class ProductController extends Controller
 
             'favorite' => 'required',
             'view' => 'required',
-            'sku' => 'required|unique:products,sku',
-            'barcode' => 'required|unique:products,barcode',
+            'sku' => 'required',
+            'barcode' => 'required',
             'product_type_id' => 'required',
             'image' => 'nullable|file|image|mimes:jpeg,png,gif,webp|max:2048',
             'uses' => 'required',

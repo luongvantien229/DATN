@@ -7,6 +7,25 @@ export default function AdminLogin() {
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+
+  const handleGoogleLogin = async () => {
+    try {
+      navigate("/");
+      window.location.href = "http://localhost:8000/api/login-google";
+      Swal.fire({
+        icon: "success",
+        title: "Đăng Nhập với Google Thành Công",
+        text: "Bạn sẽ được chuyển hướng đến bảng điều khiển.",
+      });
+    } catch (error) {
+      setError("Đã có lỗi xảy ra khi đăng nhập bằng Google!");
+      console.error(
+        "Lỗi khi đăng nhập:",
+        error.response ? error.response.data : error.message
+      );
+    }
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -20,14 +39,9 @@ export default function AdminLogin() {
         }
       );
 
-      // Kiểm tra nếu phản hồi và dữ liệu tồn tại
       if (response && response.data) {
-        // Lưu token vào localStorage
         localStorage.setItem("token", response.data.access_token);
-
-        // Điều hướng đến bảng điều khiển
         navigate("/");
-
         Swal.fire({
           icon: "success",
           title: "Đăng Nhập Thành Công",
@@ -41,9 +55,7 @@ export default function AdminLogin() {
         });
       }
     } catch (error) {
-      // Xử lý lỗi và ghi lại chúng
       if (error.response) {
-        // Xử lý lỗi cụ thể cho 401 Unauthorized
         if (error.response.status === 401) {
           Swal.fire({
             icon: "error",
@@ -104,7 +116,14 @@ export default function AdminLogin() {
                       Đăng nhập
                     </button>
                   </form>
-
+                  <button
+                    className="btn btn-sm  mt-3"
+                    onClick={handleGoogleLogin}
+                  >
+                    <i className="bx bxl-google me-1"></i>
+                    Đăng Nhập với Google
+                  </button>
+                  {error && <p className="text-danger mt-3">{error}</p>}
                   <p className="text-center text-muted mt-5 mb-0">
                     Chưa có tài khoản?{" "}
                     <a href="/register" className="fw-bold text-body">

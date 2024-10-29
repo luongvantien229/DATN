@@ -94,6 +94,8 @@ Route::group(['prefix' => 'brands', 'middleware' => [AdminMiddleware::class]], f
         Route::post('/store', 'store');
         Route::post('/update/{id}', 'update');
         Route::delete('/destroy/{id}', 'destroy');
+        Route::post('/export-csv', 'export-csv');
+        Route::post('/import-csv', 'import-csv');
     });
 });
 

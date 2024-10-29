@@ -4,10 +4,12 @@ import axios from "axios";
 
 const EditCategories = () => {
   const { id } = useParams();
+  const [categories, setCategories] = useState([]);
   const [category, setCategory] = useState({
     name: "",
     slug: "",
     sort_order: 0,
+    parent_id: 0,
     showHome: false,
     status: false,
     image: "",
@@ -51,6 +53,13 @@ const EditCategories = () => {
     const fetchCategory = async () => {
       try {
         const token = localStorage.getItem("token");
+        const categoryRes = await axios.get(
+          "http://localhost:8000/api/categories/index",
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          }
+        );
+        setCategories(categoryRes.data);
         const response = await axios.get(
           `http://localhost:8000/api/categories/show/${id}`,
           {
@@ -96,6 +105,7 @@ const EditCategories = () => {
     formData.append("name", category.name);
     formData.append("slug", category.slug);
     formData.append("sort_order", category.sort_order);
+    formData.append("parent_id", category.parent_id);
     formData.append("showHome", category.showHome ? 1 : 0);
     formData.append("status", category.status ? 1 : 0);
     if (image) {
@@ -180,6 +190,33 @@ const EditCategories = () => {
                 required
               />
             </div>
+            <div className="mb-3">
+  <label className="form-label">Thuộc Danh mục</label>
+  <select
+    name="parent_id"
+    className="form-control input-sm m-bot15"
+    value={category.parent_id || "0"}
+    onChange={handleChange}
+  >
+    <option value="0">-------Danh mục cha-------</option>
+
+    {categories.map((val) => {
+      // Add indentation based on the category level
+      let indent = "";
+      for (let i = 1; i < val.level; i++) {
+        indent += "--- ";
+      }
+
+      return (
+        <option key={val.id} value={val.id}>
+          {indent} {val.name}
+        </option>
+      );
+    })}
+  </select>
+</div>
+
+
             <div className="mb-3 form-check">
               <input
                 type="checkbox"

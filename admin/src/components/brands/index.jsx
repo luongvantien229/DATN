@@ -1,6 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import axios from "axios";
+import 'datatables.net-dt/css/dataTables.dataTables.css';
+import $ from 'jquery';
+import 'datatables.net';
 
 const Brands = () => {
   const [brands, setBrands] = useState([]);
@@ -33,6 +36,21 @@ const Brands = () => {
 
     fetchBrands();
   }, []);
+
+  useEffect(() => {
+    if (!loading && brands.length > 0) {
+      // Kiểm tra nếu DataTable đã được khởi tạo trước đó
+      if ($.fn.DataTable.isDataTable("#myTable")) {
+        $('#myTable').DataTable().clear().destroy(); // Phá hủy DataTable trước khi khởi tạo lại
+      }
+
+      // Khởi tạo lại DataTable
+      $('#myTable').DataTable({
+        paging: true,
+        searching: true,
+      });
+    }
+  }, [loading, brands]);
 
   const deleteBrand = async (id) => {
     const confirmDelete = window.confirm(
@@ -84,7 +102,7 @@ const Brands = () => {
         </div>
 
         <div className="table-responsive text-nowrap">
-          <table className="table table-bordered">
+          <table id="myTable" className="table table-bordered">
             <thead>
               <tr>
                 <th>ID</th>

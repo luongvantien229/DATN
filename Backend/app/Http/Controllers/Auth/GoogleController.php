@@ -31,11 +31,12 @@ class GoogleController extends Controller
         Session::put('name', $account_name->name);
         Session::put('id', $account_name->id);
         $token = JWTAuth::fromUser($account_name);
-        return response()->json([
-            'user' => $account_name,
-            'token' => $token,
-            'message' =>'đăng nhập Admin bằng google thành công'
-        ]);
+        // return response()->json([
+        //     'user' => $account_name,
+        //     'token' => $token,
+        //     'message' =>'đăng nhập Admin bằng google thành công'
+        // ]);
+        return redirect()->to("http://localhost:3000/?token={$token}");
     }
 
     public function findOrCreateUser($users, $provider)

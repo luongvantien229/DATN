@@ -1,6 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
+import 'datatables.net-dt/css/dataTables.dataTables.css';
+import $ from 'jquery';
+import 'datatables.net';
 
 const Categories = () => {
   const [categories, setCategories] = useState([]);
@@ -20,7 +23,8 @@ const Categories = () => {
             },
           }
         );
-        setCategories(response.data.data); // Điều chỉnh theo cấu trúc của phản hồi API của bạn
+        console.log(response.data);
+        setCategories(response.data || []); // Điều chỉnh theo cấu trúc của phản hồi API của bạn
       } catch (error) {
         setError("Đã có lỗi xảy ra khi lấy danh mục!");
         console.error(
@@ -34,6 +38,21 @@ const Categories = () => {
 
     fetchCategories();
   }, []);
+
+  useEffect(() => {
+    if (!loading && categories.length > 0) {
+      // Kiểm tra nếu DataTable đã được khởi tạo trước đó
+      if ($.fn.DataTable.isDataTable("#myTable")) {
+        $('#myTable').DataTable().clear().destroy(); // Phá hủy DataTable trước khi khởi tạo lại
+      }
+
+      // Khởi tạo lại DataTable
+      $('#myTable').DataTable({
+        paging: true,
+        searching: true,
+      });
+    }
+  }, [loading, categories]);
 
   const deleteCategory = async (id) => {
     const confirmDelete = window.confirm(
@@ -82,18 +101,21 @@ const Categories = () => {
         </div>
 
         <div className="table-responsive text-nowrap">
-          <table className="table table-bordered ">
+          <table id="myTable" className="table table-bordered ">
             <thead>
               <tr>
                 <th>ID</th>
                 <th>Tên</th>
                 <th>Slug</th>
+                <th>Thuộc danh mục</th>
+                <th>Hiện trên trang chủ</th>
                 <th>Trạng thái</th>
                 <th>Hành động</th>
               </tr>
             </thead>
             <tbody>
-              {categories.map((category) => (
+            {categories && categories.length > 0 ? (
+              categories.map((category) => (
                 <tr key={category.id}>
                   <td>{category.id}</td>
                   <td>
@@ -132,6 +154,29 @@ const Categories = () => {
                   </td>
                   <td>{category.slug}</td>
                   <td>
+                    {category.parent_id === 0 ? (
+                      <span>Danh mục cha</span>
+                    ) : (
+                      <span>
+                        {categories.find(
+                          (sub_category) =>
+                            sub_category.id === category.parent_id
+                        )?.name || "Danh mục không xác định"}
+                      </span>
+                    )}
+                  </td>
+                  <td>
+                    <span
+                      className={`badge ${
+                        category.showHome
+                          ? "bg-label-primary"
+                          : "bg-label-secondary"
+                      }`}
+                    >
+                      {category.showHome ? "Hiện" : "Ẩn"}
+                    </span>
+                  </td>
+                  <td>
                     <span
                       className={`badge ${
                         category.status
@@ -157,28 +202,36 @@ const Categories = () => {
                       <i className="bi bi-trash me-1" style={{ color: "red" }}></i> Delete
                     </button> */}
                     <div>
-                      <Link className="btn btn-sm btn-outline-primary me-2" to={`/edit-categories/${category.id}`}>
+                      <Link
+                        className="btn btn-sm btn-outline-primary me-2"
+                        to={`/edit-categories/${category.id}`}
+                      >
                         <i
                           className="bx bx-edit-alt me-1"
                           style={{ color: "blue" }}
-                        ></i> Sửa
+                        ></i>{" "}
+                        Sửa
                       </Link>
                       <button
                         className="btn btn-sm btn-outline-danger"
                         // variant ="outline-danger"
-                      
+
                         onClick={() => deleteCategory(category.id)}
                         // style={{ background: "none", border: "none" }}
                       >
                         <i
                           className="bx bx-trash me-1"
                           style={{ color: "red" }}
-                        ></i> Xóa
+                        ></i>{" "}
+                        Xóa
                       </button>
                     </div>
                   </td>
                 </tr>
-              ))}
+              ))
+            ) : (
+              <tr><td colSpan="7">No categories available</td></tr>
+           )}
             </tbody>
           </table>
         </div>

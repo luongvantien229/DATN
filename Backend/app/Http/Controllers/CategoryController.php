@@ -15,8 +15,15 @@ class CategoryController extends Controller
     //
     public function index()
     {
-        $categories = Category::paginate(10);
+        $categories = $this->getCategories();
         return response()->json($categories, 200);
+    }
+
+    public function getCategories(){
+        $categories = Category::paginate(10);
+        $listCategory = [];
+        Category::recursive($categories,$parent = 0 ,$level=1,$listCategory);
+        return $listCategory;
     }
 
     public function show($id)
@@ -36,6 +43,7 @@ class CategoryController extends Controller
                 'image' => 'required|image|mimes:jpg,png,jpeg,gif|max:2048', // Validate the image type and size
                 'slug' => 'required',
                 'sort_order' => 'required|integer',
+                'parent_id' => 'required',
                 'status' => 'nullable|boolean',
                 'showHome' => 'nullable|boolean',
             ]);
@@ -57,6 +65,7 @@ class CategoryController extends Controller
             $category->name = $request->name;
             $category->slug = $request->slug;
             $category->sort_order = $request->sort_order;
+            $category->parent_id = $request->parent_id;
             $category->status = $request->status ; // Default to 0 if null
             $category->showHome = $request->showHome ; // Default to 0 if null
 
@@ -79,6 +88,7 @@ class CategoryController extends Controller
                 'image' => 'nullable|image|mimes:jpg,png,jpeg,gif|max:2048', // Image is nullable, validate type and size
                 'slug' => 'required',
                 'sort_order' => 'required|integer',
+                'parent_id' => 'required',
                 'status' => 'nullable|boolean',
                 'showHome' => 'nullable|boolean',
             ]);
@@ -105,6 +115,7 @@ class CategoryController extends Controller
             $category->name = $request->name;
             $category->slug = $request->slug;
             $category->sort_order = $request->sort_order;
+            $category->parent_id = $request->parent_id;
             $category->status = $request->status;
             $category->showHome = $request->showHome;
 

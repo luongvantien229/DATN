@@ -14,6 +14,7 @@ class Category extends Model
         'sort_order',
         'status',
         'image',
+        'parent_id',
         'showHome',
     ];
     protected $hidden = [
@@ -21,10 +22,24 @@ class Category extends Model
         'updated_at'
     ];
 
-   
+
 
     public function products()
-{
-    return $this->belongsToMany(Product::class);
-}
+    {
+        return $this->belongsToMany(Product::class);
+    }
+
+    public static function recursive($categories, $parent = 0, $level = 1, &$listCategory)
+    {
+        if (count($categories) > 0) {
+            foreach ($categories as $key => $value) {
+                if ($value->parent_id == $parent) {
+                    $value->level = $level;
+                    $listCategory[] = $value;
+                    unset($categories[$key]);
+                    self::recursive($categories, $value->id, $level + 1, $listCategory);
+                }
+            }
+        }
+    }
 }

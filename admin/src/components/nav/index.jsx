@@ -12,6 +12,24 @@ export default function Index() {
   const [userDetails, setUserDetails] = useState({}); // Khởi tạo dưới dạng đối tượng rỗng
 
   useEffect(() => {
+    
+    const params = new URLSearchParams(window.location.search);
+    const token = params.get("token");
+
+    if (token) {
+      // Store the token in localStorage and clear token from URL
+      localStorage.setItem("token", token);
+      window.history.replaceState({}, document.title, "/dashboard"); // Adjust the path if needed
+
+      Swal.fire({
+        icon: "success",
+        title: "Đăng Nhập Thành Công",
+        text: "Bạn sẽ được chuyển hướng đến bảng điều khiển.",
+      });
+    } else if (!localStorage.getItem("token")) {
+      navigate("/login");
+    }
+
     const fetchUserDetails = async () => {
       try {
         const token = localStorage.getItem("token");

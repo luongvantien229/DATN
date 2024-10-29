@@ -184,7 +184,7 @@ class DatabaseSeeder extends Seeder
                     'sort_order' => $i,
                     'image' => $list_categories_images[$i],
                     'status' => 1,
-                    'parent_id' =>  mt_rand(1, 3),
+                    'parent_id' => 0,
                     'showHome' => 'YES'
                 ]
             );
@@ -323,7 +323,7 @@ class DatabaseSeeder extends Seeder
         for ($i = 0; $i < count($list_products); $i++) {
             $slug = Str::slug($list_products[$i]);
 
-            $price = $faker->numberBetween(10000, 100000); // Giá ngẫu nhiên từ 100,000 VNĐ đến 10,000,000 VNĐ
+            $price = mt_rand(10, 500) * 1000; // Giá ngẫu nhiên từ 100,000 VNĐ đến 10,000,000 VNĐ
 
             $description = $faker->sentence(20); // Mô tả ngẫu nhiên
             $brand_id = mt_rand(1, 5); // Brand id ngẫu nhiên, bạn có thể điều chỉnh theo thực tế

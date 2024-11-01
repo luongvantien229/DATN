@@ -12,15 +12,6 @@ export default function GrandTotal() {
   const shippingFee = 50000;
   const total = sub_total + shippingFee;
 
-export default function GrandTotal() {
-  const { cartItems } = useSelector((state) => state.cart);
-  const dispatch = useDispatch();
-  const total = cartItems.reduce(
-    (acc, item) => (acc += item.price * item.quantity),
-    0
-  );
-
-
   return (
     <div className="col-lg-6 col-md-6 col-12">
       <div className="grand-total-wrap mb-40">

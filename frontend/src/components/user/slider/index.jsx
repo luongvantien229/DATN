@@ -11,14 +11,6 @@ const Slider = () => {
                 <SliderArena />
             </div>
           </div>
-          {/* <div className="custom-common-column custom-column-width-33 custom-padding-5">
-            <div className="banner-area banner-area-mt">
-              <div className="row">
-              <BannerImageTop isBottom={true} />
-              <BannerImageTop isBottom={false} /> 
-              </div>
-            </div>
-          </div> */}
         </div>
       </div>
     </div>

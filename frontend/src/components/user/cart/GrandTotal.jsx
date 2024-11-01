@@ -1,7 +1,15 @@
-
 import { Link } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import Stripe from "../payments/Stripe";
 
 export default function GrandTotal() {
+  const { cartItems } = useSelector((state) => state.cart);
+  const dispatch = useDispatch();
+  const total = cartItems.reduce(
+    (acc, item) => (acc += item.price * item.quantity),
+    0
+  );
+
   return (
     <div className="col-lg-6 col-md-6 col-12">
       <div className="grand-total-wrap mb-40">
@@ -23,6 +31,9 @@ export default function GrandTotal() {
         </div>
         <div className="grand-total-btn">
           <a href="checkout.html">Thanh toán</a>
+          {
+              total > 0 && <Stripe/>
+            }
         </div>
       </div>
     </div>

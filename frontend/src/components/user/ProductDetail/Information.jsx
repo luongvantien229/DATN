@@ -7,7 +7,6 @@ export default function ProductDetail_Right() {
   return (
     <div className="product-details-wrap-bottom">
       <ProductDetail_Description />
-      <ProductDetail_Additional />
       <ProductDetail_Review />
     </div>
   );

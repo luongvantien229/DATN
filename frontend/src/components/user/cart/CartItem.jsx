@@ -48,17 +48,13 @@ export default function CartItem({ product }) {
         </span>
       </td>
       <td className="cart-quality">
-        <div className="product-quality">
-          <i
-            className="bi bi-caret-up"
-            onClick={() => dispatch(incrementQ(item))}
-          ></i>
-          <span className="mx-2">{quantity}</span>
-          <i
-            className="bi bi-caret-down"
-            onClick={() => dispatch(decrementQ(item))}
-          ></i>
-        </div>
+      <input
+                className="cart-plus-minus-box input-text qty text"
+                name="qtybutton"
+                type="number"
+                value={quantity}
+                onChange={handleQuantityChange}
+              />
       </td>
       <td className="product-total">
         <span>{(product.price ? product.price : 120000) * quantity}đ</span>{" "}

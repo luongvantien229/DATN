@@ -105,18 +105,18 @@ const AddProducts = () => {
   const handleCategoryChange = (event) => {
     const options = event.target.options;
     const selectedCategories = [];
-    
+
     for (let i = 0; i < options.length; i++) {
-        if (options[i].selected) {
-            selectedCategories.push(parseInt(options[i].value));
-        }
+      if (options[i].selected) {
+        selectedCategories.push(parseInt(options[i].value));
+      }
     }
 
     setProduct((prevProduct) => ({
-        ...prevProduct,
-        category_id: selectedCategories,
+      ...prevProduct,
+      category_id: selectedCategories,
     }));
-};
+  };
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -156,7 +156,7 @@ const AddProducts = () => {
     // Gửi category_id như một mảng
     product.category_id.forEach((id) => {
       formData.append("category_id[]", id); // Gửi từng ID
-  });
+    });
 
     formData.append("brand_id", product.brand_id);
     formData.append("favorite", product.favorite);
@@ -317,20 +317,20 @@ const AddProducts = () => {
             <div className="mb-3">
               <label className="form-label">Danh mục</label>
               <select
-    name="category_id"
-    value={product.category_id}
-    onChange={handleCategoryChange}
-    className="form-control"
-    multiple
-    required
->
-    <option value="">Chọn một danh mục</option>
-    {categories.map((category) => (
-        <option key={category.id} value={category.id}>
-            {category.name}
-        </option>
-    ))}
-</select>
+                name="category_id"
+                value={product.category_id}
+                onChange={handleCategoryChange}
+                className="form-control"
+                multiple
+                required
+              >
+                <option value="">Chọn một danh mục</option>
+                {categories.map((category) => (
+                  <option key={category.id} value={category.id}>
+                    {category.name}
+                  </option>
+                ))}
+              </select>
             </div>
 
             {/* Brand Dropdown */}

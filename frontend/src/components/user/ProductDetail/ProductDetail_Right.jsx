@@ -50,7 +50,6 @@ export default function ProductDetail_Right({ product }) {
     const productWithQuantity = { ...product, quantity };
     dispatch(addToCart(productWithQuantity));
 
-    navigate("/cart");
   };
 
   return (

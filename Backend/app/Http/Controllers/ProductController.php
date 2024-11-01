@@ -143,7 +143,8 @@ class ProductController extends Controller
 
             'price' => 'required|numeric',
             'description' => 'required',
-            'category_id' => 'required|numeric',
+            'category_id' => 'required|array', // This ensures category_id is an array
+            'category_id.*' => 'integer|exists:categories,id', // Checks each array item
             'brand_id' => 'required|numeric',
 
             'favorite' => 'required',
@@ -171,7 +172,7 @@ class ProductController extends Controller
             $product->slug = $request->slug;
             $product->price = $request->price;
             $product->description = $request->description;
-            $product->category_id = $request->category_id;
+            $product->category_id = json_encode($request->category_id); // Chuyển đổi mảng thành JSON
             $product->brand_id = $request->brand_id;
 
             $product->favorite = $request->favorite;
@@ -228,6 +229,9 @@ class ProductController extends Controller
 
             // Lưu sản phẩm cập nhật
             $product->update();
+
+             // cập nhật nhiều loại cho sản phẩm
+        $product->category_product()->sync($request->category_id);
 
             return response()->json('Product updated successfully', 200);
         } else {

@@ -28,7 +28,7 @@ class CategoryPostController extends Controller
     public function store(Request $request)
     {
         try {
-            $validated = $request->validate([
+            $request->validate([
                 'name' => 'required|unique:category_posts,name',
 
                 'slug' => 'required',
@@ -55,12 +55,10 @@ class CategoryPostController extends Controller
     public function update($id, Request $request)
     {
         try {
-            $validated = $request->validate([
-                'name' => 'required|unique:category_posts,name',
-
-                'slug' => 'required',
-
-                'status' => 'nullable',
+            $request->validate([
+                'name' => 'required|unique:category_posts,name,' . $id,
+            'slug' => 'required',
+            'status' => 'nullable|boolean', 
 
             ]);
 

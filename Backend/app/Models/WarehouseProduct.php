@@ -13,4 +13,11 @@ class WarehouseProduct extends Model
         'product_id',
         'quantity',
     ];
+
+    // public function warehouses()
+    // {
+    //     return $this->belongsToMany(Warehouse::class, 'warehouse_products')
+    //                 ->withPivot('quantity')
+    //                 ->withTimestamps();
+    // }
 }

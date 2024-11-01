@@ -14,17 +14,17 @@ export const cartSlice = createSlice({
             let existingProduct = state.cartItems.find(product => product.id === item.id)
             if(existingProduct) {
                 existingProduct.quantity += item.quantity // Add the specified quantity
-                toast.success('Product quantity increased')
+                toast.success('Số lượng sản phẩm tăng lên')
             } else {
                 state.cartItems = [{ ...item, quantity: item.quantity }, ...state.cartItems] // Add the product with the entered quantity
-                toast.success('Product added to the cart')
+                toast.success('Sản phẩm đã được thêm vào giỏ hàng')
             }
         },
         incrementQ(state, action) {
             const item = action.payload
             const existingProduct = state.cartItems.find(product => product.id === item.id)
             existingProduct.quantity += 1
-            toast.success('Product quantity increased')
+            toast.success('Số lượng sản phẩm tăng lên')
         },
         decrementQ(state, action) {
             const item = action.payload
@@ -33,12 +33,12 @@ export const cartSlice = createSlice({
             if (existingProduct.quantity === 0) {
                 state.cartItems = state.cartItems.filter(product => product.id !== existingProduct.id)
             }
-            toast.success('Product quantity decreased')
+            toast.success('Số lượng sản phẩm giảm')
         },
         removeFromCart(state, action) {
             const item = action.payload
             state.cartItems = state.cartItems.filter(product => product.id !== item.id)
-            toast.success('Product removed from the cart')
+            toast.success('Sản phẩm đã được xóa khỏi giỏ hàng')
         },
     }
 })

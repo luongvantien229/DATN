@@ -3,76 +3,118 @@
 namespace App\Http\Controllers;
 
 use App\Models\Post;
+use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\File;
 
 class PostController extends Controller
 {
-    // Fetch all posts
+    // List all posts with pagination and related data
     public function index()
     {
-        $posts = Post::with(['users', 'category_posts'])->get();
-        return response()->json(['data' => $posts], 200);
+        $posts = Post::with(['users', 'category_posts'])->paginate(10); // Assuming relationships 'user' and 'categoryPost'
+        return response()->json($posts, 200);
     }
 
-    // Fetch a single post by ID
+    // Display a single post by ID
     public function show($id)
     {
         $post = Post::with(['users', 'category_posts'])->find($id);
-
         if (!$post) {
-            return response()->json(['message' => 'Post not found!'], 404);
+            return response()->json(['message' => 'Post not found'], 404);
         }
-
-        return response()->json(['data' => $post], 200);
+        return response()->json($post, 200);
     }
 
     // Create a new post
     public function store(Request $request)
     {
-        $validatedData = $request->validate([
-            'user_id' => 'required|exists:users,id',
-            'category_post_id' => 'required|exists:category_posts,id',
-            'title' => 'required|string|max:255',
-            'content' => 'required|string',
-        ]);
+        try {
+            $validated = $request->validate([
+                'title' => 'required|string|max:255',
+                'slug' => 'required|string',
+                'description' => 'required|string',
+                'content' => 'required|string',
+                'image' => 'required|image|mimes:jpg,png,jpeg,gif|max:2048',
+                'user_id' => 'required|exists:users,id',
+                'category_posts_id' => 'required|exists:category_posts,id',
+                'status' => 'nullable|integer',
+            ]);
 
-        $post = Post::create($validatedData);
+            $post = new Post();
+            // Handle image upload
+            if ($request->hasFile('image')) {
+                $file = $request->file('image');
+                $ext = $file->getClientOriginalExtension();
+                $filename = time() . '.' . $ext;
 
-        return response()->json(['message' => 'Post created successfully!', 'data' => $post], 201);
+                // Use public_path to ensure the file is saved in the correct directory
+                $file->move(public_path('assets/uploads/post/'), $filename);
+                $post->image = $filename;
+            }
+
+            $post->fill($validated);
+            $post->save();
+
+            return response()->json(['message' => 'Post created successfully', 'data' => $post], 201);
+        } catch (Exception $e) {
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
     }
 
     // Update an existing post
-    public function update(Request $request, $id)
+    public function update($id, Request $request)
     {
-        $post = Post::find($id);
+        try {
+            $validated = $request->validate([
+                'title' => 'required|string|max:255',
+                'slug' => 'required|string',
+                'description' => 'required|string',
+                'content' => 'required|string',
+                'image' => 'nullable|image|mimes:jpg,png,jpeg,gif|max:2048',
+                'category_posts_id' => 'required|exists:category_posts,id',
+                'status' => 'nullable|integer',
+            ]);
 
-        if (!$post) {
-            return response()->json(['message' => 'Post not found!'], 404);
+            $post = Post::findOrFail($id);
+
+            if ($request->hasFile('image')) {
+                $path = public_path('assets/uploads/post/' . $post->image);
+                if (File::exists($path)) {
+                    File::delete($path); // Delete the old image if it exists
+                }
+                $file = $request->file('image');
+                $ext = $file->getClientOriginalExtension();
+                $filename = time() . '.' . $ext;
+
+                // Move the new image to the designated directory
+                $file->move(public_path('assets/uploads/post/'), $filename);
+                $post->image = $filename;
+            }
+
+            $post->fill($validated);
+            $post->save();
+
+            return response()->json(['message' => 'Post updated successfully', 'data' => $post], 200);
+        } catch (Exception $e) {
+            return response()->json(['error' => $e->getMessage()], 500);
         }
-
-        $validatedData = $request->validate([
-            'user_id' => 'required|exists:users,id',
-            'category_post_id' => 'required|exists:category_posts,id',
-            'title' => 'required|string|max:255',
-            'content' => 'required|string',
-        ]);
-
-        $post->update($validatedData);
-
-        return response()->json(['message' => 'Post updated successfully!', 'data' => $post], 200);
     }
 
-    // Delete a post
+    // Delete a post by ID
     public function destroy($id)
     {
         $post = Post::find($id);
-
         if (!$post) {
-            return response()->json(['message' => 'Post not found!'], 404);
+            return response()->json(['message' => 'Post not found'], 404);
+        }
+
+        $path = 'assets/uploads/posts/' . $post->image;
+        if (File::exists($path)) {
+            File::delete($path);
         }
 
         $post->delete();
-
-        return response()->json(['message' => 'Post deleted successfully!'], 200);
+        return response()->json(['message' => 'Post deleted successfully'], 200);
     }
 }

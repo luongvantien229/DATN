@@ -1,6 +1,17 @@
 import { Link } from "react-router-dom";
-
+import { useSelector ,useDispatch} from "react-redux";
+import {
+  removeFromCart,
+} from "../../../redux/slices/cartSlice";
 export default function HeaderBottomAction() {
+  const { cartItems } = useSelector((state) => state.cart);
+  const dispatch = useDispatch();
+  const sub_total = cartItems.reduce(
+    (acc, item) => acc + item.price * item.quantity,
+    0
+  );
+  const shippingFee = 50000;
+  const total = sub_total + shippingFee;
   return (
     <div className="header-action-right">
       <div className="header-action">
@@ -17,55 +28,45 @@ export default function HeaderBottomAction() {
         <div className="header-action-icon header-action-mrg-none">
           <Link to="/cart">
             <i className="far fa-shopping-bag"></i>
-            <span className="pro-count blue">02</span>
+            <span className="pro-count blue">{cartItems.length}</span>
           </Link>
           {/* <div className="cart-dropdown-wrap">
             <ul>
-              <li>
-                <div className="shopping-cart-img">
-                  <a href="product-details.html">
-                    <img alt="" src="assets/images/cart/cart-1.jpg" />
-                  </a>
-                </div>
-                <div className="shopping-cart-title">
-                  <h4>
-                    <a href="product-details.html">Surgical Latex Gloves</a>
-                  </h4>
-                  <h3>
-                    <span>1 × </span>$10.00
-                  </h3>
-                </div>
-                <div className="shopping-cart-delete">
-                  <a href="#">
-                    <i className="far fa-times"></i>
-                  </a>
-                </div>
-              </li>
-              <li>
-                <div className="shopping-cart-img">
-                  <a href="product-details.html">
-                    <img alt="" src="assets/images/cart/cart-2.jpg" />
-                  </a>
-                </div>
-                <div className="shopping-cart-title">
-                  <h4>
-                    <a href="product-details.html">Surgical Latex Gloves</a>
-                  </h4>
-                  <h3>
-                    <span>1 × </span>$10.00
-                  </h3>
-                </div>
-                <div className="shopping-cart-delete">
-                  <a href="/cart">
-                    <i className="far fa-times"></i>
-                  </a>
-                </div>
-              </li>
+              {cartItems.map((item, index) => (
+                <li key={index}>
+                  <div className="shopping-cart-img">
+                    <a href="product-details.html">
+                      <img
+                        alt={item.name}
+                        src={item.image || "assets/images/cart/cart-1.jpg"}
+                      />
+                    </a>
+                  </div>
+                  <div className="shopping-cart-title">
+                    <h4>
+                      <a href="product-details.html">{item.name}</a>
+                    </h4>
+                    <h3>
+                      <span>{item.quantity} × </span>
+                      {item.price.toLocaleString("vi-VN")}đ
+                    </h3>
+                  </div>
+                  <div className="shopping-cart-delete">
+                    <a href="#" onClick={() => dispatch(removeFromCart(item))}>
+                      <i className="far fa-times"></i>
+                    </a>
+                  </div>
+                </li>
+              ))}
             </ul>
             <div className="shopping-cart-footer">
               <div className="shopping-cart-total">
+                Phí vận chuyển{" "}
                 <h4>
-                  Total <span>$383.00</span>
+                  {shippingFee.toLocaleString("vi-VN")}đ
+                </h4>
+                <h4>
+                  Tổng cộng <span>{total.toLocaleString("vi-VN")}đ</span>
                 </h4>
               </div>
               <div className="shopping-cart-button">

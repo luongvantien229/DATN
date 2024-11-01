@@ -12,7 +12,7 @@ const EditProducts = () => {
     slug: "",
     price: "",
     description: "",
-    category_id: "",
+    category_id: [],
     brand_id: "",
     favorite: "",
     view: "",
@@ -30,30 +30,33 @@ const EditProducts = () => {
   const generateSlug = (text) => {
     // Convert to lowercase
     text = text.toLowerCase();
-  
+
     // Replace accented characters with non-accented equivalents (similar to your PHP function)
     text = text
-      .replace(/á|à|ả|ã|ạ|ă|ắ|ằ|ẳ|ẵ|ặ|â|ấ|ầ|ẩ|ẫ|ậ/g, 'a')
-      .replace(/é|è|ẻ|ẽ|ẹ|ê|ế|ề|ể|ễ|ệ/g, 'e')
-      .replace(/i|í|ì|ỉ|ĩ|ị/g, 'i')
-      .replace(/ó|ò|ỏ|õ|ọ|ô|ố|ồ|ổ|ỗ|ộ|ơ|ớ|ờ|ở|ỡ|ợ/g, 'o')
-      .replace(/ú|ù|ủ|ũ|ụ|ư|ứ|ừ|ử|ữ|ự/g, 'u')
-      .replace(/ý|ỳ|ỷ|ỹ|ỵ/g, 'y')
-      .replace(/đ/g, 'd');
-  
+      .replace(/á|à|ả|ã|ạ|ă|ắ|ằ|ẳ|ẵ|ặ|â|ấ|ầ|ẩ|ẫ|ậ/g, "a")
+      .replace(/é|è|ẻ|ẽ|ẹ|ê|ế|ề|ể|ễ|ệ/g, "e")
+      .replace(/i|í|ì|ỉ|ĩ|ị/g, "i")
+      .replace(/ó|ò|ỏ|õ|ọ|ô|ố|ồ|ổ|ỗ|ộ|ơ|ớ|ờ|ở|ỡ|ợ/g, "o")
+      .replace(/ú|ù|ủ|ũ|ụ|ư|ứ|ừ|ử|ữ|ự/g, "u")
+      .replace(/ý|ỳ|ỷ|ỹ|ỵ/g, "y")
+      .replace(/đ/g, "d");
+
     // Remove special characters
-    text = text.replace(/[\'\"\`\~\!\@\#\$\%\^\&\*\(\)\+\=\[\]\{\}\|\\\;\:\,\.\/\?\>\<\-\_]/g, '');
-  
+    text = text.replace(
+      /[\'\"\`\~\!\@\#\$\%\^\&\*\(\)\+\=\[\]\{\}\|\\\;\:\,\.\/\?\>\<\-\_]/g,
+      ""
+    );
+
     // Replace spaces with dashes
-    text = text.replace(/\s+/g, '-');
-  
+    text = text.replace(/\s+/g, "-");
+
     // Replace multiple dashes with a single dash
-    text = text.replace(/-+/g, '-');
-  
+    text = text.replace(/-+/g, "-");
+
     // Trim dashes from the beginning and end
-    return text.trim('-');
+    return text.trim("-");
   };
-  
+
   const [mainImage, setMainImage] = useState(null); // For the main image
   const [relatedImages, setRelatedImages] = useState([]); // For related images
   const [existingMainImage, setExistingMainImage] = useState(null);
@@ -73,7 +76,7 @@ const EditProducts = () => {
             headers: { Authorization: `Bearer ${token}` },
           }
         );
-        setCategories(categoryRes.data.data);
+        setCategories(categoryRes.data);
 
         // Fetch brands
         const brandRes = await axios.get(
@@ -135,12 +138,30 @@ const EditProducts = () => {
     fetchProduct();
   }, [id]);
 
+   // Handle changes for category selection
+   const handleCategoryChange = (event) => {
+    const options = event.target.options;
+    const selectedCategories = [];
+    
+    for (let i = 0; i < options.length; i++) {
+        if (options[i].selected) {
+            selectedCategories.push(parseInt(options[i].value));
+        }
+    }
+
+    setProduct((prevProduct) => ({
+        ...prevProduct,
+        category_id: selectedCategories,
+    }));
+};
+
+
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
     setProduct({
       ...product,
       [name]: type === "checkbox" ? checked : value,
-      ...(name === 'name' && { slug: generateSlug(value) }) // Automatically update slug when the name changes
+      ...(name === "name" && { slug: generateSlug(value) }), // Automatically update slug when the name changes
     });
   };
 
@@ -164,7 +185,10 @@ const EditProducts = () => {
     formData.append("slug", product.slug);
     formData.append("price", product.price);
     formData.append("description", product.description);
-    formData.append("category_id", product.category_id);
+     // Gửi category_id như một mảng
+     product.category_id.forEach((id) => {
+      formData.append("category_id[]", id); // Gửi từng ID
+    });
     formData.append("brand_id", product.brand_id);
     formData.append("favorite", product.favorite);
     formData.append("view", product.view);
@@ -200,7 +224,7 @@ const EditProducts = () => {
             "Content-Type": "multipart/form-data", // For file uploads
           },
           data: {
-            _method: 'PUT',
+            _method: "PUT",
           },
         }
       );
@@ -354,15 +378,25 @@ const EditProducts = () => {
               <select
                 name="category_id"
                 value={product.category_id}
-                onChange={handleChange}
+                onChange={handleCategoryChange}
                 className="form-control"
+                multiple
+                required
               >
                 <option value="">Chọn một danh mục</option>
-                {categories.map((category) => (
-                  <option key={category.id} value={category.id}>
-                    {category.name}
-                  </option>
-                ))}
+                {categories.map((val) => {
+                  // Add indentation based on the category level
+                  let indent = "";
+                  for (let i = 1; i < val.level; i++) {
+                    indent += "--- ";
+                  }
+
+                  return (
+                    <option key={val.id} value={val.id}>
+                      {indent} {val.name}
+                    </option>
+                  );
+                })}
               </select>
             </div>
 

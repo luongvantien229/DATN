@@ -1,12 +1,16 @@
 
 import React from "react"; // Đừng quên import React
 import { Link } from "react-router-dom";
-import { useSelector } from "react-redux"; // Import useSelector
+import { useSelector,useDispatch } from "react-redux"; // Import useSelector
 import CartItem from "./CartItem";
 
 export default function CartTableContent() {
   const cartItems = useSelector((state) => state.cart.cartItems); // Lấy danh sách sản phẩm từ Redux store
-  
+  const dispatch = useDispatch();
+  const total = cartItems.reduce(
+    (acc, item) => (acc += item.price * item.quantity),
+    0
+  );
 
   return (
     <div className="row">
@@ -32,6 +36,18 @@ export default function CartTableContent() {
 
                   ))}
                 </tbody>
+                <thead>
+                  <tr>
+                    <td colSpan={3} className="px-0">
+                      <th  className="width-thumbnail">Tổng cộng</th>
+                    </td>
+                    <th colSpan={3} className="text-center">
+                    <span className="badge bg-danger rounded-pill">
+                      {total}VNĐ
+                    </span>
+                  </th>
+                  </tr>
+                </thead>
               </table>
             </div>
             <div className="cart-shiping-update-wrapper">

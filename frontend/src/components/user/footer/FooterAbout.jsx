@@ -6,7 +6,7 @@ export default function FooterAbout() {
       <div className="footer-widget footer-about mb-30">
         <div className="footer-logo logo-width-1">
           <a href="index.html">
-            <img src="assets/images/logo/logoo.png" alt="logo" />
+            <img src="/assets/images/logo/logoo.png" alt="logo" />
           </a>
         </div>
         <div className="copyright">

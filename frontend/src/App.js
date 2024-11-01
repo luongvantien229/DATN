@@ -1,7 +1,7 @@
 import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import { Provider } from 'react-redux'; // Nhập Provider
-import store from './redux/store'; // Đường dẫn đến store
+import { Provider } from 'react-redux'; 
+import store from './redux/store';
 
 import axios from "axios"; // Nhập axios
 import Header from "./components/user/header";
@@ -21,12 +21,31 @@ import ProductDetail from "./pages/user/productDetail";
 import { useEffect } from "react";
 import PaymentSuccess from "./components/user/payments/PaymentSuccess";
 
+import UserProfile from "./pages/user/UserProfile";
+
+import './assets/css/vendor/bootstrap.min.css';
+import './assets/css/vendor/font-cerebrisans.css';
+import './assets/css/vendor/fontawesome-all.min.css';
+import './assets/css/vendor/font-medizin.css';
+import './assets/css/plugins/slick.css'; 
+import './assets/css/plugins/animate.css';
+import './assets/css/plugins/magnific-popup.css';
+import './assets/css/plugins/select2.min.css';
+import './assets/css/plugins/jquery-ui.css';
+import './assets/css/style.css';
+import './assets/css/button.css';
+
+
+const backendUrl = process.env.REACT_APP_BACKEND_URL;
+
+
+
 // Thiết lập baseURL cho axios
 axios.defaults.baseURL = "http://127.0.0.1:8000/api";
 
 // Thiết lập headers mặc định
-axios.defaults.headers.common["Authorization"] = "Bearer YOUR_TOKEN_HERE"; // Thay 'YOUR_TOKEN_HERE' bằng token thực tế của bạn
-axios.defaults.headers.common["Content-Type"] = "application/json"; // Thêm header cho kiểu nội dung
+axios.defaults.headers.common["Authorization"] = "Bearer YOUR_TOKEN_HERE"; 
+axios.defaults.headers.common["Content-Type"] = "application/json"; 
 
 const MainLayout = ({ children }) => (
   <div className="main-wrapper">
@@ -39,14 +58,7 @@ const MainLayout = ({ children }) => (
 );
 
 function App() {
-  useEffect(() => {
-  const fetchLogin = async () => {
-    const loginList = await fetch("http://localhost:3000/login");
-    // loginApi.getAll();
-    // console.log(loginList);
-  }
-  fetchLogin();
-  }, []);
+  
   return (
     <Provider store={store}> {/* Bọc ứng dụng trong Provider */}
        <Header />
@@ -104,6 +116,14 @@ function App() {
           element={
             <MainLayout>
               <LoginAndRegister />
+            </MainLayout>
+          }
+        />
+        <Route
+          path="/user-profile"
+          element={
+            <MainLayout>
+              <UserProfile />
             </MainLayout>
           }
         />

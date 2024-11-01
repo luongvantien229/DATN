@@ -48,6 +48,7 @@ export default function CartItem({ item }) {
           {item.price ? item.price.toLocaleString() + "đ" : "120.000đ"}
         </span>
       </td>
+
       <td className="">
         <i
           className="bi bi-caret-up"
@@ -58,7 +59,6 @@ export default function CartItem({ item }) {
           className="bi bi-caret-down"
           onClick={() => dispatch(decrementQ(item))}
         ></i>
-      </td>
       <td className="product-total">
         <span>{(item.price * item.quantity).toLocaleString("vi-VN")}đ</span> {/* Tính toán thành tiền */}
       </td>

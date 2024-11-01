@@ -1,9 +1,9 @@
-
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { useDispatch } from 'react-redux';
-import { addToCart } from '../../../redux/slices/cartSlice';
-import { useNavigate } from 'react-router-dom';
+import { useDispatch } from "react-redux";
+import { addToCart } from "../../../redux/slices/cartSlice";
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 export default function ProductDetail_Right({ product }) {
   const [quantity, setQuantity] = useState(1);
@@ -11,26 +11,25 @@ export default function ProductDetail_Right({ product }) {
 
   const handleQuantityChange = (e) => {
     const value = e.target.value;
-    // Kiểm tra xem giá trị nhập vào có phải là số và lớn hơn 0 không
     if (!isNaN(value) && value > 0) {
-        const quantityValue = Number(value); // Chuyển đổi giá trị thành số
-        setQuantity(quantityValue); // Cập nhật state quantity
-        sessionStorage.setItem("productQuantity", quantityValue); // Lưu quantity vào session storage
-        console.log("Quantity:", quantityValue); // In ra giá trị quantity
+      const quantityValue = Number(value);
+      setQuantity(quantityValue);
+      sessionStorage.setItem("productQuantity", quantityValue);
+      console.log("Quantity:", quantityValue);
     } else {
-        console.log("Invalid quantity value:", value); // In ra thông báo nếu giá trị không hợp lệ
+      console.log("Invalid quantity value:", value);
     }
-};
-
+  };
 
   useEffect(() => {
     const fetchBrands = async () => {
       try {
-        const response = await fetch("http://127.0.0.1:8000/api/all_brands");
-        const data = await response.json();
-
-        setBrands(data.brands);
-
+        const response = await axios.get("/all_brands");
+        const all_brand = response.data.brands;
+        const brands = all_brand.find((b) => {
+          return b.id === +product.brand_id
+        })
+        setBrands(brands);
       } catch (error) {
         console.error("Error fetching brands:", error);
       }
@@ -38,28 +37,20 @@ export default function ProductDetail_Right({ product }) {
 
     fetchBrands();
   }, []);
-
-
-  const brand = brands.find(brand => brand.id === product.brand_id);
-
-
+  
   const formattedPrice = new Intl.NumberFormat("vi-VN", {
     style: "currency",
     currency: "VND",
   }).format(product.price);
 
-  
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
   const handleAddToCart = () => {
     const productWithQuantity = { ...product, quantity };
-    console.log(123);
-    console.log(productWithQuantity);
     dispatch(addToCart(productWithQuantity));
-    // navigate('/cart');
-  };
 
+  };
 
   return (
     <div className="col-lg-6 col-md-6">
@@ -77,7 +68,10 @@ export default function ProductDetail_Right({ product }) {
         <h1>{product.name}</h1>
         <div className="pro-details-brand-review">
           <div className="pro-details-brand">
-            <span>Thương hiệu: <a href="shop.html">{brand ? brand.name : "Đang tải..."}</a></span>
+            <span>
+              Thương hiệu: {brands ? brands.name : "Đang tải..."}
+              <a href="shop.html"></a>
+            </span>
           </div>
           <div className="pro-details-rating-wrap">
             <span>5.00</span>
@@ -119,9 +113,7 @@ export default function ProductDetail_Right({ product }) {
           </div>
         </div>
         <div className="pro-details-action-wrap">
-
           <div className="pro-details-add-to-cart" onClick={handleAddToCart}>
-
             <button>Thêm vào giỏ hàng</button>
           </div>
           <div className="pro-details-action tooltip-style-4">
@@ -135,9 +127,12 @@ export default function ProductDetail_Right({ product }) {
         </div>
         <div className="product-details-meta">
           <ul>
-            <li><span>Mã sản phẩm:</span> {product.sku}</li>
             <li>
-              <span>Thẻ:</span> <a href="#">covid19</a> / <a href="#">chăm sóc tại nhà</a> / <a href="#">Nhà thuốc</a>
+              <span>Mã sản phẩm:</span> {product.sku}
+            </li>
+            <li>
+              <span>Thẻ:</span> <a href="#">covid19</a> /{" "}
+              <a href="#">chăm sóc tại nhà</a> / <a href="#">Nhà thuốc</a>
             </li>
           </ul>
         </div>
@@ -162,4 +157,3 @@ export default function ProductDetail_Right({ product }) {
     </div>
   );
 }
-

@@ -4,6 +4,7 @@ import HeaderTopHeaderInfoRight from "./HeaderTopInfoRight";
 import HeaderBottomLogo from "./HeaderBottomLogo";
 import HeaderBottomMenu from "./HeaderBottomMenu";
 import HeaderBottomAction from "./HeaderBottomAction";
+import Style from "./header.scss";
 
 const Header = () => {
   return (

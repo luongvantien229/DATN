@@ -30,7 +30,7 @@ export default function HeaderBottomAction() {
             <i className="far fa-shopping-bag"></i>
             <span className="pro-count blue">{cartItems.length}</span>
           </Link>
-          <div className="cart-dropdown-wrap">
+          {/* <div className="cart-dropdown-wrap">
             <ul>
               {cartItems.map((item, index) => (
                 <li key={index}>
@@ -74,7 +74,7 @@ export default function HeaderBottomAction() {
                 <a href="checkout.html">Checkout</a>
               </div>
             </div>
-          </div>
+          </div> */}
         </div>
         <div className="header-action-icon d-block d-lg-none">
           <div className="burger-icon">

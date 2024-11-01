@@ -1,7 +1,7 @@
-import { Link, useNavigate } from "react-router-dom";
 import React, { useState } from "react";
 import axios from "axios";
 import Swal from "sweetalert2";
+import { Link, useNavigate } from "react-router-dom";
 
 export default function Register() {
   const navigate = useNavigate();
@@ -15,7 +15,7 @@ export default function Register() {
 
     try {
       const response = await axios.post(
-        "http://127.0.0.1:8000/api/auth/register", // Đổi thành URL đúng cho đăng nhập
+        "/auth/register",
         {
           name,
           email,
@@ -28,23 +28,22 @@ export default function Register() {
       // Kiểm tra nếu phản hồi và dữ liệu tồn tại
       if (response && response.data) {
         // Lưu token vào localStorage
-        localStorage.setItem("token", response.data.access_token);
-
-        // Điều hướng đến bảng điều khiển
-        navigate("/");
 
         Swal.fire({
           icon: "success",
           title: "Đăng Ký Thành Công",
           text: "Bạn sẽ được chuyển hướng đến bảng điều khiển.",
+        }).then(() => {
+          // Điều hướng đến bảng điều khiển
+          navigate("/login-register");
+          
+          // Làm mới trang sau khi người dùng nhấn OK
+          window.location.reload();
         });
-      } else {
-        Swal.fire({
-          icon: "error",
-          title: "Lỗi",
-          text: "Không nhận được dữ liệu từ máy chủ.",
-        });
-      }
+
+
+      } 
+     
     } catch (error) {
       // Xử lý lỗi và ghi lại chúng
       if (error.response) {

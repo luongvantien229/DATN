@@ -17,7 +17,9 @@ import Contact from "./pages/user/contact";
 import Cart from "./pages/user/cart";
 import LoginAndRegister from "./pages/user/loginAndRegister";
 import ProductDetail from "./pages/user/productDetail";
+
 import { useEffect } from "react";
+import PaymentSuccess from "./components/user/payments/PaymentSuccess";
 
 // Thiết lập baseURL cho axios
 axios.defaults.baseURL = "http://127.0.0.1:8000/api";
@@ -28,7 +30,7 @@ axios.defaults.headers.common["Content-Type"] = "application/json"; // Thêm hea
 
 const MainLayout = ({ children }) => (
   <div className="main-wrapper">
-    <Header />
+    {/* <Header /> */}
     <Breadcrumb />
     {children}
     <Footer />
@@ -47,6 +49,7 @@ function App() {
   }, []);
   return (
     <Provider store={store}> {/* Bọc ứng dụng trong Provider */}
+       <Header />
       <Routes>
         <Route
           path="/"
@@ -113,6 +116,11 @@ function App() {
             </MainLayout>
           }
         />
+        <Route path="/payment/success" element={
+           <MainLayout>
+           <PaymentSuccess />
+         </MainLayout>
+        } />
         <Route path="*" element={<NotFound />} /> {/* Trang 404 */}
       </Routes>
       <div className="mobile">

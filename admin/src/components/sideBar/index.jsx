@@ -93,6 +93,30 @@ export default function Index() {
             </div>
           </Link>
         </li>
+        <li className={`menu-item ${activeMenu === "/category_posts" ? "active open" : ""}`}>
+          <Link to="/category_posts" className="menu-link" onClick={() => handleMenuClick("/category_posts")}>
+            <i className="menu-icon tf-icons bx bx-layout"></i>
+            <div className="text-truncate" data-i18n="Danh mục bài viết">
+              Danh mục bài viết
+            </div>
+          </Link>
+        </li>
+        <li className={`menu-item ${activeMenu === "/posts" ? "active open" : ""}`}>
+          <Link to="/posts" className="menu-link" onClick={() => handleMenuClick("/posts")}>
+            <i className="menu-icon tf-icons bx bx-layout"></i>
+            <div className="text-truncate" data-i18n="Bài viết">
+              Bài viết
+            </div>
+          </Link>
+        </li>
+        <li className={`menu-item ${activeMenu === "/warehouses" ? "active open" : ""}`}>
+          <Link to="/warehouses" className="menu-link" onClick={() => handleMenuClick("/warehouses")}>
+            <i className="menu-icon tf-icons bx bx-layout"></i>
+            <div className="text-truncate" data-i18n="Nhà kho">
+              Nhà kho
+            </div>
+          </Link>
+        </li>
         <li className="menu-item">
           <Link to="/login">
             <button type="button" className="btn btn-primary">

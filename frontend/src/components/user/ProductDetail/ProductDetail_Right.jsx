@@ -57,7 +57,7 @@ export default function ProductDetail_Right({ product }) {
     console.log(123);
     console.log(productWithQuantity);
     dispatch(addToCart(productWithQuantity));
-    navigate('/cart');
+    // navigate('/cart');
   };
 
 

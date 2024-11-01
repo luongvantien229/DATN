@@ -6,7 +6,7 @@ import $ from "jquery";
 import "datatables.net";
 
 const Products = () => {
-  const [categories, setCategories] = useState([]);
+  // const [categories, setCategories] = useState([]);
   const [brands, setBrands] = useState([]);
   const [productTypes, setProductTypes] = useState([]);
   const [products, setProducts] = useState([]);
@@ -18,13 +18,13 @@ const Products = () => {
       try {
         const token = localStorage.getItem("token");
         // Fetch categories
-        const categoryRes = await axios.get(
-          "http://localhost:8000/api/categories/index",
-          {
-            headers: { Authorization: `Bearer ${token}` },
-          }
-        );
-        setCategories(categoryRes.data.data);
+        // const categoryRes = await axios.get(
+        //   "http://localhost:8000/api/categories/index",
+        //   {
+        //     headers: { Authorization: `Bearer ${token}` },
+        //   }
+        // );
+        // setCategories(categoryRes.data.data);
 
         // Fetch brands
         const brandRes = await axios.get(

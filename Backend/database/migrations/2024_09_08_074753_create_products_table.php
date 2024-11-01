@@ -32,6 +32,7 @@ return new class extends Migration
             $table->integer('track_qty')
                 ->default('1'); // theo dỗi số lượng tồn kho
             $table->integer('qty')->nullable(); // số lượng sản phẩm
+            $table->softDeletes();
             $table->timestamps();
         });
 

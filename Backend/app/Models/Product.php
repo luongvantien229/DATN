@@ -4,10 +4,12 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Product extends Model
 {
-    use HasFactory;
+    use HasFactory, SoftDeletes;
+
     protected $fillable = [
         'name',
         'slug',
@@ -28,14 +30,27 @@ class Product extends Model
         'qty',
         'status',
     ];
+
     protected $hidden = [
         'created_at',
-        'updated_at'
+        'updated_at',
+        'deleted_at'
     ];
 
-    public function product_images(){
+    protected $casts = [
+        'price' => 'integer',
+        'favorite' => 'integer',
+        'view' => 'integer',
+        'track_qty' => 'integer',
+        'qty' => 'integer',
+        'status' => 'integer',
+    ];
+
+    public function product_images()
+    {
         return $this->hasMany(ProductImage::class);
     }
+
     public function category()
     {
         return $this->belongsTo(Category::class);
@@ -48,6 +63,12 @@ class Product extends Model
 
     public function category_product()
     {
-        return $this->belongsToMany(Category::class,'category_product','product_id','category_id');
+        return $this->belongsToMany(Category::class, 'category_product', 'product_id', 'category_id');
+    }
+
+    public function warehouses()
+    {
+        return $this->belongsToMany(Warehouse::class, 'warehouse_products')
+                    ->withPivot('quantity');
     }
 }

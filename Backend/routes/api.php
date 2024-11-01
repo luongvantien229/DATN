@@ -71,18 +71,20 @@ Route::group(['prefix' => 'users', 'middleware' => [AdminMiddleware::class]], fu
 });
 
 // Warehouse CRUD routes
-Route::group(['prefix' => 'Warehouses', 'middleware' => [AdminMiddleware::class]], function ($router) {
+Route::group(['prefix' => 'warehouses', 'middleware' => [AdminMiddleware::class]], function ($router) {
     Route::controller(WarehouseController::class)->group(function () {
         Route::get('/index', 'index');
         Route::get('/show/{id}', 'show');
+        Route::post('/store', 'store');
+        Route::put('/update/{id}', 'update');
+        Route::delete('/destroy/{id}', 'destroy');
     });
 });
 // Warehouse Products CRUD routes
 Route::group(['prefix' => 'warehouse_products', 'middleware' => [AdminMiddleware::class]], function ($router) {
-    Route::controller(WarehouseProductController::class)->group(function () {
-        Route::post('/store/warehouses/{warehouse_id}/products', 'store');
-        Route::post('/update/warehouses/{warehouse_id}/products/{product_id}', 'update');
-        Route::delete('/destroy/warehouses/{warehouse_id}/products/{product_id}', 'destroy');
+    Route::controller(WarehouseController::class)->group(function () {
+        Route::post('/store/warehouses/{warehouseId}/products', 'addProductToWarehouse');
+        Route::delete('/destroy/warehouses/{warehouseId}/products/{productId}', 'removeProductFromWarehouse');
     });
 });
 
@@ -211,7 +213,7 @@ Route::get('/new_products', [IndexController::class, 'new_products']);
 Route::get('/favorite_products', [IndexController::class, 'favorite_products']);
 Route::get('/product_detail/{slug}/{id}', [IndexController::class, 'product_detail']);
 Route::get('banners/size/{size}', [BannerController::class, 'getBannersBySize']); // ví dụ: GET /api/banners/size/1 để lấy các banner có kích thước 800x600;
-                                                                                               // GET /api/banners/size/2 để lấy các banner có kích thước 650x250.
+// GET /api/banners/size/2 để lấy các banner có kích thước 650x250.
 // Route::get('/search', [IndexController::class, 'search']);
 Route::get('/search-suggestions', [IndexController::class, 'searchSuggestions']);
 Route::post('/image-search', [ImageSearchController::class, 'searchByImage']);

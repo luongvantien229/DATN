@@ -28,7 +28,7 @@ export default function CartTableContent() {
                 <tbody>
 
                   {cartItems.map((item, index) => (
-                    <CartItem key={index} product={item} /> // Truyền từng sản phẩm vào CartItem
+                    <CartItem key={index} item={item} /> // Truyền từng sản phẩm vào CartItem
 
                   ))}
                 </tbody>

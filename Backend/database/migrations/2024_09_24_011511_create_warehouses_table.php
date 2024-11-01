@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('location');
             $table->foreignId('user_id')->references('id')->on('users')->onDelete('cascade');
+            $table->integer('status');
             $table->timestamps();
         });
     }

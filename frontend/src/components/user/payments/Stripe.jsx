@@ -14,9 +14,7 @@ export default function Stripe() {
             )
             window.location.href = response.data.url
 
-            const response = await axios.post('/pay',
-                {cartItems, success_url: 'http://localhost:3000/payment/success'}
-            )
+        
             console.log('Redirecting to:', response.data.url); 
             window.location.href = response.data.url;
 

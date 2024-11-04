@@ -58,7 +58,7 @@ export default function Register() {
           Swal.fire({
             icon: "error",
             title: "Lỗi",
-            text: `Lỗi: ${error.response.status}. Vui lòng thử lại sau.`,
+            text: `Email đã tồn tại.`,
           });
         }
       } else {

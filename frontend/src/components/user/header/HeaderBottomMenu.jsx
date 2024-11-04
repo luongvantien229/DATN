@@ -20,7 +20,7 @@ export default function HeaderBottomMenu() {
           </li>
           <li className="position-static">
             <Link to="#">
-              Shop <i className="fa fa-chevron-down"></i>
+              Danh mục <i className="fa fa-chevron-down"></i>
             </Link>
             <ul className="mega-menu">
               <li className="sub-mega-menu sub-mega-menu-width-22">

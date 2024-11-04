@@ -1,26 +1,48 @@
-import React from "react";
+import React from 'react';
+import Style from './Style.scss';
 
-export default function Index() {
+const Pagination = ({ currentPage, totalProducts, productsPerPage, paginate }) => {
+  const totalPages = Math.ceil(totalProducts / productsPerPage);
+  
+  const handleClick = (page) => {
+    if (page !== currentPage) {
+      paginate(page);
+    }
+  };
+
+  const renderPageNumbers = () => {
+    const pageNumbers = [];
+    for (let i = 1; i <= totalPages; i++) {
+      pageNumbers.push(
+        <li key={i}>
+          <button 
+            onClick={() => handleClick(i)} 
+            className={currentPage === i ? 'active' : ''}
+          >
+            {i}
+          </button>
+        </li>
+      );
+    }
+    return pageNumbers;
+  };
+
   return (
-    <div className="pro-pagination-style text-center mt-55">
+    <nav className="pagination">
       <ul>
+        {renderPageNumbers()}
         <li>
-          <a className="active" href="#">
-            1
-          </a>
-        </li>
-        <li>
-          <a href="#">2</a>
-        </li>
-        <li>
-          <a href="#">3</a>
-        </li>
-        <li>
-          <a className="next" href="#">
+          <button 
+            onClick={() => handleClick(currentPage + 1)} 
+            disabled={currentPage === totalPages}
+            className="next"
+          >
             <i className="far fa-angle-double-right"></i>
-          </a>
+          </button>
         </li>
       </ul>
-    </div>
+    </nav>
   );
-}
+};
+
+export default Pagination;

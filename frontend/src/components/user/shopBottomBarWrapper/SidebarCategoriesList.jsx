@@ -1,43 +1,32 @@
 import React from "react";
+import { Link } from "react-router-dom";
 
-export default function SidebarCategoriesList() {
+export default function SidebarCategoriesList({ allCategories, setSelectedCategory, selectedCategory }) {
   return (
     <div className="sidebar-widget sidebar-widget-wrap sidebar-widget-padding-1 mb-20">
       <h4 className="sidebar-widget-title">Danh Mục</h4>
       <div className="sidebar-categories-list">
         <ul>
           <li>
-            <a href="shop.html">Phụ Kiện</a>
-            <ul>
-              <li>
-                <a href="shop.html">Chưa Phân Loại</a>
-              </li>
-            </ul>
+            <Link
+              to="/shop" 
+              className={selectedCategory === null ? "active" : ""}
+              onClick={() => setSelectedCategory(null)} // Reset category
+            >
+              Tất cả sản phẩm
+            </Link>
           </li>
-          <li>
-            <a href="shop.html">Huyết Áp</a>
-          </li>
-          <li>
-            <a href="shop.html">Khẩu Trang</a>
-          </li>
-          <li>
-            <a href="shop.html">Dụng Cụ Y Tế Gia Đình</a>
-          </li>
-          <li>
-            <a href="shop.html">Thiết Bị Bệnh Viện</a>
-          </li>
-          <li>
-            <a href="shop.html">Cuộc Sống Tự Lập</a>
-          </li>
-          <li>
-            <a href="shop.html">Cá Nhân</a>
-          </li>
-          <li>
-            <a href="shop.html">Hiệu Thuốc</a>
-          </li>
-          <li>  
-            <a href="shop.html">Phẫu Thuật</a>
-          </li>
+          {allCategories.map((category) => (
+            <li key={category.id}>
+              <a 
+                href="#" 
+                onClick={() => setSelectedCategory(category.id)} 
+                className={selectedCategory === category.id ? "active" : ""}
+              >
+                {category.name}
+              </a>
+            </li>
+          ))}
         </ul>
       </div>
     </div>

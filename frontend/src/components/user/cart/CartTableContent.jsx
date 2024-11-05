@@ -7,7 +7,7 @@ import CartItem from "./CartItem";
 export default function CartTableContent() {
   const cartItems = useSelector((state) => state.cart.cartItems); // Lấy danh sách sản phẩm từ Redux store
   const dispatch = useDispatch();
-  const total = cartItems.reduce(
+  const sub_total = cartItems.reduce(
     (acc, item) => (acc += item.price * item.quantity),
     0
   );
@@ -43,7 +43,7 @@ export default function CartTableContent() {
                     </td>
                     <th colSpan={3} className="text-center">
                     <span className="badge bg-danger rounded-pill">
-                      {total}VNĐ
+                      {sub_total.toLocaleString("vi-VN")}đ
                     </span>
                   </th>
                   </tr>

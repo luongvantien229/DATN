@@ -6,6 +6,7 @@ use App\Models\Banner;
 use App\Models\Brand;
 use App\Models\Category;
 use App\Models\CategoryPost;
+use App\Models\Comment;
 use App\Models\Post;
 use App\Models\Product;
 use App\Models\QA;
@@ -34,6 +35,7 @@ class IndexController extends Controller
     public function all_brands()
     {
         $brands = Brand::where('status', 1)
+            ->withCount('products')
             ->orderBy('created_at', 'desc')
             ->get();
 
@@ -46,12 +48,14 @@ class IndexController extends Controller
         $categories = Category::where('status', 1)
             ->orderBy('created_at', 'desc')->get();
 
+        $listCategory = [];
+        Category::recursive($categories, 0, 1, $listCategory);
 
         return response()->json([
-            'categories' => $categories,
-
+            'categories' => $listCategory,
         ], 200);
     }
+
 
     public function all_products()
     {
@@ -101,7 +105,7 @@ class IndexController extends Controller
 
     public function product_detail($slug, $id, Request $request)
     {
-        
+
         $product = Product::find($id);
         if ($product === null) {
             return response()->json('Product not found', 404);
@@ -167,13 +171,17 @@ class IndexController extends Controller
         $suggestions = Product::where('name', 'LIKE', '%' . $searchTerm . '%')
             ->orWhere('description', 'LIKE', '%' . $searchTerm . '%')
             ->take(10) // Lấy tối đa 10 kết quả
-            ->get(['id', 'name', 'image', 'price']); // Lấy các trường cần thiết cho gợi ý
+            ->get(['id', 'name','slug', 'image', 'price']); // Lấy các trường cần thiết cho gợi ý
 
         // Trả về kết quả dưới dạng JSON
         return response()->json($suggestions);
     }
 
 
+    public function load_comments(Request $request){
+        $product_id = $request->product_id;
+        $comments = Comment::where('product_id', $product_id)->get();
+    }
 
 
     // public function filter(Request $request)
@@ -260,8 +268,18 @@ class IndexController extends Controller
                 case 'Sort_Z_A':
                     $query->orderBy('name', 'DESC');
                     break;
+                case 'newest':
+                    $query->orderBy('id', 'DESC');
+                    break;
+                default:
+                    $query->orderBy('id', 'DESC');
+                    break;
             }
+        } else {
+            // Default sorting if sort_by is not provided
+            $query->orderBy('id', 'DESC');
         }
+
 
 
         if ($request->has('price')) {
@@ -312,10 +330,11 @@ class IndexController extends Controller
         // Prepare the response data
         $response = [
             'products' => $products,
-            // 'min_price' => $min_price,
-            // 'max_price' => $max_price,
-            // 'min_price_range' => $min_price_range,
-            // 'max_price_range' => $max_price_range,
+            'pagination' => [
+                'current_page' => $products->currentPage(),
+                'last_page' => $products->lastPage(),
+                'total' => $products->total(),
+            ],
         ];
 
         // Return JSON response

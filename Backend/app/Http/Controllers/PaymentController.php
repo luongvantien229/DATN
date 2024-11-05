@@ -7,10 +7,14 @@ namespace App\Http\Controllers;
 // use Stripe\Stripe;
 // use Stripe\Charge;
 // use Illuminate\Http\Request;
+use App\Events\OrderCompletedEvent;
+use App\Mail\OrderInvoiceMail;
+use App\Models\Coupon;
 use App\Models\Product;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Order;
 use App\Models\OrderItem;
+use Illuminate\Support\Facades\Mail;
 use Stripe\Exception\CardException;
 use App\Http\Controllers\Controller;
 use ErrorException;
@@ -66,7 +70,7 @@ class PaymentController extends Controller
     public function pay(Request $request)
     {
         $cartItems = $request->input('cartItems', []);
-
+        $coupon = $request->input('coupon', []);
         if (empty($cartItems)) {
             return response()->json(['message' => 'Cart is empty!'], 400);
         }
@@ -97,6 +101,12 @@ class PaymentController extends Controller
                     'quantity' => $item['quantity'],
                 ];
             }
+
+            //create the coupon in the database
+            $coupon = Coupon::where('code')->first();
+            $coupon->used = $coupon->used . ',' . Auth::id();
+            $coupon->time = $coupon->time - 1;
+            $coupon->save();
 
             // Create the order in the database
             $order = new Order();
@@ -140,6 +150,12 @@ class PaymentController extends Controller
                 'success_url' => $request->success_url,
                 'cancel_url' => $request->input('cancel_url', url('/cancel')), // Optional cancel URL
             ]);
+
+            // Phát sự kiện đơn hàng hoàn thành (realtime cho admin)
+            broadcast(new OrderCompletedEvent($order))->toOthers();
+
+            // Gửi email hóa đơn sau khi đặt hàng
+            Mail::to(auth()->user()->email)->send(new OrderInvoiceMail($order));
 
             return response()->json([
                 'message' => 'Payment successful and order created!',

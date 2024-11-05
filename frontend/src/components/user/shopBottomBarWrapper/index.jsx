@@ -7,6 +7,7 @@ import Pagination from "../pagination";
 import Product from "./Product";
 import Style from "./Style.scss"; 
 
+
 export default function Index() {
   const [allProducts, setAllProducts] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);

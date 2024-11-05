@@ -6,6 +6,7 @@ use App\Http\Controllers\BannerController;
 use App\Http\Controllers\BrandController;
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\ContactController;
+use App\Http\Controllers\CouponController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\UserController;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
@@ -242,35 +243,7 @@ Route::get('/login/facebook/callback', [FacebookController::class, 'callback_fac
 Route::get('/login-customer-facebook', [FacebookController::class, 'login_customer_facebook']);
 Route::get('/customer/facebook/callback', [FacebookController::class, 'callback_customer_facebook']);
 
-
-// Route::group([
-//     'middleware' => 'api',
-//     'prefix' => 'auth'
-// ], function ($router) {
-//     Route::get('/email/verify/{id}/{hash}', function (EmailVerificationRequest $request) {
-//         // Extract the user from the token to ensure they are authenticated
-//         $user = JWTAuth::parseToken()->authenticate();
-
-//         // Check if the user is authenticated
-//         if ($user) {
-//             // Fulfill the email verification request
-//             $request->fulfill();
-
-//             // Redirect or return a JSON response after successful verification
-//             return redirect('/')->with('message', 'Email verified successfully!');
-//         }
-
-//         // Return an error if the user is not authenticated
-//         return response()->json(['message' => 'Unauthorized'], 401);
-//     })->middleware(['signed'])->name('verification.verify');
-//     Route::get('/email/verify', function () {
-//         return response()->json([
-//             'message' => 'Please verify your email address.'
-//         ], 200);
-//     })->name('verification.notice');
-
-
-// });
+Route::post('/check-coupon',[CouponController::class,'check_coupon']);
 
 
 

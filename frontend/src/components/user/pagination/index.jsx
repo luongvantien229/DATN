@@ -1,12 +1,9 @@
-import React from 'react';
-import Style from './Style.scss';
+import React from "react";
 
-const Pagination = ({ currentPage, totalProducts, productsPerPage, paginate }) => {
-  const totalPages = Math.ceil(totalProducts / productsPerPage);
-  
+export default function Pagination({ currentPage, totalPages, onPageChange }) {
   const handleClick = (page) => {
-    if (page !== currentPage) {
-      paginate(page);
+    if (page >= 1 && page <= totalPages) {
+      onPageChange(page); // Call the function passed as prop
     }
   };
 
@@ -15,12 +12,12 @@ const Pagination = ({ currentPage, totalProducts, productsPerPage, paginate }) =
     for (let i = 1; i <= totalPages; i++) {
       pageNumbers.push(
         <li key={i}>
-          <button 
-            onClick={() => handleClick(i)} 
-            className={currentPage === i ? 'active' : ''}
+          <a
+            className={currentPage === i ? "active" : ""}
+            onClick={() => handleClick(i)} // Change page on click
           >
             {i}
-          </button>
+          </a>
         </li>
       );
     }
@@ -28,21 +25,19 @@ const Pagination = ({ currentPage, totalProducts, productsPerPage, paginate }) =
   };
 
   return (
-    <nav className="pagination">
+    <div className="pro-pagination-style text-center mt-55">
       <ul>
         {renderPageNumbers()}
         <li>
-          <button 
-            onClick={() => handleClick(currentPage + 1)} 
-            disabled={currentPage === totalPages}
+          <a
             className="next"
+            onClick={() => handleClick(currentPage + 1)} // Next page
+            style={{ pointerEvents: currentPage === totalPages ? "none" : "auto" }} // Disable if on last page
           >
             <i className="far fa-angle-double-right"></i>
-          </button>
+          </a>
         </li>
       </ul>
-    </nav>
+    </div>
   );
-};
-
-export default Pagination;
+}

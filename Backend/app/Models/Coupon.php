@@ -15,5 +15,9 @@ class Coupon extends Model
         'condition',
         'number',
         'code',
+        'date_start',
+        'date_end',
+        'used',
+        'status',
     ];
 }

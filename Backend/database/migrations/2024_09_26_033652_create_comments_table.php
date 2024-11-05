@@ -16,6 +16,7 @@ return new class extends Migration
             $table->foreignId('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->foreignId('product_id')->references('id')->on('products')->onDelete('cascade');
             $table->text('message');
+            $table->timestamp('date');
             $table->integer('parent_id')->nullable();
             $table->integer('status')->default('1');
             $table->timestamps();

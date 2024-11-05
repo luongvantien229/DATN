@@ -34,6 +34,7 @@ import './assets/css/plugins/select2.min.css';
 import './assets/css/plugins/jquery-ui.css';
 import './assets/css/style.css';
 import './assets/css/button.css';
+import './assets/css/index.css';
 
 
 const backendUrl = process.env.REACT_APP_BACKEND_URL;

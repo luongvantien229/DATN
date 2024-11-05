@@ -49,14 +49,14 @@ class ContactController extends Controller
         $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|email',
-            'phone' => 'required|number|max:10',
+            'phone' => 'required|digits:10',
             'title' => 'required',
             'message' => 'required|string',
         ]);
 
         // Tạo liên hệ mới
         $contact = Contact::create([
-            'user_id' => Auth::id(),  // Nếu khách hàng đã đăng nhập
+            'user_id' => Auth::id() ?? null,  // Nếu khách hàng đã đăng nhập
             'name' => $request->name,
             'email' => $request->email,
             'phone' => $request->phone,

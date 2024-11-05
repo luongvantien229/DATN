@@ -12,6 +12,7 @@ class Comment extends Model
         'user_id',
         'product_id',
         'message',
+        'date',
         'parent_id',
         'status',
     ];

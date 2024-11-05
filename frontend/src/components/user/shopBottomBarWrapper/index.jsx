@@ -6,6 +6,7 @@ import SidebarRatingList from "./SidebarRatingList";
 import SidebarColorList from "./SidebarColorList";
 import SlidebarProductContent from "./SlidebarProductContent";
 
+
 export default function Index() {
   return (
     <div className="col-lg-3">

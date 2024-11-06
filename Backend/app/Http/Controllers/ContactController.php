@@ -67,7 +67,7 @@ class ContactController extends Controller
         // Gửi email xác nhận cho khách hàng
         Mail::to($request->email)->send(new ContactSubmittedMail($contact));
         // Gửi email thông báo cho admin
-        Mail::to('luongtien693@gmail.com')->send(new AdminContactNotification($contact));
+        Mail::to('thanntps27233@fpt.edu.vn')->send(new AdminContactNotification($contact));
         event(new ContactCreated($contact));
 
         return response()->json(['message' => 'Contact submitted successfully', 'contact' => $contact], 201);

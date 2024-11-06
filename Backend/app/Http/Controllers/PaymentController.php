@@ -103,14 +103,14 @@ class PaymentController extends Controller
             }
 
             //create the coupon in the database
-            $coupon = Coupon::where('code')->first();
-            $coupon->used = $coupon->used . ',' . Auth::id();
-            $coupon->time = $coupon->time - 1;
-            $coupon->save();
+            // $coupon = Coupon::where('code')->first();
+            // $coupon->used = $coupon->used . ',' . Auth::id();
+            // $coupon->time = $coupon->time - 1;
+            // $coupon->save();
 
             // Create the order in the database
             $order = new Order();
-            $order->user_id = Auth::id();
+            $order->user_id = 1;
             $order->total_price = $total;
             $order->date_deliver = now();
             $order->order_code = 'ORD-' . time() . '-' . rand(1000, 9999);
@@ -152,10 +152,10 @@ class PaymentController extends Controller
             ]);
 
             // Phát sự kiện đơn hàng hoàn thành (realtime cho admin)
-            broadcast(new OrderCompletedEvent($order))->toOthers();
+            // broadcast(new OrderCompletedEvent($order))->toOthers();
 
             // Gửi email hóa đơn sau khi đặt hàng
-            Mail::to(auth()->user()->email)->send(new OrderInvoiceMail($order));
+            // Mail::to(auth()->user()->email)->send(new OrderInvoiceMail($order));
 
             return response()->json([
                 'message' => 'Payment successful and order created!',

@@ -69,6 +69,17 @@ class IndexController extends Controller
         ], 200);
     }
 
+    public function all_posts()
+    {
+        $posts = Post::where('status', 1)
+            ->orderBy('created_at', 'desc')->get();
+
+        return response()->json([
+            'posts' => $posts,
+
+        ], 200);
+    }
+
     public function all_category_posts()
     {
         $categoryPosts = CategoryPost::where('status', 1)
@@ -351,7 +362,7 @@ class IndexController extends Controller
 
         // Filtering by category
         if ($request->has('category_id') && !empty($request->category_id)) {
-            $query->where('category_id', $request->category_id);
+            $query->where('category_posts_id', $request->category_id);
         }
 
 

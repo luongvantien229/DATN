@@ -11,6 +11,7 @@
     const [passwordError, setPasswordError] = useState(""); 
     const [errorMessage, setErrorMessage] = useState('');
     const [serverError, setServerError] = useState("");
+    const [forgotPassword, setForgotPassword] = useState(false);
     
     const handleSubmit = async (event) => {
       event.preventDefault();
@@ -86,6 +87,39 @@
       }
     };
 
+    // Handle the Forgot Password logic
+  const handleForgotPassword = async (event) => {
+    event.preventDefault();
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    // Validate the email
+    if (!emailRegex.test(email)) {
+      setErrorMessage("Email không hợp lệ.");
+      return;
+    }
+
+    try {
+      const response = await axios.post("/auth/forgot-password", { email });
+
+      // Show success message if the email was sent
+      if (response.status === 200) {
+        Swal.fire({
+          icon: "success",
+          title: "Email đã được gửi!",
+          text: "Hãy kiểm tra email của bạn để đặt lại mật khẩu.",
+        }).then(() => {
+          setForgotPassword(false); // Close the Forgot Password form
+        });
+      }
+    } catch (error) {
+      if (error.response) {
+        setErrorMessage("Không thể gửi email reset mật khẩu. Vui lòng thử lại sau.");
+      } else {
+        setErrorMessage("Có lỗi xảy ra. Vui lòng thử lại sau.");
+      }
+    }
+  };
+
     const handleGoogleLogin = async () => {
       const backendUrl = axios.defaults.baseURL
       
@@ -106,66 +140,93 @@
     return (
     
       <div className="col-lg-6">
-              <div className="login-register-wrap login-register-gray-bg">
-                <div className="login-register-title">
-                  <h1>Login</h1>
+      <div className="login-register-wrap login-register-gray-bg">
+        <div className="login-register-title">
+          <h1>{forgotPassword ? "Quên Mật Khẩu" : "Đăng Nhập"}</h1>
+        </div>
+        <div className="login-register-form">
+          {forgotPassword ? (
+            // Forgot Password Form
+            <form onSubmit={handleForgotPassword}>
+              <div className="login-register-input-style input-style input-style-white">
+                <label>Email *</label>
+                <input
+                  type="email"
+                  name="email"
+                  placeholder="Nhập Email của bạn"
+                  className="form-control"
+                  onChange={(e) => setEmail(e.target.value)}
+                />
+              </div>
+              {errorMessage && <div style={{ color: "red" }}>{errorMessage}</div>}
+              <div className="login-register-btn">
+                <button type="submit">Gửi Lại Mật Khẩu</button>
+              </div>
+              <div className="text-center mt-3">
+                <button
+                  type="button"
+                  className="btn btn-link"
+                  onClick={() => setForgotPassword(false)}
+                >
+                  Quay lại đăng nhập
+                </button>
+              </div>
+            </form>
+          ) : (
+            // Login Form
+            <form onSubmit={handleSubmit}>
+              <div className="login-register-input-style input-style input-style-white">
+                <label>Username or email address *</label>
+                <input
+                  type="email"
+                  name="email"
+                  placeholder="Nhập Email"
+                  className="form-control"
+                  onChange={(e) => setEmail(e.target.value)}
+                />
+                {emailError && <div style={{ color: "red" }}>{emailError}</div>}
+              </div>
+              <div className="login-register-input-style input-style input-style-white">
+                <label>Password *</label>
+                <input
+                  type="password"
+                  name="password"
+                  placeholder="Nhập Mật Khẩu"
+                  className="form-control"
+                  onChange={(e) => setPassword(e.target.value)}
+                />
+                {passwordError && <div style={{ color: "red" }}>{passwordError}</div>}
+              </div>
+              <div className="lost-remember-wrap">
+                <div className="remember-wrap">
+                  <input type="checkbox" />
+                  <span>Remember me</span>
                 </div>
-                <div className="login-register-form">
-                <form method="POST" onSubmit={handleSubmit}>
-                    <div className="login-register-input-style input-style input-style-white">
-                      <label>Username or email address *</label>                   
-                      <input
-                      type="text"
-                      name="email"
-                      placeholder="Nhập Email"
-                      className="form-control"
-                      onChange={(e) => setEmail(e.target.value)}
-                    />                   
-                    {emailError && (
-                      <div style={{ color: "red", marginTop: "5px" }}>{emailError}</div>
-                    )}
-                    </div>
-                    <div className="login-register-input-style input-style input-style-white">
-                      <label>Password *</label>
-                      <input
-                          type="password"
-                          name="password"
-                          placeholder="Nhập Mật Khẩu"
-                          className="form-control"
-                          onChange={(e) => setPassword(e.target.value)}
-                        />
-                        {passwordError && (
-                          <div style={{ color: "red", marginTop: "5px" }}>{passwordError}</div>
-                        )}
-                    </div>
-                    <div className="lost-remember-wrap">
-                      <div className="remember-wrap">
-                        <input type="checkbox" />
-                        <span>Remember me</span>
-                      </div>
-                      <div className="lost-wrap">
-                        <a href="#">Lost your password?</a>
-                      </div>
-                    </div>
-                    
-                    <div className="login-register-btn">
-                      <button type="submit">Log in</button>
-                      {errorMessage && (
-                      <div style={{ color: "red", marginTop: "10px" }}>
-                      {errorMessage}
-                      </div>
-        )}
-                    </div>
-                  </form>
-                  <div id="dngooggle" className="text-center mt-5">
-                  <Link onClick={handleGoogleLogin} style={{ background: 'none', border: 'none', padding: 0 }}>
-                    <img width="300" src="https://developers.google.com/identity/images/btn_google_signin_dark_normal_web.png" alt="Sign in with Google" />
-                  </Link>
-                </div>
+                <div className="lost-wrap">
+                  <button
+                    type="button"
+                    className="btn btn-link"
+                    onClick={() => setForgotPassword(true)}
+                  >
+                    Quên mật khẩu?
+                  </button>
                 </div>
               </div>
-            </div>
-            // </section>
+
+              <div className="login-register-btn">
+                <button type="submit">Đăng nhập</button>
+                {errorMessage && <div style={{ color: "red" }}>{errorMessage}</div>}
+              </div>
+            </form>
+          )}
+          <div id="dngooggle" className="text-center mt-5">
+            <Link onClick={handleGoogleLogin} style={{ background: "none", border: "none", padding: 0 }}>
+              <img width="300" src="https://developers.google.com/identity/images/btn_google_signin_dark_normal_web.png" alt="Sign in with Google" />
+            </Link>
+          </div>
+        </div>
+      </div>
+    </div>
     );
   }
 

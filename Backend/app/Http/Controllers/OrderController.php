@@ -255,16 +255,16 @@ public function print_order_convert($checkout_code)
             $query->orderBy('created_at', 'desc');
         })->get();
 
-        if ($orders) {
-            foreach ($orders as $order) {
-                foreach($order->items as $order_items) {
-                    $product = Product::where('id', $order_items->product_id)->pluck('name');
-                $order_items->product_name = $product['0'];
-                }
-            }
-            return response()->json($order, 200);
-        }else
-        return response()->json('no orders found for this user');
+        // if ($orders) {
+        //     foreach ($orders as $order) {
+        //         foreach($order->items as $order_items) {
+        //             $product = Product::where('id', $order_items->product_id)->pluck('name');
+        //         $order_items->product_name = $product['0'];
+        //         }
+        //     }
+        //     return response()->json($order, 200);
+        // }else
+        // return response()->json('no orders found for this user');
 
     }
 

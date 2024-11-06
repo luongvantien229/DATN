@@ -1,11 +1,119 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link } from 'react-router-dom';
+import axios from "axios";
+import Swal from "sweetalert2";
 
 const UserProfile = () => {
-  const [activeTab, setActiveTab] = useState("dashboard"); // State để theo dõi tab hiện tại
-
+  const [activeTab, setActiveTab] = useState("dashboard");
+  const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [currentPassword, setCurrentPassword] = useState("");
+  const [newPassword, setNewPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [passwordError, setPasswordError] = useState("");
+  const [updateMessage, setUpdateMessage] = useState("");
+  
   const handleTabChange = (tab) => {
-    setActiveTab(tab); // Cập nhật tab hiện tại
+    setActiveTab(tab); 
+  };
+
+  const fetchData = async () => {
+    try {
+      const response = await axios.get('/auth/your_profile', {
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('token')}`,
+        },
+      });
+      setUser(response.data);
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  // Handle password change
+  const handlePasswordChange = async (e) => {
+    e.preventDefault();
+
+    // Validate password fields
+    if (newPassword !== confirmPassword) {
+      setPasswordError("Mật khẩu mới và xác nhận mật khẩu không khớp.");
+      return;
+    }
+
+    if (newPassword.length < 6) {
+      setPasswordError("Mật khẩu mới phải có ít nhất 6 ký tự.");
+      return;
+    }
+
+    setPasswordError(""); // Clear previous error
+
+    try {
+      // Send password change request to the API
+      const response = await axios.post('/auth/reset', {
+        email,
+        currentPassword,
+        newPassword,
+      }, {
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('token')}`,
+        }
+      });
+      console.log("🚀 ~ handlePasswordChange ~ response:", response)
+
+      // if (response.data.success) {
+      //   setUpdateMessage("Mật khẩu đã được thay đổi thành công.");
+      //   setCurrentPassword("");
+      //   setNewPassword("");
+      //   setConfirmPassword("");
+      // } else {
+      //   setUpdateMessage("Đã có lỗi xảy ra. Vui lòng thử lại.");
+      // }
+    } catch (error) {
+      console.log("🚀 ~ handlePasswordChange ~ error:", error);
+      
+      // console.error("Error during password change:", error);
+      // setUpdateMessage("Có lỗi xảy ra, vui lòng thử lại.");
+    }
+  };
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
+  const handleLogout = async (event) => {
+    event.preventDefault(); 
+
+    try {
+      const response = await axios.post('/auth/logout', {}, {
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('token')}`, 
+        },
+      });
+      
+      localStorage.removeItem('token');
+      localStorage.removeItem('user_name');
+      Swal.fire({
+        title: 'Đăng xuất thành công!',
+        text: response.data.message,
+        icon: 'success',
+        confirmButtonText: 'OK',
+      }).then(() => {
+        navigate('/'); 
+      });
+    } catch (error) {
+      Swal.fire({
+        title: 'Lỗi!',
+        text: 'Đã xảy ra lỗi khi đăng xuất. Vui lòng thử lại.',
+        icon: 'error',
+        confirmButtonText: 'OK',
+      });
+    }
   };
 
   return (
@@ -21,21 +129,23 @@ const UserProfile = () => {
                   <div className="myaccount-tab-menu nav" role="tablist">
                     <Link to="#dashboard" className={activeTab === "dashboard" ? "active" : ""} onClick={() => handleTabChange("dashboard")}>Dashboard</Link>
                     <Link to="#orders" className={activeTab === "orders" ? "active" : ""} onClick={() => handleTabChange("orders")}>Orders</Link>
-                    <Link to="#download" className={activeTab === "download" ? "active" : ""} onClick={() => handleTabChange("download")}>Download</Link>
                     <Link to="#address-edit" className={activeTab === "address-edit" ? "active" : ""} onClick={() => handleTabChange("address-edit")}>Address</Link>
                     <Link to="#account-info" className={activeTab === "account-info" ? "active" : ""} onClick={() => handleTabChange("account-info")}>Account Details</Link>
-                    <Link to="/login-register">Logout</Link>
+                    <Link
+                      to='/'
+                    >
+                      Thoát
+                    </Link>
                   </div>
                 </div>
-                {/* My Account Tab Menu End */}
-                {/* My Account Tab Content Start */}
+                
                 <div className="col-lg-8 col-md-8">
                   <div className="tab-content" id="myaccountContent">
                     {/* Dashboard Tab Content */}
                     <div className={`tab-pane fade ${activeTab === "dashboard" ? "show active" : ""}`} id="dashboard" role="tabpanel">
                       <div className="myaccount-content">
                         <div className="welcome">
-                          <p>Hello, <strong>Rayed</strong> (Not <strong>Rayed !</strong><Link className='logout' to="/login-register"> Logout</Link>)</p>
+                          <p>Hello, <strong>{localStorage.getItem('user_name')}</strong> (Not <strong>{localStorage.getItem('user_name')} !</strong><Link className='logout' to="/login-register"> Logout</Link>)</p>
                         </div>
                         <p className="mb-0">From your account dashboard you can view your <Link to="#">recent orders</Link>, manage your <Link to="#">shipping and billing addresses</Link>, and <Link to="#">edit your password and account details</Link>.</p>
                       </div>
@@ -81,37 +191,6 @@ const UserProfile = () => {
                         </div>
                       </div>
                     </div>
-                    {/* Download Tab Content */}
-                    <div className={`tab-pane fade ${activeTab === "download" ? "show active" : ""}`} id="download" role="tabpanel">
-                      <div className="myaccount-content">
-                        <div className="myaccount-table table-responsive text-center">
-                          <table className="table table-bordered">
-                            <thead className="thead-light">
-                              <tr>
-                                <th>Product</th>
-                                <th>Date</th>
-                                <th>Expire</th>
-                                <th>Download</th>
-                              </tr>
-                            </thead>
-                            <tbody>
-                              <tr>
-                                <td>Haven - Free Real Estate PSD Template</td>
-                                <td>Aug 22, 2018</td>
-                                <td>Yes</td>
-                                <td><Link to="#" className="check-btn sqr-btn"><i className="fa fa-cloud-download"></i> Download File</Link></td>
-                              </tr>
-                              <tr>
-                                <td>HasTech - Profolio Business Template</td>
-                                <td>Sep 12, 2018</td>
-                                <td>Never</td>
-                                <td><Link to="#" className="check-btn sqr-btn"><i className="fa fa-cloud-download"></i> Download File</Link></td>
-                              </tr>
-                            </tbody>
-                          </table>
-                        </div>
-                      </div>
-                    </div>
                     {/* Address Edit Tab Content */}
                     <div className={`tab-pane fade ${activeTab === "address-edit" ? "show active" : ""}`} id="address-edit" role="tabpanel">
                       <div className="myaccount-content myaccount-address">
@@ -144,51 +223,68 @@ const UserProfile = () => {
                     <div className={`tab-pane fade ${activeTab === "account-info" ? "show active" : ""}`} id="account-info" role="tabpanel">
                       <div className="myaccount-content">
                         <div className="account-details-form">
-                          <form action="#">
+                          <form onSubmit={handlePasswordChange}>
                             <div className="row">
                               <div className="col-lg-12">
                                 <div className="account-info input-style mb-30">
-                                  <label>First Name *</label>
-                                  <input type="text" />
-                                </div>
-                              </div>
-                              <div className="col-lg-12">
-                                <div className="account-info input-style mb-30">
-                                  <label>Last Name *</label>
-                                  <input type="text" />
+                                  <label>Name *</label>
+                                  <input type="text" value={user.name} readOnly />
                                 </div>
                               </div>
                               <div className="col-lg-12">
                                 <div className="account-info input-style">
-                                  <label>Display Name *</label>
-                                  <input type="text" />
+                                  <label>Email</label>
+                                  <input type="email" value={user.email} readOnly />
+                                </div>
+                              </div>
+                              <div className="col-lg-12">
+                                <div className="account-info input-style">
+                                  <label>Phone</label>
+                                  <input type="number" value={user.phone} readOnly />
                                 </div>
                               </div>
                             </div>
-                            <span>This will be how your name will be displayed in the account section and in reviews</span>
+
                             <fieldset>
-                              <legend>Password change</legend>
+                              <legend>Password Change</legend>
                               <div className="row">
                                 <div className="col-lg-12">
                                   <div className="account-info input-style mb-30">
-                                    <label>Current password (leave blank to leave unchanged)</label>
-                                    <input type="password" />
+                                    <label>Current Password</label>
+                                    <input 
+                                      type="password" 
+                                      value={currentPassword} 
+                                      onChange={(e) => setCurrentPassword(e.target.value)} 
+                                    />
                                   </div>
                                 </div>
                                 <div className="col-lg-12">
                                   <div className="account-info input-style mb-30">
-                                    <label>New password (leave blank to leave unchanged)</label>
-                                    <input type="password" />
+                                    <label>New Password</label>
+                                    <input 
+                                      type="password" 
+                                      value={newPassword} 
+                                      onChange={(e) => setNewPassword(e.target.value)} 
+                                    />
                                   </div>
                                 </div>
                                 <div className="col-lg-12">
                                   <div className="account-info input-style">
-                                    <label>Confirm new password</label>
-                                    <input type="password" />
+                                    <label>Confirm New Password</label>
+                                    <input 
+                                      type="password" 
+                                      value={confirmPassword} 
+                                      onChange={(e) => setConfirmPassword(e.target.value)} 
+                                    />
                                   </div>
                                 </div>
                               </div>
                             </fieldset>
+
+                            {/* Display Error or Success Messages */}
+                            {passwordError && <div style={{ color: "red", marginTop: "10px" }}>{passwordError}</div>}
+                            {updateMessage && <div style={{ color: "green", marginTop: "10px" }}>{updateMessage}</div>}
+
                             <div className="account-info-btn">
                               <button type="submit">Save Changes</button>
                             </div>
@@ -196,6 +292,7 @@ const UserProfile = () => {
                         </div>
                       </div>
                     </div>
+            
                   </div> {/* My Account Tab Content End */}
                 </div>
               </div>

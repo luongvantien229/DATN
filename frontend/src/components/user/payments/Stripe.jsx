@@ -9,7 +9,7 @@ export default function Stripe() {
     const fetchPaymentUrl = async() => {
         try {
 
-            const response = await axios.post('http://127.0.0.1:8000/api/pay',
+            const response = await axios.post('/pay',
                 {cartItems, success_url: 'http://localhost:3000/payment/success'}
             )
             window.location.href = response.data.url

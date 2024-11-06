@@ -84,7 +84,7 @@ export default function HeaderTopHeaderInfoRight() {
                       data-show-count="true"
                       aria-label="Star themeselection/sneat-html-admin-template-free trên GitHub"
                     >
-                      Thông tin cá nhân
+                      Quản lý tài khoản
                     </Link>
                   </li>
                   <li className="nav-item lh-1 me-4 hihi">

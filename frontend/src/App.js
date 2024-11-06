@@ -17,6 +17,7 @@ import Contact from "./pages/user/contact";
 import Cart from "./pages/user/cart";
 import LoginAndRegister from "./pages/user/loginAndRegister";
 import ProductDetail from "./pages/user/productDetail";
+import BoxChat from "./components/user/boxChat";
 
 import { useEffect } from "react";
 import PaymentSuccess from "./components/user/payments/PaymentSuccess";
@@ -55,6 +56,7 @@ const MainLayout = ({ children }) => (
     {children}
     <Footer />
     <SearchPopup />
+    <BoxChat />
   </div>
 );
 

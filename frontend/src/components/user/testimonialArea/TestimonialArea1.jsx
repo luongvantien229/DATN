@@ -1,21 +1,22 @@
+
 import { Link } from "react-router-dom";
 
 export default function TestimonialArea1() {
   return (
     <div className="testimonial-plr-1">
       <div className="single-testimonial">
-        <h4>Great quality!</h4>
+        <h4>Chất lượng tuyệt vời!</h4>
         <p>
-          {" "}
-          This is a great design and I hope that we will create a website with a
-          good signature. ThemeMove team is reactive and kind. Thanks for the
-          help so far.
+          Đây là một thiết kế tuyệt vời và tôi hy vọng rằng chúng tôi sẽ tạo ra
+          một trang web với dấu ấn tốt. Đội ngũ ThemeMove rất nhanh nhẹn và
+          thân thiện. Cảm ơn sự hỗ trợ cho đến giờ.
         </p>
         <div className="client-info">
           <h5>Luke Olfert</h5>
-          <span>/ Web Developer, Canada</span>
+          <span>/ Nhà phát triển web, Canada</span>
         </div>
       </div>
     </div>
   );
 }
+

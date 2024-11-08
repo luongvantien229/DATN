@@ -7,7 +7,7 @@ export default function Index() {
       <div className="custom-container">
         <div className="row flex-row-reverse">
             <ShopTopBarWrapper />
-            <ShopBottomBarWrapper />
+            {/* <ShopBottomBarWrapper /> */}
         </div>
       </div>
     </div>

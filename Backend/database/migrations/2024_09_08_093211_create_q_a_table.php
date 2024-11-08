@@ -13,9 +13,10 @@ return new class extends Migration
     {
         Schema::create('q_a', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('product_id')->constrained()->onDelete('cascade'); // Khóa ngoại đến bảng products
+            // $table->foreignId('product_id')->constrained()->onDelete('cascade'); // Khóa ngoại đến bảng products
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->text('message'); // Câu hỏi
+            $table->integer('parent_id')->nullable();
             $table->integer('status')->default(1);
             $table->timestamps();
         });

@@ -16,10 +16,10 @@ class AdminMiddleware
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if (Auth::user()->role_id == 1) {
+        if (Auth::check() && (Auth::user()->role_id == 1 || Auth::user()->role_id == 3)) {
             return $next($request);
         } else {
-            return response()->json('You are not an Admin',403);
+            return response()->json('You are not an Admin or Manager',403);
         }
 
 

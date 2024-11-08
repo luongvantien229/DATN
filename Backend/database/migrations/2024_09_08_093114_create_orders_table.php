@@ -17,6 +17,7 @@ return new class extends Migration
 
             $table->integer('total_price');
             $table->string('date_deliver');
+            $table->string('order_code')->unique();
             $table->foreignId('user_id')->references('id')->on('users')->onDelete('cascade');
             // $table->foreignId('location_id')->references('id')->on('locations')->onDelete('cascade');
             $table->string('payment_method');

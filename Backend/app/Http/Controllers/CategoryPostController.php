@@ -28,8 +28,8 @@ class CategoryPostController extends Controller
     public function store(Request $request)
     {
         try {
-            $validated = $request->validate([
-                'name' => 'required|unique:categories,name',
+            $request->validate([
+                'name' => 'required|unique:category_posts,name',
 
                 'slug' => 'required',
 
@@ -46,7 +46,7 @@ class CategoryPostController extends Controller
 
 
             $category_post->save();
-            return response()->json('category added', 201);
+            return response()->json('category posts added', 201);
 
         } catch (Exception $e) {
             return response()->json($e, 500);
@@ -55,12 +55,10 @@ class CategoryPostController extends Controller
     public function update($id, Request $request)
     {
         try {
-            $validated = $request->validate([
-                'name' => 'required|unique:categories,name',
-
-                'slug' => 'required',
-
-                'status' => 'nullable',
+            $request->validate([
+                'name' => 'required|unique:category_posts,name,' . $id,
+            'slug' => 'required',
+            'status' => 'nullable|boolean', 
 
             ]);
 
@@ -74,7 +72,7 @@ class CategoryPostController extends Controller
 
 
             $category_post->update();
-            return response()->json('category updated', 200);
+            return response()->json('category post updated', 200);
         } catch (Exception $e) {
             return response()->json($e, 500);
         }
@@ -85,8 +83,8 @@ class CategoryPostController extends Controller
         $category_post = CategoryPost::find($id);
         if ($category_post) {
             $category_post->delete();
-            return response()->json('category delete');
+            return response()->json('category post delete');
         } else
-            return response()->json('category not found');
+            return response()->json('category post not found');
     }
 }

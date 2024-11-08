@@ -1,5 +1,9 @@
 import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { Provider } from 'react-redux'; 
+import store from './redux/store';
+
+import axios from "axios"; // Nhập axios
 import Header from "./components/user/header";
 import { SearchPopup, MobileHeaderMenu } from "./components/user/common";
 import Breadcrumb from "./components/user/breadcrumb";
@@ -13,20 +17,54 @@ import Contact from "./pages/user/contact";
 import Cart from "./pages/user/cart";
 import LoginAndRegister from "./pages/user/loginAndRegister";
 import ProductDetail from "./pages/user/productDetail";
+import BoxChat from "./components/user/boxChat";
+
+import { useEffect } from "react";
+import PaymentSuccess from "./components/user/payments/PaymentSuccess";
+
+import UserProfile from "./pages/user/UserProfile";
+
+import './assets/css/vendor/bootstrap.min.css';
+import './assets/css/vendor/font-cerebrisans.css';
+import './assets/css/vendor/fontawesome-all.min.css';
+import './assets/css/vendor/font-medizin.css';
+import './assets/css/plugins/slick.css'; 
+import './assets/css/plugins/animate.css';
+import './assets/css/plugins/magnific-popup.css';
+import './assets/css/plugins/select2.min.css';
+import './assets/css/plugins/jquery-ui.css';
+import './assets/css/style.css';
+import './assets/css/button.css';
+import './assets/css/index.css';
+
+
+const backendUrl = process.env.REACT_APP_BACKEND_URL;
+
+
+
+// Thiết lập baseURL cho axios
+axios.defaults.baseURL = "http://127.0.0.1:8000/api";
+
+// Thiết lập headers mặc định
+axios.defaults.headers.common["Authorization"] = "Bearer YOUR_TOKEN_HERE"; 
+axios.defaults.headers.common["Content-Type"] = "application/json"; 
 
 const MainLayout = ({ children }) => (
   <div className="main-wrapper">
-    <Header />
+    {/* <Header /> */}
     <Breadcrumb />
     {children}
     <Footer />
     <SearchPopup />
+    <BoxChat />
   </div>
 );
 
 function App() {
+  
   return (
-    <>
+    <Provider store={store}> {/* Bọc ứng dụng trong Provider */}
+       <Header />
       <Routes>
         <Route
           path="/"
@@ -85,19 +123,33 @@ function App() {
           }
         />
         <Route
-          path="/product-detail"
-          element={ 
+          path="/user-profile"
+          element={
+            <MainLayout>
+              <UserProfile />
+            </MainLayout>
+          }
+        />
+        <Route
+          path="/product-detail/:slug/:id"
+          element={
+
             <MainLayout>
               <ProductDetail />
             </MainLayout>
           }
         />
+        <Route path="/payment/success" element={
+           <MainLayout>
+           <PaymentSuccess />
+         </MainLayout>
+        } />
         <Route path="*" element={<NotFound />} /> {/* Trang 404 */}
       </Routes>
       <div className="mobile">
         <MobileHeaderMenu />
       </div>
-    </>
+    </Provider>
   );
 }
 

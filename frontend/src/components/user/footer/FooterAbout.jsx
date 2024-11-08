@@ -6,14 +6,14 @@ export default function FooterAbout() {
       <div className="footer-widget footer-about mb-30">
         <div className="footer-logo logo-width-1">
           <a href="index.html">
-            <img src="assets/images/logo/logo.png" alt="logo" />
+            <img src="/assets/images/logo/logoo.png" alt="logo" />
           </a>
         </div>
         <div className="copyright">
           <p>
-            Copyright © 2020 HasThemes |{" "}
+            Copyright © 2024 |{" "}
             <a target="_blank" href="https://hasthemes.com/">
-              Built with <span>Medizin</span> by HasThemes
+              Được xây dựng bởi nhóm <span>CF5D</span>
             </a>
             .
           </p>

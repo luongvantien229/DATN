@@ -10,9 +10,14 @@ class Coupon extends Model
     use HasFactory;
     protected $fillable = [
         'name',
+        'user_id',
         'time',
         'condition',
         'number',
         'code',
+        'date_start',
+        'date_end',
+        'used',
+        'status',
     ];
 }

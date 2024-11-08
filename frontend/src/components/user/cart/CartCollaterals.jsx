@@ -1,17 +1,18 @@
+
 import { Link } from "react-router-dom";
 
 export default function CartCollaterals() {
   return (
     <div className="col-lg-6 col-md-6 col-12">
       <div className="cart-collaterals-wrap mb-40">
-        <h4>Coupon Discount </h4>
+        <h4>Giảm giá Coupon</h4>
         <div className="collaterals-content common-form-style">
           <p>
-            Flat rate: <span>$5.00</span>
+            Phí cố định: <span>$5.00</span>
           </p>
           <div className="select-style select-style-mrg-1">
             <select className="select-active">
-              <option>United States (US)</option>
+              <option>Hoa Kỳ (US)</option>
               <option>Uganda</option>
               <option>Ukraine</option>
               <option>Bangladesh</option>
@@ -28,14 +29,14 @@ export default function CartCollaterals() {
             </select>
           </div>
           <div className="input-style input-style-mb">
-            <input type="text" placeholder="City" />
+            <input type="text" placeholder="Thành phố" />
           </div>
           <div className="input-style input-style-mb">
-            <input type="text" placeholder="Postcode / ZIP" />
+            <input type="text" placeholder="Mã bưu điện / ZIP" />
           </div>
           <div className="common-btn-style">
             <a className="common-btn-padding-2" href="#">
-              Update
+              Cập nhật
             </a>
           </div>
         </div>
@@ -43,3 +44,4 @@ export default function CartCollaterals() {
     </div>
   );
 }
+

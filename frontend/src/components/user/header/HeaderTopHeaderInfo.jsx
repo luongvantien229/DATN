@@ -6,12 +6,13 @@ export default function HeaderTopHeaderInfo() {
       <div className="header-info">
         <ul>
           <li>
-            <a href="#">(+88) - 1990 - 6886</a>
+            <Link to="#">(+88) - 1990 - 6886</Link>
           </li>
           <li>
-            <a target="_blank" href="https://www.google.com/maps">
-              Store location
-            </a>
+            <Link target="_blank" to="https://www.google.com/maps">
+              Vị trí cửa hàng
+            </Link>
+
           </li>
         </ul>
       </div>

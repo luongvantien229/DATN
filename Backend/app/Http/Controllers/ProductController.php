@@ -6,6 +6,7 @@ use App\Models\Product;
 use App\Models\ProductImage;
 use Illuminate\Support\Facades\File;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
@@ -16,7 +17,7 @@ class ProductController extends Controller
     //
     public function index()
     {
-        $products = Product::paginate(10);
+        $products = Product::with('category_product')->orderBy('id', 'desc')->paginate(20);
         if ($products) {
             return response()->json($products, 200);
         } else
@@ -40,9 +41,10 @@ class ProductController extends Controller
             'slug' => 'required',
             'price' => 'required|numeric',
             'description' => 'required',
-            'category_id' => 'required|numeric',
+            'category_id' => 'required|array', // This ensures category_id is an array
+            'category_id.*' => 'integer|exists:categories,id', // Checks each array item
             'brand_id' => 'required|numeric',
-            'sub_category_id' => 'required|numeric',
+
             'favorite' => 'required',
             'view' => 'required',
             'sku' => 'required',
@@ -64,9 +66,9 @@ class ProductController extends Controller
         $product->slug = $request->slug; // You missed the slug
         $product->price = $request->price;
         $product->description = $request->description;
-        $product->category_id = $request->category_id;
+        $product->category_id = json_encode($request->category_id); // Chuyển đổi mảng thành JSON
         $product->brand_id = $request->brand_id;
-        $product->sub_category_id = $request->sub_category_id;
+
         $product->favorite = $request->favorite;
         $product->view = $request->view;
         $product->sku = $request->sku;
@@ -99,12 +101,16 @@ class ProductController extends Controller
             try {
                 $file->move('assets/uploads/product', $filename);
             } catch (FileException $e) {
+                Log::error('File upload failed: ' . $e->getMessage());
                 return response()->json(['error' => 'File upload failed'], 500);
             }
             $product->image = $filename;
         }
         // lưu sản phẩm
         $product->save();
+
+        //thêm nhiều loại cho sản phẩm
+        $product->category_product()->attach($request->category_id);
 
         // Xử lý tải lên hình ảnh liên quan
         if ($request->hasFile('product_images')) {
@@ -122,7 +128,10 @@ class ProductController extends Controller
             }
         }
 
-        return response()->json('Product added', 201);
+        return response()->json([
+            'message' => 'Product added',
+            'product' => $product
+        ], 201);
     }
 
     public function update($id, Request $request)
@@ -131,20 +140,23 @@ class ProductController extends Controller
         Validator::make($request->all(), [
             'name' => 'required',
             'slug' => 'required',
+
             'price' => 'required|numeric',
             'description' => 'required',
-            'category_id' => 'required|numeric',
+            'category_id' => 'required|array', // This ensures category_id is an array
+            'category_id.*' => 'integer|exists:categories,id', // Checks each array item
             'brand_id' => 'required|numeric',
-            'sub_category_id' => 'required|numeric',
+
             'favorite' => 'required',
             'view' => 'required',
             'sku' => 'required',
+            'barcode' => 'required',
             'product_type_id' => 'required',
             'image' => 'nullable|file|image|mimes:jpeg,png,gif,webp|max:2048',
             'uses' => 'required',
             'user_manual' => 'required',
             'ingredient' => 'required',
-            'barcode' => 'required',
+
             'track_qty' => 'required',
             'qty' => 'required',
             'status' => 'required',
@@ -160,9 +172,9 @@ class ProductController extends Controller
             $product->slug = $request->slug;
             $product->price = $request->price;
             $product->description = $request->description;
-            $product->category_id = $request->category_id;
+            $product->category_id = json_encode($request->category_id); // Chuyển đổi mảng thành JSON
             $product->brand_id = $request->brand_id;
-            $product->sub_category_id = $request->sub_category_id;
+
             $product->favorite = $request->favorite;
             $product->view = $request->view;
             $product->sku = $request->sku;
@@ -187,6 +199,7 @@ class ProductController extends Controller
                 try {
                     $file->move('assets/uploads/product/', $filename);
                 } catch (FileException $e) {
+                    Log::error('File upload failed: ' . $e->getMessage());
                     return response()->json(['error' => 'File upload failed'], 500);
                 }
                 $product->image = $filename;
@@ -216,6 +229,9 @@ class ProductController extends Controller
 
             // Lưu sản phẩm cập nhật
             $product->update();
+
+             // cập nhật nhiều loại cho sản phẩm
+        $product->category_product()->sync($request->category_id);
 
             return response()->json('Product updated successfully', 200);
         } else {

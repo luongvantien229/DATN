@@ -14,10 +14,15 @@ return new class extends Migration
         Schema::create('coupons', function (Blueprint $table) {
             $table->id();
             $table->string('name');
+            $table->foreignId('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->integer('number');
             $table->integer('time');
             $table->integer('condition');
             $table->string('code');
+            $table->string('date_start');
+            $table->string('date_end');
+            $table->string('used');
+            $table->integer('status');
             $table->timestamps();
         });
     }

@@ -1,321 +1,237 @@
-import React from "react";
-import { Link } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import axios from "axios";
+import 'datatables.net-dt/css/dataTables.dataTables.css';
+import $ from 'jquery';
+import 'datatables.net';
 
-const Index = () => {
+const Categories = () => {
+  const [categories, setCategories] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const navigate = useNavigate(); // Dùng cho điều hướng sau các hành động
+
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        const response = await axios.get(
+          "http://localhost:8000/api/categories/index",
+          {
+            headers: {
+              Authorization: `Bearer ${token}`, // Bao gồm token trong header của yêu cầu
+            },
+          }
+        );
+        console.log(response.data);
+        setCategories(response.data || []); // Điều chỉnh theo cấu trúc của phản hồi API của bạn
+      } catch (error) {
+        setError("Đã có lỗi xảy ra khi lấy danh mục!");
+        console.error(
+          "Lỗi khi lấy dữ liệu:",
+          error.response ? error.response.data : error.message
+        );
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchCategories();
+  }, []);
+
+  useEffect(() => {
+    if (!loading && categories.length > 0) {
+      // Kiểm tra nếu DataTable đã được khởi tạo trước đó
+      if ($.fn.DataTable.isDataTable("#myTable")) {
+        $('#myTable').DataTable().clear().destroy(); // Phá hủy DataTable trước khi khởi tạo lại
+      }
+
+      // Khởi tạo lại DataTable
+      $('#myTable').DataTable({
+        paging: true,
+        searching: true,
+      });
+    }
+  }, [loading, categories]);
+
+  const deleteCategory = async (id) => {
+    const confirmDelete = window.confirm(
+      "Bạn có chắc chắn muốn xóa danh mục này không?"
+    );
+    if (!confirmDelete) return;
+
+    try {
+      const token = localStorage.getItem("token"); // Lấy token từ local storage
+      await axios.delete(`http://localhost:8000/api/categories/destroy/${id}`, {
+        headers: {
+          Authorization: `Bearer ${token}`, // Bao gồm token trong header của yêu cầu
+        },
+      });
+      setCategories(categories.filter((category) => category.id !== id));
+    } catch (error) {
+      setError("Đã có lỗi xảy ra khi xóa danh mục!");
+      console.error("Lỗi khi xóa:", error);
+    }
+  };
+
+  if (loading) {
+    return <div>Đang tải danh mục...</div>;
+  }
+
+  if (error) {
+    return <div className="alert alert-danger">{error}</div>;
+  }
+
   return (
     <div className="container-xxl flex-grow-1 container-p-y">
       <div className="card">
-        <div>
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-            <h5 className="card-header">Striped rows</h5>
-            <Link to="/add-categories">
-              <button type="button" className="btn rounded-pill btn-primary m-6">
-                Add
-              </button>
-            </Link>
-          </div>
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+          }}
+        >
+          <h5 className="card-header">Danh sách danh mục</h5>
+          <Link to="/add-categories">
+            <button type="button" className="btn rounded-pill btn-primary m-6">
+              Thêm danh mục
+            </button>
+          </Link>
         </div>
 
         <div className="table-responsive text-nowrap">
-          <table className="table table-striped">
+          <table id="myTable" className="table table-bordered ">
             <thead>
               <tr>
-                <th>Project</th>
-                <th>Client</th>
-                <th>Users</th>
-                <th>Status</th>
-                <th>Actions</th>
+                <th>ID</th>
+                <th>Tên</th>
+                <th>Slug</th>
+                <th>Thuộc danh mục</th>
+                <th>Hiện trên trang chủ</th>
+                <th>Trạng thái</th>
+                <th>Hành động</th>
               </tr>
             </thead>
-            <tbody className="table-border-bottom-0">
-              <tr>
-                <td>
-                  <i className="bx bxl-angular bx-md text-danger me-4"></i>{" "}
-                  <span>Angular Project</span>
-                </td>
-                <td>Albert Cook</td>
-                <td>
-                  <ul className="list-unstyled m-0 avatar-group d-flex align-items-center">
-                    <li
-                      data-bs-toggle="tooltip"
-                      data-popup="tooltip-custom"
-                      data-bs-placement="top"
-                      className="avatar avatar-xs pull-up"
-                      title="Lilian Fuller"
+            <tbody>
+            {categories && categories.length > 0 ? (
+              categories.map((category) => (
+                <tr key={category.id}>
+                  <td>{category.id}</td>
+                  <td>
+                    {category.image ? (
+                      // Nếu có ảnh, kiểm tra loại URL
+                      category.image.includes("http") ? (
+                        <img
+                          src={category.image} // Trường hợp URL đầy đủ
+                          alt={category.name}
+                          style={{
+                            width: "50px",
+                            height: "50px",
+                            objectFit: "cover",
+                            marginRight: "10px",
+                          }}
+                        />
+                      ) : (
+                        <img
+                          src={`http://localhost:8000/assets/uploads/category/${category.image}`} // Trường hợp đường dẫn tương đối
+                          alt={category.name}
+                          style={{
+                            width: "50px",
+                            height: "50px",
+                            objectFit: "cover",
+                            marginRight: "10px",
+                          }}
+                        />
+                      )
+                    ) : (
+                      // Nếu không có ảnh
+                      <p>Image not found</p>
+                    )}
+
+                    {/* Hiển thị tên thương hiệu */}
+                    {category.name}
+                  </td>
+                  <td>{category.slug}</td>
+                  <td>
+                    {category.parent_id === 0 ? (
+                      <span>Danh mục cha</span>
+                    ) : (
+                      <span>
+                        {categories.find(
+                          (sub_category) =>
+                            sub_category.id === category.parent_id
+                        )?.name || "Danh mục không xác định"}
+                      </span>
+                    )}
+                  </td>
+                  <td>
+                    <span
+                      className={`badge ${
+                        category.showHome
+                          ? "bg-label-primary"
+                          : "bg-label-secondary"
+                      }`}
                     >
-                      <img
-                        src="../assets/img/avatars/5.png"
-                        alt="Avatar"
-                        className="rounded-circle"
-                      />
-                    </li>
-                    <li
-                      data-bs-toggle="tooltip"
-                      data-popup="tooltip-custom"
-                      data-bs-placement="top"
-                      className="avatar avatar-xs pull-up"
-                      title="Sophia Wilkerson"
+                      {category.showHome ? "Hiện" : "Ẩn"}
+                    </span>
+                  </td>
+                  <td>
+                    <span
+                      className={`badge ${
+                        category.status
+                          ? "bg-label-primary"
+                          : "bg-label-secondary"
+                      }`}
                     >
-                      <img
-                        src="../assets/img/avatars/6.png"
-                        alt="Avatar"
-                        className="rounded-circle"
-                      />
-                    </li>
-                    <li
-                      data-bs-toggle="tooltip"
-                      data-popup="tooltip-custom"
-                      data-bs-placement="top"
-                      className="avatar avatar-xs pull-up"
-                      title="Christina Parker"
+                      {category.status ? "Hoạt động" : "Ngưng hoạt động"}
+                    </span>
+                  </td>
+                  <td>
+                    {/* <Link
+                      to={`/edit-categories/${category.id}`}
+                      className="btn btn-sm btn-outline-primary me-2"
                     >
-                      <img
-                        src="../assets/img/avatars/7.png"
-                        alt="Avatar"
-                        className="rounded-circle"
-                      />
-                    </li>
-                  </ul>
-                </td>
-                <td>
-                  <span className="badge bg-label-primary me-1">Active</span>
-                </td>
-                <td>
-                  <div className="dropdown">
+                      <i className="bi bi-pencil-square me-1" style={{ color: "blue" }}></i> Edit
+                    </Link>
                     <button
-                      type="button"
-                      className="btn p-0 dropdown-toggle hide-arrow"
-                      data-bs-toggle="dropdown"
+                      variant="outline-danger"
+                      size="sm"
+                      onClick={() => deleteCategory(category.id)}
                     >
-                      <i className="bx bx-dots-vertical-rounded"></i>
-                    </button>
-                    <div className="dropdown-menu">
-                      <a className="dropdown-item" href="">
-                        <i className="bx bx-edit-alt me-1"></i> Edit
-                      </a>
-                      <a className="dropdown-item" href="">
-                        <i className="bx bx-trash me-1"></i> Delete
-                      </a>
+                      <i className="bi bi-trash me-1" style={{ color: "red" }}></i> Delete
+                    </button> */}
+                    <div>
+                      <Link
+                        className="btn btn-sm btn-outline-primary me-2"
+                        to={`/edit-categories/${category.id}`}
+                      >
+                        <i
+                          className="bx bx-edit-alt me-1"
+                          style={{ color: "blue" }}
+                        ></i>{" "}
+                        Sửa
+                      </Link>
+                      <button
+                        className="btn btn-sm btn-outline-danger"
+                        // variant ="outline-danger"
+
+                        onClick={() => deleteCategory(category.id)}
+                        // style={{ background: "none", border: "none" }}
+                      >
+                        <i
+                          className="bx bx-trash me-1"
+                          style={{ color: "red" }}
+                        ></i>{" "}
+                        Xóa
+                      </button>
                     </div>
-                  </div>
-                </td>
-              </tr>
-              <tr>
-                <td>
-                  <i className="bx bxl-react bx-md text-info me-4"></i>{" "}
-                  <span>React Project</span>
-                </td>
-                <td>Barry Hunter</td>
-                <td>
-                  <ul className="list-unstyled m-0 avatar-group d-flex align-items-center">
-                    <li
-                      data-bs-toggle="tooltip"
-                      data-popup="tooltip-custom"
-                      data-bs-placement="top"
-                      className="avatar avatar-xs pull-up"
-                      title="Lilian Fuller"
-                    >
-                      <img
-                        src="../assets/img/avatars/5.png"
-                        alt="Avatar"
-                        className="rounded-circle"
-                      />
-                    </li>
-                    <li
-                      data-bs-toggle="tooltip"
-                      data-popup="tooltip-custom"
-                      data-bs-placement="top"
-                      className="avatar avatar-xs pull-up"
-                      title="Sophia Wilkerson"
-                    >
-                      <img
-                        src="../assets/img/avatars/6.png"
-                        alt="Avatar"
-                        className="rounded-circle"
-                      />
-                    </li>
-                    <li
-                      data-bs-toggle="tooltip"
-                      data-popup="tooltip-custom"
-                      data-bs-placement="top"
-                      className="avatar avatar-xs pull-up"
-                      title="Christina Parker"
-                    >
-                      <img
-                        src="../assets/img/avatars/7.png"
-                        alt="Avatar"
-                        className="rounded-circle"
-                      />
-                    </li>
-                  </ul>
-                </td>
-                <td>
-                  <span className="badge bg-label-success me-1">Completed</span>
-                </td>
-                <td>
-                  <div className="dropdown">
-                    <button
-                      type="button"
-                      className="btn p-0 dropdown-toggle hide-arrow"
-                      data-bs-toggle="dropdown"
-                    >
-                      <i className="bx bx-dots-vertical-rounded"></i>
-                    </button>
-                    <div className="dropdown-menu">
-                      <a className="dropdown-item" href="">
-                        <i className="bx bx-edit-alt me-1"></i> Edit
-                      </a>
-                      <a className="dropdown-item" href="">
-                        <i className="bx bx-trash me-1"></i> Delete
-                      </a>
-                    </div>
-                  </div>
-                </td>
-              </tr>
-              <tr>
-                <td>
-                  <i className="bx bxl-vuejs bx-md text-success me-4"></i>{" "}
-                  <span>VueJs Project</span>
-                </td>
-                <td>Trevor Baker</td>
-                <td>
-                  <ul className="list-unstyled m-0 avatar-group d-flex align-items-center">
-                    <li
-                      data-bs-toggle="tooltip"
-                      data-popup="tooltip-custom"
-                      data-bs-placement="top"
-                      className="avatar avatar-xs pull-up"
-                      title="Lilian Fuller"
-                    >
-                      <img
-                        src="../assets/img/avatars/5.png"
-                        alt="Avatar"
-                        className="rounded-circle"
-                      />
-                    </li>
-                    <li
-                      data-bs-toggle="tooltip"
-                      data-popup="tooltip-custom"
-                      data-bs-placement="top"
-                      className="avatar avatar-xs pull-up"
-                      title="Sophia Wilkerson"
-                    >
-                      <img
-                        src="../assets/img/avatars/6.png"
-                        alt="Avatar"
-                        className="rounded-circle"
-                      />
-                    </li>
-                    <li
-                      data-bs-toggle="tooltip"
-                      data-popup="tooltip-custom"
-                      data-bs-placement="top"
-                      className="avatar avatar-xs pull-up"
-                      title="Christina Parker"
-                    >
-                      <img
-                        src="../assets/img/avatars/7.png"
-                        alt="Avatar"
-                        className="rounded-circle"
-                      />
-                    </li>
-                  </ul>
-                </td>
-                <td>
-                  <span className="badge bg-label-info me-1">Scheduled</span>
-                </td>
-                <td>
-                  <div className="dropdown">
-                    <button
-                      type="button"
-                      className="btn p-0 dropdown-toggle hide-arrow"
-                      data-bs-toggle="dropdown"
-                    >
-                      <i className="bx bx-dots-vertical-rounded"></i>
-                    </button>
-                    <div className="dropdown-menu">
-                      <a className="dropdown-item" href="">
-                        <i className="bx bx-edit-alt me-1"></i> Edit
-                      </a>
-                      <a className="dropdown-item" href="">
-                        <i className="bx bx-trash me-1"></i> Delete
-                      </a>
-                    </div>
-                  </div>
-                </td>
-              </tr>
-              <tr>
-                <td>
-                  <i className="bx bxl-bootstrap bx-md text-primary me-4"></i>{" "}
-                  <span>Bootstrap Project</span>
-                </td>
-                <td>Jerry Milton</td>
-                <td>
-                  <ul className="list-unstyled m-0 avatar-group d-flex align-items-center">
-                    <li
-                      data-bs-toggle="tooltip"
-                      data-popup="tooltip-custom"
-                      data-bs-placement="top"
-                      className="avatar avatar-xs pull-up"
-                      title="Lilian Fuller"
-                    >
-                      <img
-                        src="../assets/img/avatars/5.png"
-                        alt="Avatar"
-                        className="rounded-circle"
-                      />
-                    </li>
-                    <li
-                      data-bs-toggle="tooltip"
-                      data-popup="tooltip-custom"
-                      data-bs-placement="top"
-                      className="avatar avatar-xs pull-up"
-                      title="Sophia Wilkerson"
-                    >
-                      <img
-                        src="../assets/img/avatars/6.png"
-                        alt="Avatar"
-                        className="rounded-circle"
-                      />
-                    </li>
-                    <li
-                      data-bs-toggle="tooltip"
-                      data-popup="tooltip-custom"
-                      data-bs-placement="top"
-                      className="avatar avatar-xs pull-up"
-                      title="Christina Parker"
-                    >
-                      <img
-                        src="../assets/img/avatars/7.png"
-                        alt="Avatar"
-                        className="rounded-circle"
-                      />
-                    </li>
-                  </ul>
-                </td>
-                <td>
-                  <span className="badge bg-label-warning me-1">Pending</span>
-                </td>
-                <td>
-                  <div className="dropdown">
-                    <button
-                      type="button"
-                      className="btn p-0 dropdown-toggle hide-arrow"
-                      data-bs-toggle="dropdown"
-                    >
-                      <i className="bx bx-dots-vertical-rounded"></i>
-                    </button>
-                    <div className="dropdown-menu">
-                      <a className="dropdown-item" href="">
-                        <i className="bx bx-edit-alt me-1"></i> Edit
-                      </a>
-                      <a className="dropdown-item" href="">
-                        <i className="bx bx-trash me-1"></i> Delete
-                      </a>
-                    </div>
-                  </div>
-                </td>
-              </tr>
+                  </td>
+                </tr>
+              ))
+            ) : (
+              <tr><td colSpan="7">No categories available</td></tr>
+           )}
             </tbody>
           </table>
         </div>
@@ -324,4 +240,4 @@ const Index = () => {
   );
 };
 
-export default Index;
+export default Categories;

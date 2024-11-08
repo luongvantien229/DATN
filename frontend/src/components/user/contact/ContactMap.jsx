@@ -6,7 +6,7 @@ import 'leaflet/dist/leaflet.css';
 
 // Khởi tạo icon tùy chỉnh với ảnh từ URL trực tuyến
 const customIcon = new L.Icon({
-  iconUrl: 'http://127.0.0.1:3000/assets/images/icon-img/icon.png', // Đặt URL của ảnh marker ở đây
+  iconUrl: 'assets/images/icon-img/icon.png', 
   iconSize: [32, 32], // Kích thước của icon
   iconAnchor: [16, 32], // Điểm neo của icon
   popupAnchor: [0, -32] // Điểm popup của icon

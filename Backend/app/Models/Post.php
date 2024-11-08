@@ -10,10 +10,7 @@ class Post extends Model
     use HasFactory;
 
     protected $fillable = [
-        'user_id',
-        'category_post_id',
-        'title',
-        'content',
+         'title', 'slug', 'description', 'content', 'image', 'user_id', 'category_posts_id', 'status'
 
     ];
     protected $hidden = [
@@ -28,6 +25,6 @@ class Post extends Model
 
     public function category_posts()
     {
-        return $this->belongsTo(CategoryPost::class, 'category_post_id');
+        return $this->belongsTo(CategoryPost::class, 'category_posts_id');
     }
 }

@@ -3,8 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Models\Coupon;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Redirect;
+use Session;
 
 class CouponController extends Controller
 {
@@ -69,7 +72,7 @@ class CouponController extends Controller
             return response()->json(['errors' => $validator->errors()], 422);
         }
 
-        
+
         $coupon->fill($request->all());
         $coupon->save();
 
@@ -88,4 +91,188 @@ class CouponController extends Controller
 
         return response()->json(['message' => 'Coupon deleted successfully']);
     }
+
+    // public function check_coupon(Request $request)
+    // {
+    //     // Get the coupon code directly
+    //     $couponCode = $request->input('coupon');
+
+    //     // Search for the coupon by its code
+    //     $coupon = Coupon::where('code', $couponCode)->first();
+
+    //     if ($coupon) {
+    //         // Check if a coupon session exists
+    //         $couponSession = Session::get('coupon');
+    //         $cou = [];
+
+    //         if ($couponSession) {
+    //             $isAvailable = 0;
+
+    //             // Add the coupon details to the session if not already available
+    //             if ($isAvailable == 0) {
+    //                 $cou[] = [
+    //                     'code' => $coupon->code,
+    //                     'condition' => $coupon->condition,
+    //                     'number' => $coupon->number,
+    //                 ];
+    //                 Session::put('coupon', $cou);
+    //             }
+    //         } else {
+    //             $cou[] = [
+    //                 'code' => $coupon->code,
+    //                 'condition' => $coupon->condition,
+    //                 'number' => $coupon->number,
+    //             ];
+    //             Session::put('coupon', $cou);
+    //         }
+
+    //         Session::save();
+
+    //         return response()->json([
+    //             'success' => true,
+    //             'coupon' => $coupon,
+    //         ]);
+    //     } else {
+    //         return response()->json([
+    //             'success' => false,
+    //             'message' => 'Invalid coupon code.',
+    //         ]);
+    //     }
+    // }
+
+
+
+    // public function check_coupon(Request $request)
+    // {
+    //     $today = Carbon::now('Asia/Ho_Chi_Minh')->format('d/m/Y');
+    //     $couponCode = $request->input('coupon');
+
+    //     if (Session::get('user_id')) {
+    //         $coupon = Coupon::where('code', $couponCode)
+    //             ->where('status', 1)
+    //             ->where('date_end', '>=', $today)
+    //             ->where('used', 'NOT LIKE', '%' . Session::get('user_id') . '%')
+    //             ->first();
+
+    //         if ($coupon) {
+    //             return redirect()->back()->with('error', 'Mã giảm giá đã sử dụng, vui lòng nhập mã khác');
+    //         } else {
+    //             $coupon_login = Coupon::where('code', $couponCode)
+    //                 ->where('status', 1)
+    //                 ->where('date_end', '>=', $today)
+    //                 ->first();
+
+    //             $coupon_session = Session::get('coupon');
+    //             if ($coupon_session == true) {
+    //                 $is_available = 0;
+    //                 if ($is_available == 0) {
+    //                     $cou[] = array(
+    //                         'code' => $coupon_login->code,
+    //                         'condition' => $coupon_login->condition,
+    //                         'number' => $coupon_login->number,
+    //                     );
+    //                     Session::put('coupon', $cou);
+    //                 }
+    //             } else {
+    //                 $cou[] = array(
+    //                     'code' => $coupon_login->code,
+    //                     'condition' => $coupon_login->condition,
+    //                     'number' => $coupon_login->number,
+    //                 );
+    //                 Session::put('coupon', $cou);
+    //             }
+    //             Session::save();
+    //             return redirect()->back()->with('message', 'Thêm mã giảm giá thành công');
+    //         }
+
+    //         // nếu chưa đăng nhập
+    //     } else {
+
+    //         $coupon = Coupon::where('code', $couponCode)
+    //             ->where('status', 1)
+    //             ->where('date_end', '>=', $today)
+    //             ->first();
+    //         if ($coupon) {
+    //             $count_coupon = $coupon->count();
+    //             if ($count_coupon > 0) {
+    //                 $coupon_session = Session::get('coupon');
+    //                 if ($coupon_session == true) {
+    //                     $is_available = 0;
+    //                     if ($is_available == 0) {
+    //                         $cou[] = array(
+    //                             'code' => $coupon->code,
+    //                             'condition' => $coupon->condition,
+    //                             'number' => $coupon->number,
+    //                         );
+    //                         Session::put('coupon', $cou);
+    //                     }
+    //                 } else {
+    //                     $cou[] = array(
+    //                         'code' => $coupon->code,
+    //                         'condition' => $coupon->condition,
+    //                         'number' => $coupon->number,
+    //                     );
+    //                     Session::put('coupon', $cou);
+    //                 }
+    //                 Session::save();
+    //                 return Redirect()->back()->with('message', 'Thêm mã giảm giá thành công!!');
+    //             }
+    //         } else {
+    //             return Redirect()->back()->with('message', 'Thêm mã giảm giá không đúng.');
+    //         }
+    //     }
+    // }
+
+    public function check_coupon(Request $request)
+    {
+        $today = Carbon::now('Asia/Ho_Chi_Minh')->format('d/m/y');
+        $couponCode = $request->input('coupon');
+        $userId = Session::get('user_id');
+
+        // Find the coupon with the specified code, active status, and non-expired date
+        $coupon = Coupon::where('code', $couponCode)
+            ->where('status', 1)
+            ->where('date_end', '>=', $today)
+            ->first();
+
+        if ($coupon) {
+            // If the user is logged in, check if they have already used the coupon
+            if ($userId && strpos($coupon->used, (string) $userId) !== false) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Mã giảm giá đã sử dụng, vui lòng nhập mã khác',
+                ]);
+            }
+
+            // Get the current session coupons
+            $couponSession = Session::get('coupon', []);
+
+            // Check if the coupon is already in the session
+            $isAvailable = collect($couponSession)->contains('code', $couponCode);
+
+            if (!$isAvailable) {
+                // Add the coupon details to the session if it's not already there
+                $couponSession[] = [
+                    'code' => $coupon->code,
+                    'condition' => $coupon->condition,
+                    'number' => $coupon->number,
+                ];
+                Session::put('coupon', $couponSession);
+                Session::save();
+            }
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Thêm mã giảm giá thành công',
+                'coupon' => $coupon,
+            ]);
+        } else {
+            // Coupon is invalid or expired
+            return response()->json([
+                'success' => false,
+                'message' => 'Mã giảm giá không hợp lệ hoặc đã hết hạn',
+            ]);
+        }
+    }
+
 }

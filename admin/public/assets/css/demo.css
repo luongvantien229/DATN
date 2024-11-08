@@ -121,3 +121,10 @@
   text-align: center;
   margin-top: 1rem;
 }
+td{
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 200px;
+
+}

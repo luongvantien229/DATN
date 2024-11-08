@@ -1,3 +1,4 @@
+
 import React from "react";
 import CounterUp from "../../../hooks/user/counterUp";
 
@@ -8,8 +9,8 @@ export default function Index() {
         <div className="section-title-2 mb-35 wow tmFadeInUp">
           <h2>
             {" "}
-            We provide and extend personalized & innovative healthcare services
-            to its customers.
+            Công ty chúng tôi cung cấp và mở rộng các dịch vụ chăm sóc sức khỏe
+            cá nhân hóa và sáng tạo cho khách hàng.
           </h2>
         </div>
         <div className="row align-items-center">
@@ -21,30 +22,32 @@ export default function Index() {
           <div className="col-lg-6">
             <div className="about-us-content wow tmFadeInUp">
               <div className="total-years">
-                <h2 className="count"><CounterUp end={29} duration={2} /></h2>
+                <h2 className="count">
+                  <CounterUp end={29} duration={2} />
+                </h2>
                 <h4>
-                  Years <br />
-                  Experience
+                  Năm <br />
+                  Kinh nghiệm
                   <br />
-                  Working
+                  Làm việc
                 </h4>
               </div>
-              <h3>High quality medical equipment and supplies</h3>
+              <h3>Thiết bị và vật tư y tế chất lượng cao</h3>
               <p>
-                We have decades of experience selling medical equipment and
-                supplies and managing healthcare facilities. We started Medizin
-                Medical Supplies to provide an easy way for organizations to
-                purchase high quality medical equipment and supplies from
-                leading manufacturers.
+                Chúng tôi có hàng thập kỷ kinh nghiệm trong việc bán thiết bị y
+                tế và vật tư cũng như quản lý các cơ sở chăm sóc sức khỏe. Chúng
+                tôi đã thành lập Medizin Medical Supplies để cung cấp một cách
+                dễ dàng cho các tổ chức mua sắm thiết bị và vật tư y tế chất
+                lượng cao từ các nhà sản xuất hàng đầu.
               </p>
               <p>
-                Customer excellence has always been a top priority and it always
-                will be. Thank you for visiting our site. We look forward to
-                working with you!
+                Sự hài lòng của khách hàng luôn là ưu tiên hàng đầu và sẽ luôn
+                như vậy. Cảm ơn bạn đã ghé thăm trang web của chúng tôi. Chúng
+                tôi mong được hợp tác với bạn!
               </p>
               <div className="about-btn">
                 <a href="#">
-                  Discover now <i className="far fa-long-arrow-right"></i>
+                  Khám phá ngay <i className="far fa-long-arrow-right"></i>
                 </a>
               </div>
             </div>
@@ -59,3 +62,4 @@ export default function Index() {
     </div>
   );
 }
+

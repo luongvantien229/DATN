@@ -24,9 +24,12 @@ class CouponController extends Controller
         $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:255',
             'number' => 'required|integer',
-            'code' => 'required|string|max:255|unique:coupons,coupon_code',
+            'code' => 'required|string|max:255|unique:coupons,code',
             'time' => 'required|integer',
-            'condition' => 'required|integer'
+            'condition' => 'required|integer',
+            'date_start' => 'required|date',
+            'date_end' => 'required|date',
+            'status' => 'required',
         ]);
 
         if ($validator->fails()) {
@@ -63,9 +66,12 @@ class CouponController extends Controller
         $validator = Validator::make($request->all(), [
             'name' => 'sometimes|required|string|max:255',
             'number' => 'sometimes|required|integer',
-            'code' => 'sometimes|required|string|max:255|unique:coupons,coupon_code,' . $coupon->id,
+            'code' => 'sometimes|required|string|max:255|unique:coupons,code,' . $coupon->id,
             'time' => 'sometimes|required|integer',
-            'condition' => 'sometimes|required|integer'
+            'condition' => 'sometimes|required|integer',
+            'date_start' => 'sometimes|required|date',
+            'date_end' => 'sometimes|required|date',
+            'status' => 'sometimes|required',
         ]);
 
         if ($validator->fails()) {
@@ -90,6 +96,16 @@ class CouponController extends Controller
         $coupon->delete();
 
         return response()->json(['message' => 'Coupon deleted successfully']);
+    }
+
+    public function update_status(Request $request)
+    {
+        $data = $request->all();
+        $coupon = Coupon::findOrFail($data['id']);
+        $coupon->status = $data['status'];
+        $coupon->save();
+        return response()->json($coupon, 200);
+
     }
 
     // public function check_coupon(Request $request)
@@ -227,24 +243,33 @@ class CouponController extends Controller
     {
         $today = Carbon::now('Asia/Ho_Chi_Minh')->format('d/m/y');
         $couponCode = $request->input('coupon');
-        $userId = Session::get('user_id');
+        $userId = auth()->id();
 
-        // Find the coupon with the specified code, active status, and non-expired date
+        // Step 1: Check if user is logged in and if the coupon has been used
+        if ($userId) {
+            $coupon = Coupon::where('code', $couponCode)
+                ->where('status', 1)
+                ->where('date_end', '>=', $today)
+                ->where('used', 'NOT LIKE', '%' . $userId . '%')
+                ->first();
+
+            if ($coupon) {
+                return response()->json([
+                    'success' => false,
+                    'used' => true,
+                    'message' => 'Mã giảm giá đã sử dụng, vui lòng nhập mã khác',
+                ]);
+            }
+        }
+
+        // Step 2: Find an active, non-expired coupon
         $coupon = Coupon::where('code', $couponCode)
             ->where('status', 1)
             ->where('date_end', '>=', $today)
             ->first();
 
         if ($coupon) {
-            // If the user is logged in, check if they have already used the coupon
-            if ($userId && strpos($coupon->used, (string) $userId) !== false) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Mã giảm giá đã sử dụng, vui lòng nhập mã khác',
-                ]);
-            }
 
-            // Get the current session coupons
             $couponSession = Session::get('coupon', []);
 
             // Check if the coupon is already in the session
@@ -266,13 +291,16 @@ class CouponController extends Controller
                 'message' => 'Thêm mã giảm giá thành công',
                 'coupon' => $coupon,
             ]);
+
         } else {
-            // Coupon is invalid or expired
             return response()->json([
                 'success' => false,
                 'message' => 'Mã giảm giá không hợp lệ hoặc đã hết hạn',
             ]);
         }
+
+        // Step 3: Handle adding the coupon to the session
+
     }
 
 }

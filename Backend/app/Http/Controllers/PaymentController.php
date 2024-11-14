@@ -70,15 +70,26 @@ class PaymentController extends Controller
     public function pay(Request $request)
     {
         $cartItems = $request->input('cartItems', []);
-        $coupon = $request->input('coupon', []);
+        $coupon = $request->input('coupon');
         if (empty($cartItems)) {
             return response()->json(['message' => 'Cart is empty!'], 400);
         }
 
-        $total = 0;
+        $sub_total = 0;
         foreach ($cartItems as $item) {
-            $total += $item['price'] * $item['quantity'];
+            $sub_total += $item['price'] * $item['quantity'];
         }
+        $discount = 0;
+        if ($coupon['condition'] === 1) {
+            $discount = ($sub_total * $coupon['number']) / 100;
+        } elseif ($coupon['condition'] === 2) {
+
+            $discount = $coupon['number'];
+        }
+
+        $feeShip = 50000;
+
+        $total = ($sub_total - $discount + $feeShip);
 
         // Validate the payment request
         $request->validate([
@@ -102,15 +113,16 @@ class PaymentController extends Controller
                 ];
             }
 
-            //create the coupon in the database
-            $coupon = Coupon::where('code')->first();
-            $coupon->used = $coupon->used . ',' . Auth::id();
-            $coupon->time = $coupon->time - 1;
-            $coupon->save();
+            $cou = Coupon::where('code', $coupon['code'])->first();
+            if ($cou) {
+                $cou->used .= $coupon['used'] . ',' . auth()->id();
+                $cou->time -= 1;
+                $cou->save();
+            }
 
             // Create the order in the database
             $order = new Order();
-            $order->user_id = Auth::id();
+            $order->user_id = auth()->id();
             $order->total_price = $total;
             $order->date_deliver = now();
             $order->order_code = 'ORD-' . time() . '-' . rand(1000, 9999);
@@ -127,13 +139,11 @@ class PaymentController extends Controller
                 $orderItem = new OrderItem();
                 $orderItem->order_id = $order->id;
                 $orderItem->product_id = $item['id'];
+                $orderItem->order_code = $order->order_code;
+                $orderItem->coupon_code = $coupon['code'];
                 $orderItem->price = $item['price'];
                 $orderItem->quantity = $item['quantity'];
                 $orderItem->save();
-
-                // Reduce product stock
-                $product->qty -= $item['quantity'];
-                $product->save();
             }
 
             // Clear the cart (if stored in session or user)

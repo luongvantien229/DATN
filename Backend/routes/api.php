@@ -110,6 +110,9 @@ Route::group(['prefix' => 'categories', 'middleware' => [AdminMiddleware::class]
         Route::post('/store', 'store');
         Route::post('/update/{id}', 'update');
         Route::delete('/destroy/{id}', 'destroy');
+        Route::get('/export-csv', 'export_csv');
+        Route::post('/import-csv', 'import_csv');
+
     });
 });
 
@@ -150,14 +153,15 @@ Route::group(['prefix' => 'products', 'middleware' => [AdminMiddleware::class]],
 // Orders CRUD routes
 Route::group(['prefix' => 'orders'], function ($router) {
     Route::controller(OrderController::class)->group(function () {
-        Route::get('/index', 'index');
-        Route::get('/show/{id}', 'show');
+        Route::get('/index', 'manager_order');
+        Route::get('/view_order/{order_code}', 'view_order');
         Route::post('/store', 'store');
         Route::post('/update/{id}', 'update');
         Route::get('/get_order_items/{id}', 'get_order_items')->middleware('admin');
         Route::get('/get_user_orders/{id}', 'get_user_orders')->middleware('admin');
         Route::post('/change_order_status/{id}', 'change_order_status');
-        Route::post('/print_order/{checkout_code}', 'print_order');
+        Route::post('/update_order_qty', 'update_order_qty');
+        Route::get('/print_order/{order_code}', 'print_order');
     });
 });
 
@@ -194,11 +198,33 @@ Route::group(['prefix' => 'posts'], function ($router) {
     });
 });
 
+Route::group(['prefix' => 'coupons', 'middleware' => [AdminMiddleware::class]], function ($router) {
+    Route::controller(CouponController::class)->group(function () {
+        Route::get('/index', 'index');
+        Route::get('/show/{id}', 'show');
+        Route::post('/store', 'store');
+        Route::post('/update/{id}', 'update');
+        Route::delete('/destroy/{id}', 'destroy');
+        Route::post('/update-status/{id}', 'update_status');
+    });
+});
+
 // Contact routers
 Route::group(['prefix' => 'contacts', 'middleware' => [AdminMiddleware::class]], function ($router) {
     Route::controller(ContactController::class)->group(function () {
         Route::get('/index', 'index');
         Route::get('/show/{id}', 'show');
+        Route::delete('/destroy/{id}', 'destroy');
+    });
+});
+
+// Comments routers
+Route::group(['prefix' => 'comments', 'middleware' => [AdminMiddleware::class]], function ($router) {
+    Route::controller(CommentController::class)->group(function () {
+        Route::get('/index', 'index');
+        Route::post('/allow', 'allow_comment');
+        Route::post('/reply', 'reply_comment');
+        Route::delete('/destroy/{id}', 'destroy');
         Route::delete('/destroy/{id}', 'destroy');
     });
 });
@@ -218,10 +244,9 @@ Route::get('banners/size/{size}', [BannerController::class, 'getBannersBySize'])
 // Route::get('/search', [IndexController::class, 'search']);
 Route::get('/search-suggestions', [IndexController::class, 'searchSuggestions']);
 Route::post('/image-search', [ImageSearchController::class, 'searchByImage']);
-Route::post('/contacts', [ContactController::class, 'store']);  // Gửi liên hệ
-Route::post('/add_comments', [CommentController::class, 'store']);  // Gửi bình luận
-Route::post('/comments', [CommentController::class, 'index']);  // DS bình luận
-Route::post('/delete_comments', [CommentController::class, 'destroy']);  // xóa bình luận
+Route::post('/send-contacts', [ContactController::class, 'store']);  // Gửi liên hệ
+Route::get('/load_comments', [CommentController::class, 'load_comments']);  // DS bình luận
+Route::post('/send_comment', [CommentController::class, 'send_comment']);  // Gửi bình luận
 
 Route::get('/filter', [IndexController::class, 'filter']);
 Route::get('/filter_post', [IndexController::class, 'filter_post']);
@@ -243,7 +268,7 @@ Route::get('/login/facebook/callback', [FacebookController::class, 'callback_fac
 Route::get('/login-customer-facebook', [FacebookController::class, 'login_customer_facebook']);
 Route::get('/customer/facebook/callback', [FacebookController::class, 'callback_customer_facebook']);
 
-Route::post('/check-coupon',[CouponController::class,'check_coupon']);
+Route::post('/check-coupon', [CouponController::class, 'check_coupon']);
 
 
 

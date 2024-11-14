@@ -36,6 +36,12 @@ import ViewWarehouse from "./components/warehouses/view.jsx";
 import AddProductsWarehouse from "./components/warehouses/add_products_warehouse.jsx";
 import AdminLogin from "./components/login/AdminLogin";
 import Users from "./components/users/index.jsx";
+import Coupons from "./components/coupons/index.jsx";
+import AddCoupon from "./components/coupons/add.jsx";
+import EditCoupon from "./components/coupons/edit.jsx";
+import Comments from "./components/comments/index.jsx";
+import Orders from "./components/orders/index.jsx";
+import ViewOrder from "./components/orders/view.jsx";
 
 axios.defaults.headers.common["Authorization"] = `Bearer ${localStorage.getItem(
   "token"
@@ -314,6 +320,57 @@ function App() {
           }
         />
 
+        <Route
+          path="/coupons"
+          element={
+            <MainLayout>
+              <Coupons />
+            </MainLayout>
+          }
+        />
+        <Route
+          path="/add-coupon"
+          element={
+            <MainLayout>
+              <AddCoupon />
+            </MainLayout>
+          }
+        />
+        <Route
+          path="/edit-coupon/:id"
+          element={
+            <MainLayout>
+              <EditCoupon />
+            </MainLayout>
+          }
+        />
+
+        <Route
+          path="/comments"
+          element={
+            <MainLayout>
+              <Comments />
+            </MainLayout>
+          }
+        />
+
+        <Route
+          path="/orders"
+          element={
+            <MainLayout>
+              <Orders />
+            </MainLayout>
+          }
+        />
+
+        <Route
+          path="/view-order/:order_code"
+          element={
+            <MainLayout>
+              <ViewOrder />
+            </MainLayout>
+          }
+        />
 
         <Route path="*" element={<NotFound />} /> {/* Trang 404 */}
       </Routes>

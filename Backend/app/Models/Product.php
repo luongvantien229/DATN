@@ -28,6 +28,7 @@ class Product extends Model
         'barcode',
         'track_qty',
         'qty',
+        'sold',
         'status',
     ];
 
@@ -43,6 +44,7 @@ class Product extends Model
         'view' => 'integer',
         'track_qty' => 'integer',
         'qty' => 'integer',
+        'sold' => 'integer',
         'status' => 'integer',
     ];
 
@@ -70,5 +72,13 @@ class Product extends Model
     {
         return $this->belongsToMany(Warehouse::class, 'warehouse_products')
                     ->withPivot('quantity');
+    }
+
+    public function product(){
+        return $this->belongsTo(Product::class, 'product_id');
+    }
+
+    public function comment(){
+        return $this->belongsToMany(Comment::class);
     }
 }

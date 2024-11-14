@@ -9,9 +9,20 @@ export default function Register() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [password2, setPassword2] = useState("");
-  
+  const [captcha, setCaptcha] = useState("");
+
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    const recaptchaResponse = window.grecaptcha.getResponse();
+    if (!recaptchaResponse) {
+      Swal.fire({
+        icon: "error",
+        title: "Lỗi",
+        text: "Vui lòng xác minh reCAPTCHA.",
+      });
+      return;
+    }
 
     try {
       const response = await axios.post(
@@ -21,33 +32,24 @@ export default function Register() {
           email,
           password,
           password2,
+          'g-recaptcha-response': recaptchaResponse,
         }
       );
-      
 
-      // Kiểm tra nếu phản hồi và dữ liệu tồn tại
+      // If successful
       if (response && response.data) {
-        // Lưu token vào localStorage
-
         Swal.fire({
           icon: "success",
           title: "Đăng Ký Thành Công",
           text: "Bạn sẽ được chuyển hướng đến bảng điều khiển.",
         }).then(() => {
-          // Điều hướng đến bảng điều khiển
           navigate("/login-register");
-          
-          // Làm mới trang sau khi người dùng nhấn OK
           window.location.reload();
         });
+      }
 
-
-      } 
-     
     } catch (error) {
-      // Xử lý lỗi và ghi lại chúng
       if (error.response) {
-        // Xử lý lỗi cụ thể cho 401 Unauthorized
         if (error.response.status === 401) {
           Swal.fire({
             icon: "error",
@@ -70,6 +72,7 @@ export default function Register() {
       }
     }
   };
+
   return (
     <div className="col-lg-6">
       <div className="login-register-wrap">
@@ -80,8 +83,8 @@ export default function Register() {
           <form method="POST" onSubmit={handleSubmit}>
             <div className="login-register-input-style input-style">
               <label>Username *</label>
-              <input 
-                type="text" 
+              <input
+                type="text"
                 name="name"
                 placeholder="Nhập Username"
                 className="form-control"
@@ -90,36 +93,38 @@ export default function Register() {
             </div>
             <div className="login-register-input-style input-style">
               <label>Email address *</label>
-              <input 
-                type="email" 
+              <input
+                type="email"
                 name="email"
                 placeholder="Nhập Email"
-                     className="form-control"
+                className="form-control"
                 onChange={(e) => setEmail(e.target.value)}
               />
             </div>
-            {/* console.log('Thông tin cần log:', data); */}
-
             <div className="login-register-input-style input-style">
               <label>Password *</label>
-              <input 
-                type="password" 
+              <input
+                type="password"
                 name="password"
                 placeholder="Nhập Mật Khẩu"
-                     className="form-control"
+                className="form-control"
                 onChange={(e) => setPassword(e.target.value)}
               />
             </div>
             <div className="login-register-input-style input-style">
               <label>Password 2*</label>
-              <input 
-                type="password2" 
+              <input
+                type="password"
                 name="password2"
                 placeholder="Nhập Lại Mật Khẩu"
                 className="form-control"
                 onChange={(e) => setPassword2(e.target.value)}
               />
             </div>
+            
+            {/* Add Google reCAPTCHA */}
+            <div className="g-recaptcha" data-sitekey="6LdPo2oqAAAAAI3NTsOV8sCti5T2SODCiC20eZHa"></div>
+
             <div className="privacy-policy-wrap">
               <p>
                 Your personal data will be used to support your experience

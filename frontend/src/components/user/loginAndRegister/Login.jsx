@@ -73,6 +73,7 @@
           },
         });
         localStorage.setItem('user_name', user.data.name)
+        localStorage.setItem('user_id', user.data.id)
         
       } catch (error) {
         if (error.response) {

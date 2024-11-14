@@ -3,11 +3,12 @@ import axios from "axios";
 
 export default function SidebarBrandList({ onBrandSelect }) {
   const [brands, setBrands] = useState([]);
+  const [selectedBrand, setSelectedBrand] = useState(null);
 
   useEffect(() => {
     const fetchBrands = async () => {
       try {
-        const response = await axios.get('http://127.0.0.1:8000/api/all_brands'); 
+        const response = await axios.get('/all_brands'); 
         setBrands(response.data.brands || []);
       } catch (error) {
         console.error("Error fetching brands:", error);
@@ -18,10 +19,12 @@ export default function SidebarBrandList({ onBrandSelect }) {
   }, []);
 
   const handleBrandClick = (brand) => {
+    setSelectedBrand(brand.id); // Set selected brand ID
     onBrandSelect(brand.id); // Pass the selected brand ID to the parent component
   };
 
   const handleResetClick = () => {
+    setSelectedBrand(null); // Reset selected brand
     onBrandSelect(""); // Pass an empty string to reset the filter
   };
 
@@ -31,13 +34,21 @@ export default function SidebarBrandList({ onBrandSelect }) {
       <div className="sidebar-brand-list">
         <ul>
           <li>
-            <a onClick={handleResetClick} style={{ cursor: "pointer" }}>
-              tất cả thương hiệu
+            <a 
+              onClick={handleResetClick} 
+              className={!selectedBrand ? "active" : ""} 
+              style={{ cursor: "pointer" }}
+            >
+              Tất cả thương hiệu
             </a>
           </li>
           {brands.map((brand) => (
             <li key={brand.id}>
-              <a onClick={() => handleBrandClick(brand)} style={{ cursor: "pointer" }}>
+              <a 
+                onClick={() => handleBrandClick(brand)} 
+                className={selectedBrand === brand.id ? "active" : ""} 
+                style={{ cursor: "pointer" }}
+              >
                 {brand.name} <span>({brand.products_count})</span>
               </a>
             </li>

@@ -426,4 +426,24 @@ public function print_order_convert($checkout_code)
     //     return response()->json(['message' => 'Đặt hàng thành công', 'order' => $order]);
     // }
 
+
+    public function get_order_items_user($id){
+        $orders = Order::where('user_id', $id)
+        ->with(['items' => function ($query) {
+            $query->orderBy('created_at', 'desc');
+        }])
+        ->get();
+
+        if ($orders) {
+            foreach ($orders as $order) {
+                foreach ($order->items as $order_items) {
+                    $product = Product::where('id', $order_items->product_id)->pluck('name');
+                    $order_items->product_name = $product['0'];
+                }
+            }
+            return response()->json($orders, 200);
+        } else {
+            return response()->json('No orders found for this user');
+        }
+    }
 }

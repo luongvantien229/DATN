@@ -330,7 +330,7 @@ class IndexController extends Controller
         // }
 
         // Paginate the results
-        $products = $query->paginate(6);
+        $products = $query->paginate(8);
 
         // // Min and Max price for filters
         // $min_price = Product::min('price');

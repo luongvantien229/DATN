@@ -13,9 +13,9 @@ const About = () => {
         <MisionArea />
         <FunfactArea />
         <TestimonialArea />
-        <BrandLogoArea />
-        <ContactUsArea />
+        {/* <ContactUsArea /> */}
         <TeamArea />
+        <BrandLogoArea />
     </>
   );
 };

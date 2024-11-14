@@ -9,6 +9,7 @@ export default function Index() {
   const [error, setError] = useState(null);
   const [filters, setFilters] = useState({
     category_id: "", // This should be the filter key for category
+    name: "",
     sort_by: "default",
   });
   
@@ -56,7 +57,6 @@ export default function Index() {
   };
 
   const handleCategorySelect = (categoryId) => {
-    console.log("🚀 ~ handleCategorySelect ~ categoryId:", categoryId)
     
     setFilters((prev) => ({ ...prev, category_id: categoryId }));
     setCurrentPage(1); // Reset to the first page when category changes

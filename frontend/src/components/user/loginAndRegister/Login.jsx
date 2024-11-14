@@ -67,12 +67,14 @@
           });;
         }
         
-        // const user = await axios.get('/auth/your_profile', {
-        //   headers: {
-        //     'Authorization': `Bearer ${localStorage.getItem('token')}`, 
-        //   },
-        // });
-        // localStorage.setItem('user_name', user.data.name)
+        const user = await axios.get('/auth/your_profile', {
+          headers: {
+            'Authorization': `Bearer ${localStorage.getItem('token')}`, 
+          },
+        });
+        localStorage.setItem('user_name', user.data.name)
+        localStorage.setItem('user_id', user.data.id)
+
         
       } catch (error) {
         if (error.response) {

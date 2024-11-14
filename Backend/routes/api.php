@@ -284,4 +284,10 @@ Route::post('/pay/order', [PaymentController::class, 'payByStripe']);
 Route::post('/pay', [PaymentController::class, 'pay']);
 
 // Order user
-Route::get('/get_user_orders/{id}', [OrderController::class, 'get_user_orders']);
+Route::get('/get_user_orders/{id}', [OrderController::class, 'get_order_items_user']);
+
+// Change user info
+Route::put('/change_user_info/{id}', [UserController::class, 'change_user_info']);
+
+// Change user password
+Route::put('/change_user_password/{id}', [UserController::class, 'change_user_password']);

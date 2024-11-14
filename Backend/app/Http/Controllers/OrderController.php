@@ -18,10 +18,10 @@ use PDF;
 class OrderController extends Controller
 {
 
-    public function print_order($checkout_code)
+    public function print_order($order_code)
     {
         $pdf = \App::make('dompdf.wrapper');
-        $pdf->loadHTML($this->print_order_convert($checkout_code));
+        $pdf->loadHTML($this->print_order_convert($order_code));
 
         return $pdf->stream();
     }

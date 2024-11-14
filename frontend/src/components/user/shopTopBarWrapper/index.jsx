@@ -17,9 +17,9 @@ export default function Index() {
     price: "",
     sort_by: "default",
   });
-  const [currentPage, setCurrentPage] = useState(1); // Add state for current page
-  const [totalPages, setTotalPages] = useState(0); // Add state for total pages
-  const [totalProducts, setTotalProducts] = useState(0); // Total number of products
+  const [currentPage, setCurrentPage] = useState(1); 
+  const [totalPages, setTotalPages] = useState(0); 
+  const [totalProducts, setTotalProducts] = useState(0); 
   useEffect(() => {
     fetchProducts();
   }, [filters, currentPage]);
@@ -48,7 +48,7 @@ export default function Index() {
   };
 
   const handleCategorySelect = (categoryId) => {
-    setFilters((prev) => ({ ...prev, category_id: categoryId }));
+    setFilters((prev) => ({ ...prev, category_posts_id: categoryId }));
     setCurrentPage(1);
   };
 

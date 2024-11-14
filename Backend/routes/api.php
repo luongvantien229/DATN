@@ -236,10 +236,11 @@ Route::get('/all_products', [IndexController::class, 'all_products']);
 Route::get('/all_brands', [IndexController::class, 'all_brands']);
 Route::get('/all_categories', [IndexController::class, 'all_categories']);
 Route::get('/all_category_posts', [IndexController::class, 'all_category_posts']);
+Route::get('/all_posts', [IndexController::class, 'all_posts']);
 Route::get('/new_products', [IndexController::class, 'new_products']);
 Route::get('/favorite_products', [IndexController::class, 'favorite_products']);
 Route::get('/product_detail/{slug}/{id}', [IndexController::class, 'product_detail']);
-Route::get('banners/size/{size}', [BannerController::class, 'getBannersBySize']); // ví dụ: GET /api/banners/size/1 để lấy các banner có kích thước 800x600;
+Route::get('/banners/size/{size}', [BannerController::class, 'getBannersBySize']); // ví dụ: GET /api/banners/size/1 để lấy các banner có kích thước 800x600;
 // GET /api/banners/size/2 để lấy các banner có kích thước 650x250.
 // Route::get('/search', [IndexController::class, 'search']);
 Route::get('/search-suggestions', [IndexController::class, 'searchSuggestions']);
@@ -281,3 +282,6 @@ Route::post('/check-coupon', [CouponController::class, 'check_coupon']);
 Route::post('/confirm_order', [OrderController::class, 'confirm_order']);
 Route::post('/pay/order', [PaymentController::class, 'payByStripe']);
 Route::post('/pay', [PaymentController::class, 'pay']);
+
+// Order user
+Route::get('/get_user_orders/{id}', [OrderController::class, 'get_user_orders']);

@@ -18,34 +18,41 @@ use PDF;
 class OrderController extends Controller
 {
 
-    public function print_order($checkout_code){
-		$pdf = \App::make('dompdf.wrapper');
-		$pdf->loadHTML($this->print_order_convert($checkout_code));
+    public function print_order($order_code)
+    {
+        $pdf = \App::make('dompdf.wrapper');
+        $pdf->loadHTML($this->print_order_convert($order_code));
 
-		return $pdf->stream();
-	}
-
-
-public function print_order_convert($checkout_code)
-{
-    $order = Order::with('user', 'items.product')->where('order_code', $checkout_code)->first();
-
-    if (!$order) {
-        return "Order not found.";
+        return $pdf->stream();
     }
 
-    $user = $order->user;
-    $order_items = $order->items;
 
-    $coupon = null;
-    $coupon_echo = '0';
+    public function print_order_convert($order_code)
+    {
+        $order = Order::with('user', 'items.product')->where('order_code', $order_code)->first();
+
+        if (!$order) {
+            return "Order not found.";
+        }
+
+        $user = $order->user;
+        $order_items = $order->items;
+
+        $coupon = null;
+        $coupon_echo = '0';
+
+        // Define shipping fee
+        $feeShip = 50000;
+
+        foreach ($order_items as $item) {
+            $coupon_code = $item->coupon_code;
+        }
+        $coupon_condition = 2;
+        $coupon_number = 0;
 
 
-    foreach ($order_items as $order_item) {
-        $product_coupon = $order_item->product->coupon_code ?? 'no';
-
-        if ($product_coupon != 'no') {
-            $coupon = Coupon::where('code', $product_coupon)->first();
+        if ($coupon_code && $coupon_code != 'no') {
+            $coupon = Coupon::where('code', $coupon_code)->first();
             if ($coupon) {
                 $coupon_condition = $coupon->condition;
                 $coupon_number = $coupon->number;
@@ -57,17 +64,10 @@ public function print_order_convert($checkout_code)
                 }
             }
         }
-    }
 
-    if (!$coupon) {
-        $coupon_condition = 2;
-        $coupon_number = 0;
-        $coupon_echo = '0';
-    }
+        $output = '';
 
-    $output = '';
-
-    $output .= '<style>body{
+        $output .= '<style>body{
         font-family: DejaVu Sans;
     }
     .table-styling{
@@ -77,7 +77,7 @@ public function print_order_convert($checkout_code)
         border:1px solid #000;
     }
     </style>
-    <h1><center>Công ty TNHH một thành viên ABCD</center></h1>
+    <h1><center>Nhà thuốc Yên Tâm</center></h1>
     <h4><center>Độc lập - Tự do - Hạnh phúc</center></h4>
     <p>Người đặt hàng</p>
     <table class="table-styling">
@@ -90,24 +90,24 @@ public function print_order_convert($checkout_code)
         </thead>
         <tbody>';
 
-    $output .= '
+        $output .= '
             <tr>
                 <td>' . $user->name . '</td>
                 <td>' . $user->phone . '</td>
                 <td>' . $user->email . '</td>
             </tr>';
 
-    $output .= '
+        $output .= '
         </tbody>
     </table>';
 
-    $output .= '
+        $output .= '
     <p>Đơn hàng đặt</p>
     <table class="table-styling">
         <thead>
             <tr>
                 <th>Tên sản phẩm</th>
-                <th>Phí ship</th>
+                <th>Mã giảm giá</th>
                 <th>Số lượng</th>
                 <th>Giá sản phẩm</th>
                 <th>Thành tiền</th>
@@ -115,48 +115,57 @@ public function print_order_convert($checkout_code)
         </thead>
         <tbody>';
 
-    $total = 0;
+        $total = 0;
 
-    foreach ($order_items as $item) {
-        $subtotal = $item->price * $item->quantity;
-        $total += $subtotal;
+        foreach ($order_items as $item) {
+            $subtotal = $item->price * $item->quantity;
+            $total += $subtotal;
 
-        $product_coupon = $item->product->coupon_code ?? 'không mã';
+            $product_coupon = $item->product->coupon_code ?? 'không mã';
 
-
-        $output .= '
+            $output .= '
             <tr>
                 <td>' . $item->product->name . '</td>
-                <td>' . $product_coupon . '</td>
-
+                <td>' . $coupon_code . '</td>
                 <td>' . $item->quantity . '</td>
                 <td>' . number_format($item->price, 0, ',', '.') . 'đ</td>
                 <td>' . number_format($subtotal, 0, ',', '.') . 'đ</td>
             </tr>';
-    }
+        }
 
-    if ($coupon_condition == 1) {
-        $total_after_coupon = ($total * $coupon_number) / 100;
-        $total_coupon = $total - $total_after_coupon;
-    } else {
-        $total_coupon = $total - $coupon_number;
-    }
+        // Apply coupon discount
+        $discount = 0;
+        if ($coupon_condition == 1) {
+            $discount = ($total * $coupon_number) / 100;
+        } else {
+            $discount = $coupon_number;
+        }
+        $total_after_discount = $total - $discount + $feeShip;
 
-    $output .= '
+        $output .= '
         <tr>
-            <td colspan="2">
-                <p>Tổng giảm: ' . $coupon_echo . '</p>
-
-                <p>Thanh toán : ' . number_format($total_coupon , 0, ',', '.') . 'đ</p>
-            </td>
+            <td colspan="4" style="text-align: right;"><strong>Phí vận chuyển</strong></td>
+            <td>' . number_format($feeShip, 0, ',', '.') . 'đ</td>
         </tr>';
 
-    $output .= '
+        $output .= '
+        <tr>
+            <td colspan="4" style="text-align: right;"><strong>Tổng giảm</strong></td>
+            <td>' . $coupon_echo . '</td>
+        </tr>';
+
+        $output .= '
+        <tr>
+            <td colspan="4" style="text-align: right;"><strong>Thanh toán</strong></td>
+            <td>' . number_format($total_after_discount, 0, ',', '.') . 'đ</td>
+        </tr>';
+
+        $output .= '
         </tbody>
     </table>';
 
-    $output .= '
-    <p>Ký tên</p>
+        $output .= '
+    <p class="text-end" >Ký tên</p>
     <table>
         <thead>
             <tr>
@@ -168,8 +177,57 @@ public function print_order_convert($checkout_code)
         </tbody>
     </table>';
 
-    return $output;
-}
+        return $output;
+    }
+
+
+
+    public function manager_order()
+    {
+        $orders = Order::with('user')->orderBy('created_at', 'DESC')->get();
+        return response()->json([
+            'success' => true,
+            'data' => $orders
+        ], 200);
+    }
+
+    public function view_order($order_code)
+    {
+        $order_item = OrderItem::with('product')->where('order_code', $order_code)->get();
+        $orders = Order::where('order_code', $order_code)->get();
+        foreach ($orders as $key => $order) {
+            $user_id = $order->user_id;
+            $status = $order->status;
+        }
+        $user = User::where('id', $user_id)->first();
+
+        $order_items = OrderItem::with('product')->where('order_code', $order_code)->get();
+
+        foreach ($order_items as $item) {
+            $coupon_code = $item->coupon_code;
+        }
+        $condition = 2;
+        $number = 0;
+
+        // If a coupon code exists and is not 'no', fetch the coupon details
+        if ($coupon_code && $coupon_code != 'no') {
+            $coupon = Coupon::where('code', $coupon_code)->first();
+            if ($coupon) {
+                $condition = $coupon->condition;
+                $number = $coupon->number;
+            }
+        }
+        return response()->json([
+            'success' => true,
+            'order_item' => $order_item,
+            'orders' => $orders,
+            'user' => $user,
+            'order_items' => $order_items,
+            'condition' => $condition,
+            'number' => $number,
+            'status' => $status,
+        ], 200);
+    }
 
     //
     public function index()
@@ -215,7 +273,7 @@ public function print_order_convert($checkout_code)
             $order->payment_method = $request->payment_method;
             $order->total_price = $request->total_price;
             $order->data_deliver = now()->addDays(7);
-            $order->status ='pending';
+            $order->status = 'pending';
             $order->save();
             foreach ($request->order_items as $order_items) {
                 $items = new OrderItem();
@@ -251,36 +309,74 @@ public function print_order_convert($checkout_code)
     public function get_user_orders($id)
     {
         $orders = Order::where('user_id', $id)
-        ->with('items', function ($query) {
-            $query->orderBy('created_at', 'desc');
-        })->get();
+            ->with('items', function ($query) {
+                $query->orderBy('created_at', 'desc');
+            })->get();
 
-        // if ($orders) {
-        //     foreach ($orders as $order) {
-        //         foreach($order->items as $order_items) {
-        //             $product = Product::where('id', $order_items->product_id)->pluck('name');
-        //         $order_items->product_name = $product['0'];
-        //         }
-        //     }
-        //     return response()->json($order, 200);
-        // }else
-        // return response()->json('no orders found for this user');
+        if ($orders) {
+            foreach ($orders as $order) {
+                foreach ($order->items as $order_items) {
+                    $product = Product::where('id', $order_items->product_id)->pluck('name');
+                    $order_items->product_name = $product['0'];
+                }
+            }
+            return response()->json($order, 200);
+        } else
+            return response()->json('no orders found for this user');
 
     }
 
-    public function change_order_status($id,Request $request){
-        $order= Order::find($id);
-        if($order){
-            $order->update(['status' =>$request->status]);
-            return response()->json('Thay đổi trạng thái thành công');
-        } else return response()->json('Không tìm thấy đơn đặt hàng');
+    public function change_order_status($id, Request $request)
+    {
+        $order = Order::with('items')->find($id);
+
+        if (!$order) {
+            return response()->json('Không tìm thấy đơn đặt hàng', 404);
+        }
+
+        $order->update(['status' => $request->status]);
+
+        // Update product quantities if the order status is changed to "Delivered"
+        if ($request->status == 'Delivered') {
+            foreach ($order->items as $item) { // Ensure orderItems is not null
+                $product = Product::find($item->product_id);
+
+                if ($product) {
+                    $product->qty -= $item->quantity; // Decrease product quantity by ordered amount
+                    $product->sold += $item->quantity; // Increase sold count by ordered amount
+                    $product->save();
+                }
+            }
+        } elseif ($request->status != 'Delivered' && $request->status != 'Cancelled') {
+            foreach ($order->items as $item) { // Ensure orderItems is not null
+                $product = Product::find($item->product_id);
+
+                if ($product) {
+                    $product->qty += $item->quantity; // Decrease product quantity by ordered amount
+                    $product->sold -= $item->quantity; // Increase sold count by ordered amount
+                    $product->save();
+                }
+            }
+        }
+
+        return response()->json('Thay đổi trạng thái thành công');
+    }
+
+
+    public function update_order_qty(Request $request)
+    {
+        $data = $request->all();
+        $order_items = OrderItem::where('product_id', $data['product_id'])->where('order_code', $data['order_code'])->first();
+        $order_items->quantity = $data['quantity'];
+        $order_items->save();
+
     }
 
     public function confirm_order(Request $request)
     {
         // Fetch cart items from session instead of request input
-        // $cartItems = $request->input('cartItems', []);
-        $cartItems = session('cart', []);
+        $cartItems = $request->input('cartItems', []);
+        // $cartItems = session('cart', []);
 
         if (empty($cartItems)) {
             return response()->json(['message' => 'Cart is empty!'], 400);

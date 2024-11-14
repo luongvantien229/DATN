@@ -182,17 +182,13 @@ class IndexController extends Controller
         $suggestions = Product::where('name', 'LIKE', '%' . $searchTerm . '%')
             ->orWhere('description', 'LIKE', '%' . $searchTerm . '%')
             ->take(10) // Lấy tối đa 10 kết quả
-            ->get(['id', 'name','slug', 'image', 'price']); // Lấy các trường cần thiết cho gợi ý
+            ->get(['id', 'name', 'slug', 'image', 'price']); // Lấy các trường cần thiết cho gợi ý
 
         // Trả về kết quả dưới dạng JSON
         return response()->json($suggestions);
     }
 
 
-    public function load_comments(Request $request){
-        $product_id = $request->product_id;
-        $comments = Comment::where('product_id', $product_id)->get();
-    }
 
 
     // public function filter(Request $request)

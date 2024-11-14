@@ -54,9 +54,14 @@ class ContactController extends Controller
             'message' => 'required|string',
         ]);
 
+        if (!Auth::check()) {
+            return response()->json(['error' => 'You must be logged in to submit a contact form.'], 403);
+        }
+
+
         // Tạo liên hệ mới
         $contact = Contact::create([
-            'user_id' => Auth::id() ?? null,  // Nếu khách hàng đã đăng nhập
+            'user_id' => Auth::id() ?? 0,  // Nếu khách hàng đã đăng nhập
             'name' => $request->name,
             'email' => $request->email,
             'phone' => $request->phone,

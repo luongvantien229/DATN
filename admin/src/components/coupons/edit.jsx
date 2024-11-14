@@ -16,6 +16,7 @@ const EditCoupon = () => {
   });
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false); // Loading state
+  const [success, setSuccess] = useState(false); // Success state
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -34,10 +35,7 @@ const EditCoupon = () => {
         setCoupon(response.data);
       } catch (error) {
         setError("Error fetching coupon details.");
-        console.error(
-          "Error:",
-          error.response ? error.response.data : error.message
-        );
+        console.error("Error:", error.response ? error.response.data : error.message);
       } finally {
         setLoading(false); // End loading
       }
@@ -69,14 +67,12 @@ const EditCoupon = () => {
           },
         }
       );
-      alert("Coupon updated successfully!");
-      navigate("/coupons");
+      setSuccess(true);
+      setError(null);
+      setTimeout(() => navigate("/coupons"), 2000); // Navigate after 2 seconds
     } catch (error) {
       setError("Error updating the coupon.");
-      console.error(
-        "Error:",
-        error.response ? error.response.data : error.message
-      );
+      console.error("Error:", error.response ? error.response.data : error.message);
     } finally {
       setLoading(false); // End loading
     }
@@ -88,6 +84,7 @@ const EditCoupon = () => {
         <h5 className="card-header">Edit Coupon</h5>
         <div className="card-body">
           {loading && <div>Loading...</div>}
+          {success && <div className="alert alert-success">Coupon updated successfully!</div>}
           {error && <div className="alert alert-danger">{error}</div>}
           <form onSubmit={handleSubmit}>
             <div className="mb-3">
@@ -125,14 +122,17 @@ const EditCoupon = () => {
             </div>
             <div className="mb-3">
               <label className="form-label">Condition</label>
-              <input
-                type="text"
-                className="form-control"
+              <select
                 name="condition"
                 value={coupon.condition}
                 onChange={handleChange}
-                required
-              />
+                className="form-control"
+              >
+                <option value="">Chọn condition</option>
+                <option value={1}>%</option>
+                <option value={2}>Đ</option>
+                
+              </select>
             </div>
             <div className="mb-3">
               <label className="form-label">Number</label>

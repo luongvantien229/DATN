@@ -26,7 +26,7 @@ const EditWarehouse = () => {
 
         // Fetch the warehouse details
         const warehouseRes = await axios.get(
-          `http://localhost:8000/api/warehouses/show/id}`,
+          `http://localhost:8000/api/warehouses/show/${id}`,
           {
             headers: { Authorization: `Bearer ${token}` },
           }
@@ -82,7 +82,7 @@ const EditWarehouse = () => {
           {error && <div className="alert alert-danger">{error}</div>}
           <form onSubmit={handleSubmit}>
             <div className="mb-3">
-              <label className="form-label">Danh mục bài viết</label>
+              <label className="form-label">Nhân viên quản lí </label>
               <select
                 name="user_id"
                 className="form-control"

@@ -28,6 +28,12 @@ const AddCoupon = () => {
     e.preventDefault();
     const token = localStorage.getItem("token");
 
+    // Date validation to ensure start date is before end date
+    if (new Date(coupon.date_start) > new Date(coupon.date_end)) {
+      setError("Ngày bắt đầu phải trước ngày kết thúc!");
+      return;
+    }
+
     try {
       await axios.post("http://localhost:8000/api/coupons/store", coupon, {
         headers: {
@@ -35,9 +41,19 @@ const AddCoupon = () => {
         },
       });
       alert("Coupon added successfully!");
+      setCoupon({
+        name: "",
+        user_id: "",
+        time: "",
+        condition: "",
+        number: "",
+        code: "",
+        date_start: "",
+        date_end: "",
+      }); // Reset form
       navigate("/coupons"); // Redirect to coupon list after successful creation
     } catch (error) {
-      setError("Error occurred while adding the coupon!");
+      setError(error.response ? error.response.data.message : "Error occurred while adding the coupon!");
       console.error("Error:", error.response ? error.response.data : error.message);
     }
   };
@@ -83,15 +99,18 @@ const AddCoupon = () => {
               />
             </div>
             <div className="mb-3">
-              <label className="form-label">Condition</label>
-              <input
-                type="text"
-                className="form-control"
+              <label className="form-label">condition</label>
+              <select
                 name="condition"
                 value={coupon.condition}
                 onChange={handleChange}
-                required
-              />
+                className="form-control"
+              >
+                <option value="">Chọn condition</option>
+                <option value={1}>%</option>
+                <option value={2}>Đ</option>
+                
+              </select>
             </div>
             <div className="mb-3">
               <label className="form-label">Number</label>

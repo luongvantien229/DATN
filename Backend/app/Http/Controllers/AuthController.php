@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\RegisterValid;
 use App\Mail\WelcomeMail;
 use App\Models\User;
+use App\Rules\Captcha;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Auth\Events\Registered;
 use PHPOpenSourceSaver\JWTAuth\Facades\JWTAuth;
@@ -28,6 +29,7 @@ class AuthController extends Controller
             // 'password' => 'required|min:8',
             'password' => 'required|min:8|same:password2',
             'password2' => 'required|min:8',
+            'g-recaptcha-response' => new Captcha(),
 
         ]);
 

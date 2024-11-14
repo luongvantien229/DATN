@@ -33,6 +33,6 @@ class Captcha implements ValidationRule
     // }
 
     public function message(){
-        return 'Please complete the recaptcha to submit the form.';
+        return 'Vui lòng hoàn thành recaptcha để gửi biểu mẫu.';
     }
 }

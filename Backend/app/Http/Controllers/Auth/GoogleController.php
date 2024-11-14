@@ -55,7 +55,8 @@ class GoogleController extends Controller
             $orang = User::create([
                 'name' => $users->name,
                 'email' => $users->email,
-                'password' =>'',
+                'image' => $users->image,
+                'password' => '',
                 'phone' => '0000000000',
                 'lock' => 0,
                 'role_id' => 1,
@@ -78,36 +79,56 @@ class GoogleController extends Controller
     public function login_customer_google()
     {
         config(['services.google.redirect' => env('GOOGLE_CLIENT_URL')]);
-        return Socialite::driver('google')->redirect();
+        return Socialite::driver('google')->stateless()->redirect();
     }
 
     public function callback_customer_google()
     {
         config(['services.google.redirect' => env('GOOGLE_CLIENT_URL')]);
-        try {
-            $user = Socialite::driver('google')->user();
-            $finduser = User::where('google_id', $user->id)->first();
+        $users = Socialite::driver('google')->stateless()->user();
+        // return $users->id;
 
-            if ($finduser) {
-                Auth::login($finduser);
+        $authUser = $this->findOrCreateCustomer($users, 'google');
+        $account_name = User::where('id', $authUser->user_id)->first();
+        Session::put('name', $account_name->name);
+        Session::put('id', $account_name->id);
+        $token = JWTAuth::fromUser($account_name);
+        // return response()->json([
+        //     'user' => $account_name,
+        //     'token' => $token,
+        //     'message' =>'đăng nhập Admin bằng google thành công'
+        // ]);
+        return redirect()->to("http://localhost:3000/?token={$token}");
+    }
 
-            } else {
-                $newUser = User::create([
-                    'name' => $user->name,
-                    'email' => $user->email,
-                    'google_id' => $user->id,
-                    'password' => ''
-                ]);
-
-                Auth::login($newUser);
-                $token = Auth::user()->createToken('authToken')->accessToken;
-                return response()->json([
-                    'user' => Auth::user(),
-                    'token' => $token,
-                ], 200);
-            }
-        } catch (\Exception $e) {
-            dd($e->getMessage());
+    public function findOrCreateCustomer($users, $provider)
+    {
+        $authUser = Social::where('provider_user_id', $users->id)->first();
+        if ($authUser) {
+            return $authUser;
         }
+        $customer_new = new Social([
+            'provider_user_id' => $users->id,
+            'provider' => strtoupper($provider),
+        ]);
+
+        $customer = User::where('email', $users->email)->first();
+        if (!$customer) {
+            $customer = User::create([
+                'name' => $users->name,
+                'email' => $users->email,
+                'image' => $users->image,
+                'password' => '',
+                'phone' => '0000000000',
+                'lock' => 0,
+                'role_id' => 2,
+                'google_id' => $users->id
+            ]);
+        }
+        $customer_new->login()->associate($customer);
+        $customer_new->save();
+
+
+        return $customer_new;
     }
 }

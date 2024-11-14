@@ -2,14 +2,15 @@
 
 namespace App\Http\Controllers;
 
-use App\Exports\ExcelExports;
-use App\Imports\ExcelImports;
+use App\Exports\CategoriesExport;
+use App\Imports\CategoriesImport;
 use App\Models\Category;
 use Exception;
 use Illuminate\Support\Facades\File;
 use Illuminate\Http\Request;
+use Maatwebsite\Excel\Facades\Excel;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
-use Excel;
+
 class CategoryController extends Controller
 {
     //
@@ -19,10 +20,11 @@ class CategoryController extends Controller
         return response()->json($categories, 200);
     }
 
-    public function getCategories(){
+    public function getCategories()
+    {
         $categories = Category::paginate(10);
         $listCategory = [];
-        Category::recursive($categories,$parent = 0 ,$level=1,$listCategory);
+        Category::recursive($categories, $parent = 0, $level = 1, $listCategory);
         return $listCategory;
     }
 
@@ -66,8 +68,8 @@ class CategoryController extends Controller
             $category->slug = $request->slug;
             $category->sort_order = $request->sort_order;
             $category->parent_id = $request->parent_id;
-            $category->status = $request->status ; // Default to 0 if null
-            $category->showHome = $request->showHome ; // Default to 0 if null
+            $category->status = $request->status; // Default to 0 if null
+            $category->showHome = $request->showHome; // Default to 0 if null
 
             // Save the category
             $category->save();
@@ -83,7 +85,7 @@ class CategoryController extends Controller
     {
         try {
             // Validate request data
-             $request->validate([
+            $request->validate([
                 'name' => 'required|unique:categories,name,' . $id, // Exclude the current category from the unique validation
                 'image' => 'nullable|image|mimes:jpg,png,jpeg,gif|max:2048', // Image is nullable, validate type and size
                 'slug' => 'required',
@@ -141,28 +143,28 @@ class CategoryController extends Controller
     }
 
     public function export_csv()
-{
-    return Excel::download(new ExcelExports, 'category.xlsx');
-}
-
-public function import_csv(Request $request)
-{
-    try {
-        $file = $request->file('file');
-
-        if (!$file) {
-            return response()->json(['message' => 'No file uploaded'], 400);
-        }
-
-        $path = $file->getRealPath();
-
-        Excel::import(new ExcelImports, $path);
-
-        return response()->json(['message' => 'File imported successfully'], 200);
-    } catch (\Exception $e) {
-        return response()->json(['message' => 'Error during import', 'error' => $e->getMessage()], 500);
+    {
+        return Excel::download(new CategoriesExport, 'category.xlsx');
     }
-}
+
+    public function import_csv(Request $request)
+    {
+        try {
+            $file = $request->file('file');
+
+            if (!$file) {
+                return response()->json(['message' => 'No file uploaded'], 400);
+            }
+
+            $path = $file->getRealPath();
+
+            Excel::import( new CategoriesImport, $path);
+
+            return response()->json(['message' => 'File imported successfully'], 200);
+        } catch (\Exception $e) {
+            return response()->json(['message' => 'Error during import', 'error' => $e->getMessage()], 500);
+        }
+    }
 
 
 }

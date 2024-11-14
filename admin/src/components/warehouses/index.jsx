@@ -114,15 +114,16 @@ const Warehouses = () => {
                   </td>
                   <td>
                     <div>
+                      <Link className="btn btn-sm btn-outline-info me-2" to={`/view-warehouse/${warehouse.id}`}>
+                        <i className="bx bx-show me-1 text-info"></i> Xem
+                      </Link>
                       <Link className="btn btn-sm btn-outline-primary me-2" to={`/edit-warehouse/${warehouse.id}`}>
                         <i className="bx bx-edit-alt me-1" style={{ color: "blue" }}></i> Sửa
                       </Link>
-                      <button className="btn btn-sm btn-outline-danger" onClick={() => deleteWarehouse(warehouse.id)}>
+                      <button className="btn btn-sm btn-outline-danger me-2" onClick={() => deleteWarehouse(warehouse.id)}>
                         <i className="bx bx-trash me-1" style={{ color: "red" }}></i> Xóa
                       </button>
-                      <Link className="btn btn-sm btn-outline-info" to={`/view-warehouse/${warehouse.id}`}>
-                        <i className="bx bx-eye me-1" style={{ color: "green" }}></i> Xem
-                      </Link>
+
                     </div>
                   </td>
                 </tr>

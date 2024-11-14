@@ -13,32 +13,49 @@ export default function CartItem() {
     e.preventDefault(); // Ensure e is an event object
 
     try {
+      const token = localStorage.getItem("token");
       // Send the coupon code to the API
       const response = await axios.post(
         "http://127.0.0.1:8000/api/check-coupon",
         {
           coupon: couponCode,
-        }
+        },
+        { headers: { Authorization: `Bearer ${token}` } }
       );
       console.log("API Response:", response.data);
 
       // Check response and dispatch the appropriate action
       if (response.data.success) {
         const { coupon } = response.data;
-        const { number: discount, condition: condition } = coupon;
+        const {
+          number: discount,
+          condition: condition,
+          code: code,
+          used: used,
+        } = coupon;
         // Kiểm tra xem giá trị này có đúng không
-        console.log("Dispatching coupon with discount:", discount, "and condition:", condition);
-        dispatch(applyCoupon({ discount, condition })); 
+        console.log(
+          "Dispatching coupon with discount:",
+          discount,
+          "and condition:",
+          condition
+        );
+        dispatch(applyCoupon({ discount, condition, code, used }));
+
         
-        if (coupon.condition === 1) {
-          setMessage(`Coupon applied! Discount: ${discount}%`);
-        } else if (coupon.condition === 2) {
-          setMessage(`Coupon applied! Discount: ${discount.toLocaleString("vi-VN")}đ`);
+          // Handle success case, update the message based on coupon condition
+          if (condition === 1) {
+            setMessage(`Coupon applied! Discount: ${discount}%`);
+          } else if (condition === 2) {
+            setMessage(
+              `Coupon applied! Discount: ${discount.toLocaleString("vi-VN")}đ`
+            );
         }
-         
-       
       } else {
         setMessage(response.data.message || "Invalid coupon code.");
+        if (response.data.used) {
+          toast.error("Mã giảm giá đã được sử dụng, vui lòng nhập mã khác");
+      }
       }
     } catch (error) {
       setMessage("An error occurred while applying the coupon.");

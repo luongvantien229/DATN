@@ -21,6 +21,50 @@ const EditPosts = () => {
   const [error, setError] = useState(null);
   const navigate = useNavigate();
 
+  const editorConfiguration = {
+    toolbar: [
+      "heading",
+      "bold",
+      "italic",
+      "link",
+      "bulletedList",
+      "numberedList",
+      "outdent",
+      "indent",
+      "imageUpload",
+      "blockQuote",
+      "insertTable",
+      "mediaEmbed",
+      "undo",
+      "redo",
+      "alignment",
+      "code",
+      "codeBlock",
+      "findAndReplace",
+      "fontColor",
+      "fontFamily",
+      "fontSize",
+      "fontBackgroundColor",
+      "highlight",
+      "horizontalLine",
+      "htmlEmbed",
+      "imageInsert",
+    ],
+    language: "en",
+    image: {
+      toolbar: [
+        "imageTextAlternative",
+        "toggleImageCaption",
+        "imageStyle:inline",
+        "imageStyle:block",
+        "imageStyle:side",
+      ],
+    },
+    table: {
+      contentToolbar: ["tableColumn", "tableRow", "mergeTableCells"],
+    },
+  };
+
   const generateSlug = (text) => {
     text = text.toLowerCase()
       .replace(/á|à|ả|ã|ạ|ă|ắ|ằ|ẳ|ẵ|ặ|â|ấ|ầ|ẩ|ẫ|ậ/g, "a")
@@ -150,6 +194,7 @@ const EditPosts = () => {
               <CKEditor
                 editor={ClassicEditor}
                 data={post.content}
+                config={editorConfiguration}
                 onChange={handleContentChange}
               />
             </div>

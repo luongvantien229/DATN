@@ -339,6 +339,7 @@ class DatabaseSeeder extends Seeder
             $barcode = $faker->ean13(); // Mã barcode
             $track_qty = mt_rand(0, 1); // Theo dõi số lượng: 0 - không, 1 - có
             $qty = mt_rand(1, 100); // Số lượng sản phẩm
+            $sold = 0;
             $status = 1; // Trạng thái: 1 - active, 0 - inactive
             DB::table('products')->insert([
                 'name' => $list_products[$i],
@@ -358,6 +359,7 @@ class DatabaseSeeder extends Seeder
                 'barcode' => $barcode,
                 'track_qty' => $track_qty,
                 'qty' => $qty,
+                'sold'=> $sold,
                 'status' => $status,
 
             ]);

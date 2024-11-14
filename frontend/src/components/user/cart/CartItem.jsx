@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import { useSelector, useDispatch } from "react-redux"; // Import useSelector
+import { useSelector, useDispatch } from "react-redux"; 
 import {
   decrementQ,
   incrementQ,

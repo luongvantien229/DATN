@@ -42,7 +42,7 @@ const AddProductsWarehouse = () => {
         headers: { Authorization: `Bearer ${token}` },
       });
       alert("Sản phẩm đã được thêm vào kho!");
-      navigate(`/warehouses/${warehouseId}`); // Redirect to warehouse details after successful addition
+      navigate(`/view-warehouse/${warehouseId}`); // Redirect to warehouse details after successful addition
     } catch (error) {
       setError("Lỗi khi thêm sản phẩm vào kho!");
       console.error("Error: ", error.response ? error.response.data : error.message);
@@ -68,7 +68,7 @@ const AddProductsWarehouse = () => {
                 <option value="">Chọn sản phẩm</option>
                 {products.map((product) => (
                   <option key={product.id} value={product.id}>
-                    {product.name}
+                    {product.name}-số lượng :{product.qty}
                   </option>
                 ))}
               </select>

@@ -323,6 +323,7 @@ class DatabaseSeeder extends Seeder
         for ($i = 0; $i < count($list_products); $i++) {
             $slug = Str::slug($list_products[$i]);
 
+            $price_cost = mt_rand(1,1000)*1000; // Giá gốc ngẫu nhiên
             $price = mt_rand(10, 500) * 1000; // Giá ngẫu nhiên từ 100,000 VNĐ đến 10,000,000 VNĐ
 
             $description = $faker->sentence(20); // Mô tả ngẫu nhiên
@@ -344,6 +345,7 @@ class DatabaseSeeder extends Seeder
             DB::table('products')->insert([
                 'name' => $list_products[$i],
                 'slug' => $slug,
+                'price_cost' => $price_cost,
                 'price' => $price, // Ghi giá đã định dạng
                 'description' => $description,
                 'brand_id' => $brand_id,
@@ -478,6 +480,7 @@ class DatabaseSeeder extends Seeder
                 'description' => $post['description'],
                 'content' => $post['content'],
                 'image' => $post['image'],
+                'view' => 0,
                 'user_id' => $post['user_id'],
                 'category_posts_id' => $post['category_posts_id'],
                 'status' => $post['status'],

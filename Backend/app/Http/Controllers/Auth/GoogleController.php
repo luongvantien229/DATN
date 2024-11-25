@@ -128,6 +128,9 @@ class GoogleController extends Controller
         $customer_new->login()->associate($customer);
         $customer_new->save();
 
+        $account_name = User::where('id', $customer_new->user_id)->first();
+        Session::put('name', $account_name->name);
+        Session::put('id', $account_name->id);
 
         return $customer_new;
     }

@@ -22,7 +22,7 @@ return new class extends Migration
             $table->string('date_start');
             $table->string('date_end');
             $table->string('used');
-            $table->integer('status');
+            $table->integer('status')->default(1);
             $table->timestamps();
         });
     }

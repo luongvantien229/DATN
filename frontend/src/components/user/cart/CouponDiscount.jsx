@@ -42,22 +42,21 @@ export default function CartItem() {
         );
         dispatch(applyCoupon({ discount, condition, code, used }));
 
-        
-          // Handle success case, update the message based on coupon condition
-          if (condition === 1) {
-            setMessage(`Coupon applied! Discount: ${discount}%`);
-          } else if (condition === 2) {
-            setMessage(
-              `Coupon applied! Discount: ${discount.toLocaleString("vi-VN")}đ`
-            );
+        // Handle success case, update the message based on coupon condition
+        if (condition === 1) {
+          setMessage(`Coupon applied! Discount: ${discount}%`);
+        } else if (condition === 2) {
+          setMessage(
+            `Coupon applied! Discount: ${discount.toLocaleString("vi-VN")}đ`
+          );
         }
       } else {
         setMessage(response.data.message || "Invalid coupon code.");
-        if (response.data.used) {
-          toast.error("Mã giảm giá đã được sử dụng, vui lòng nhập mã khác");
-      }
       }
     } catch (error) {
+      if (response.data.used) {
+        toast.error("Mã giảm giá đã được sử dụng, vui lòng nhập mã khác");
+      }
       setMessage("An error occurred while applying the coupon.");
       console.error("Error applying coupon:", error);
     }

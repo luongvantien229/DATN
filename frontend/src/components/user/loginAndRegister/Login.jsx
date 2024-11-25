@@ -123,7 +123,7 @@
     const handleGoogleLogin = async () => {
       const backendUrl = axios.defaults.baseURL
       
-      const googleLoginUrl = `${backendUrl}/login-google`;
+      const googleLoginUrl = `${backendUrl}/login-customer-google`;
   
       try {
         window.location.href = googleLoginUrl;

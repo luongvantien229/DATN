@@ -39,6 +39,7 @@ class ProductController extends Controller
         Validator::make($request->all(), [
             'name' => 'required',
             'slug' => 'required',
+            'price_cost'=>'required|numeric',
             'price' => 'required|numeric',
             'description' => 'required',
             'category_id' => 'required|array', // This ensures category_id is an array
@@ -64,6 +65,7 @@ class ProductController extends Controller
         $product = new Product();
         $product->name = $request->name;
         $product->slug = $request->slug; // You missed the slug
+        $product->price_cost = $request->price_cost;
         $product->price = $request->price;
         $product->description = $request->description;
         $product->category_id = json_encode($request->category_id); // Chuyển đổi mảng thành JSON
@@ -141,6 +143,7 @@ class ProductController extends Controller
             'name' => 'required',
             'slug' => 'required',
 
+            'price_cost' => 'required|numeric',
             'price' => 'required|numeric',
             'description' => 'required',
             'category_id' => 'required|array', // This ensures category_id is an array
@@ -170,6 +173,7 @@ class ProductController extends Controller
             // Cập nhật thông tin chi tiết sản phẩm
             $product->name = $request->name;
             $product->slug = $request->slug;
+            $product->price_cost = $request->price_cost;
             $product->price = $request->price;
             $product->description = $request->description;
             $product->category_id = json_encode($request->category_id); // Chuyển đổi mảng thành JSON

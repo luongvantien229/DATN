@@ -39,8 +39,8 @@ const EditCoupon = () => {
         const data = response.data;
         setCoupon({
           ...data,
-          date_start: data.date_start ? new Date(data.date_start) : null,
-          date_end: data.date_end ? new Date(data.date_end) : null,
+          date_start: formatDate(coupon.date_start),
+          date_end: formatDate(coupon.date_end),
         });
       } catch (err) {
         setError("Không thể tải thông tin mã giảm giá.");
@@ -147,7 +147,7 @@ const EditCoupon = () => {
               />
             </div>
             <div className="mb-3">
-              <label className="form-label">Thời gian</label>
+              <label className="form-label">Số lượng</label>
               <input
                 type="text"
                 className="form-control"
@@ -171,7 +171,7 @@ const EditCoupon = () => {
               </select>
             </div>
             <div className="mb-3">
-              <label className="form-label">Số lượng</label>
+              <label className="form-label">Số tiền</label>
               <input
                 type="number"
                 className="form-control"
@@ -199,6 +199,8 @@ const EditCoupon = () => {
                 onChange={(date) => handleDateChange("date_start", date)}
                 className="form-control"
                 dateFormat="dd/MM/yyyy"
+                isClearable
+                placeholderText="Chọn ngày bắt đầu"
                 required
               />
             </div>
@@ -209,6 +211,8 @@ const EditCoupon = () => {
                 onChange={(date) => handleDateChange("date_end", date)}
                 className="form-control"
                 dateFormat="dd/MM/yyyy"
+                isClearable
+                placeholderText="Chọn ngày kết thúc"
                 required
               />
             </div>

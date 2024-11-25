@@ -11,6 +11,7 @@ use App\Events\OrderCompletedEvent;
 use App\Mail\OrderInvoiceMail;
 use App\Models\Coupon;
 use App\Models\Product;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Order;
 use App\Models\OrderItem;
@@ -75,22 +76,6 @@ class PaymentController extends Controller
             return response()->json(['message' => 'Cart is empty!'], 400);
         }
 
-        $sub_total = 0;
-        foreach ($cartItems as $item) {
-            $sub_total += $item['price'] * $item['quantity'];
-        }
-        $discount = 0;
-        if ($coupon['condition'] === 1) {
-            $discount = ($sub_total * $coupon['number']) / 100;
-        } elseif ($coupon['condition'] === 2) {
-
-            $discount = $coupon['number'];
-        }
-
-        $feeShip = 50000;
-
-        $total = ($sub_total - $discount + $feeShip);
-
         // Validate the payment request
         $request->validate([
             'success_url' => 'required'
@@ -120,11 +105,30 @@ class PaymentController extends Controller
                 $cou->save();
             }
 
+            $sub_total = 0;
+            foreach ($cartItems as $item) {
+                $sub_total += $item['price'] * $item['quantity'];
+            }
+            $discount = 0;
+            if (!empty($coupon)) {
+                if (isset($coupon['condition']) && $coupon['condition'] === 1) {
+                    $discount = ($sub_total * $coupon['number']) / 100;
+                } elseif (isset($coupon['condition']) && $coupon['condition'] === 2) {
+                    $discount = $coupon['number'];
+                }
+            }
+
+            $feeShip = 50000;
+
+            $total = ($sub_total - $discount + $feeShip);
+
+            date_default_timezone_set('Asia/Ho_Chi_Minh');
+            $today = Carbon::now('Asia/Ho_Chi_Minh')->format('Y-m-d');
             // Create the order in the database
             $order = new Order();
             $order->user_id = auth()->id();
             $order->total_price = $total;
-            $order->date_deliver = now();
+            $order->date_deliver = $today;
             $order->order_code = 'ORD-' . time() . '-' . rand(1000, 9999);
             $order->payment_method = 'Chuyển khoản';
             $order->status = 'Pending';

@@ -79,15 +79,15 @@ const Orders = () => {
     }
   };
 
-  const deleteOrder = async (id) => {
-    const confirmDelete = window.confirm(
-      "Bạn có chắc chắn muốn xóa đơn hàng này không?"
+  const CancelOrder = async (id) => {
+    const confirmCancel = window.confirm(
+      "Bạn có chắc chắn muốn hủy đơn hàng này không?"
     );
-    if (!confirmDelete) return;
+    if (!confirmCancel) return;
 
     try {
       const token = localStorage.getItem("token");
-      await axios.delete(`http://localhost:8000/api/orders/destroy/${id}`, {
+      await axios.post(`http://localhost:8000/api/orders//cancel-order/${id}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       setOrders(orders.filter((order) => order.id !== id));
@@ -136,18 +136,47 @@ const Orders = () => {
                   <td>{order.date_deliver}</td>
                   <td>
                     <select
-                      className={`form-select form-select-sm`}
-                      value={order.status}
-                      onChange={(e) =>
-                        updateOrderStatus(order.id, e.target.value)
-                      }
+                      className="form-select form-select-sm"
+                      value={order.status || ""}
+                      onChange={(e) => updateOrderStatus(order.id, e.target.value)}
                     >
-                      <option value="">--------Chọn trạng thái đơn hàng-------- </option>
-                      <option value="Pending">Đơn hàng mới-chờ xử lý</option>
-                      <option value="Delivered">Đã xử lí đơn hàng</option>
-                      <option value="Out for Delivery">Đơn hàng đang được giao</option>
-                      <option value="Cancelled">Đơn hàng bị hủy</option>
-                      <option value="Accepted">Đơn hàng đã được giao</option>
+                      <option value="">--------Chọn trạng thái đơn hàng--------</option>
+
+
+                      {order.status === "Pending" && (
+                        <>
+                          <option value="Pending" disabled>Đơn hàng mới - chờ xử lý</option>
+                          <option value="Delivered">Đã xử lí đơn hàng</option>
+                        </>
+                      )}
+
+                      {order.status === "Delivered" && (
+                        <>
+                          <option disabled value="Delivered">Đã xử lí đơn hàng</option>
+                          <option value="Out for Delivery">Đơn hàng đang được giao</option>
+                          <option value="Cancelled">Đơn hàng bị hủy</option>
+                        </>
+                      )}
+
+                      {order.status === "Out for Delivery" && (
+                        <>
+                          <option value="Out for Delivery" disabled>Đơn hàng đang được giao</option>
+                          <option value="Accepted">Đơn hàng đã được giao</option>
+                          <option value="Cancelled">Đơn hàng bị hủy</option>
+                        </>
+                      )}
+
+                      {order.status === "Cancelled" && (
+                        <>
+                          <option value="Cancelled" disabled>Đơn hàng bị hủy</option>
+                        </>
+                      )}
+
+                      {order.status === "Accepted" && (
+                        <>
+                          <option value="Accepted" disabled>Đơn hàng đã được giao</option>
+                        </>
+                      )}
                     </select>
                   </td>
 
@@ -160,9 +189,9 @@ const Orders = () => {
                     </Link>
                     <button
                       className="btn btn-sm btn-outline-danger"
-                      onClick={() => deleteOrder(order.id)}
+                      onClick={() => CancelOrder(order.id)}
                     >
-                      Xóa
+                      Hủy
                     </button>
                   </td>
                 </tr>

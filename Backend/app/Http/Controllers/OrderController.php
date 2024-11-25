@@ -6,7 +6,9 @@ use App\Models\Coupon;
 use App\Models\Order;
 use App\Models\OrderItem;
 use App\Models\Product;
+use App\Models\Statistic;
 use App\Models\User;
+use Carbon\Carbon;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -40,16 +42,15 @@ class OrderController extends Controller
 
         $coupon = null;
         $coupon_echo = '0';
-
-        // Define shipping fee
         $feeShip = 50000;
 
+        $coupon_code = null;
         foreach ($order_items as $item) {
             $coupon_code = $item->coupon_code;
         }
+
         $coupon_condition = 2;
         $coupon_number = 0;
-
 
         if ($coupon_code && $coupon_code != 'no') {
             $coupon = Coupon::where('code', $coupon_code)->first();
@@ -67,53 +68,94 @@ class OrderController extends Controller
 
         $output = '';
 
-        $output .= '<style>body{
-        font-family: DejaVu Sans;
-    }
-    .table-styling{
-        border:1px solid #000;
-    }
-    .table-styling tbody tr td{
-        border:1px solid #000;
-    }
-    </style>
-    <h1><center>Nhà thuốc Yên Tâm</center></h1>
-    <h4><center>Độc lập - Tự do - Hạnh phúc</center></h4>
-    <p>Người đặt hàng</p>
-    <table class="table-styling">
-        <thead>
-            <tr>
-                <th>Tên khách đặt</th>
-                <th>Số điện thoại</th>
-                <th>Email</th>
-            </tr>
-        </thead>
-        <tbody>';
-
+        // CSS and logo
         $output .= '
-            <tr>
-                <td>' . $user->name . '</td>
-                <td>' . $user->phone . '</td>
-                <td>' . $user->email . '</td>
-            </tr>';
+        <style>
+            body {
+                font-family: DejaVu Sans, sans-serif;
+                margin: 20px;
+            }
+            .logo {
+                text-align: center;
+                margin-bottom: 20px;
+            }
+            .logo img {
+                max-width: 150px;
+            }
+            h1, h4 {
+                text-align: center;
+                margin: 5px 0;
+            }
+            .table-styling {
+                width: 100%;
+                border-collapse: collapse;
+                margin-bottom: 20px;
+            }
+            .table-styling thead {
+                background-color: #f2f2f2;
+            }
+            .table-styling, .table-styling th, .table-styling td {
+                border: 1px solid #000;
+            }
+            .table-styling th, .table-styling td {
+                padding: 8px;
+                text-align: left;
+            }
+            .text-end {
+                text-align: right;
+                margin-top: 20px;
+            }
+            .signature-table {
+                width: 100%;
+                margin-top: 20px;
+            }
+            .signature-table th {
+                text-align: center;
+            }
+        </style>';
 
+        // Logo
         $output .= '
-        </tbody>
-    </table>';
+        <div class="logo">
+            <img src="./assets/images/logo/logoo.png" alt="Logo">
+        </div>
+        <h1>Nhà thuốc Yên Tâm</h1>
+        <h4>Độc lập - Tự do - Hạnh phúc</h4>';
 
+        // Customer details
         $output .= '
-    <p>Đơn hàng đặt</p>
-    <table class="table-styling">
-        <thead>
-            <tr>
-                <th>Tên sản phẩm</th>
-                <th>Mã giảm giá</th>
-                <th>Số lượng</th>
-                <th>Giá sản phẩm</th>
-                <th>Thành tiền</th>
-            </tr>
-        </thead>
-        <tbody>';
+        <p><strong>Người đặt hàng:</strong></p>
+        <table class="table-styling">
+            <thead>
+                <tr>
+                    <th>Tên khách đặt</th>
+                    <th>Số điện thoại</th>
+                    <th>Email</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>' . $user->name . '</td>
+                    <td>' . $user->phone . '</td>
+                    <td>' . $user->email . '</td>
+                </tr>
+            </tbody>
+        </table>';
+
+        // Order details
+        $output .= '
+        <p><strong>Đơn hàng đặt:</strong></p>
+        <table class="table-styling">
+            <thead>
+                <tr>
+                    <th>Tên sản phẩm</th>
+                    <th>Mã giảm giá</th>
+                    <th>Số lượng</th>
+                    <th>Giá sản phẩm</th>
+                    <th>Thành tiền</th>
+                </tr>
+            </thead>
+            <tbody>';
 
         $total = 0;
 
@@ -121,64 +163,59 @@ class OrderController extends Controller
             $subtotal = $item->price * $item->quantity;
             $total += $subtotal;
 
-            $product_coupon = $item->product->coupon_code ?? 'không mã';
-
             $output .= '
-            <tr>
-                <td>' . $item->product->name . '</td>
-                <td>' . $coupon_code . '</td>
-                <td>' . $item->quantity . '</td>
-                <td>' . number_format($item->price, 0, ',', '.') . 'đ</td>
-                <td>' . number_format($subtotal, 0, ',', '.') . 'đ</td>
-            </tr>';
+                <tr>
+                    <td>' . $item->product->name . '</td>
+                    <td>' . ($coupon_code ?? 'Không mã') . '</td>
+                    <td>' . $item->quantity . '</td>
+                    <td>' . number_format($item->price, 0, ',', '.') . 'đ</td>
+                    <td>' . number_format($subtotal, 0, ',', '.') . 'đ</td>
+                </tr>';
         }
 
-        // Apply coupon discount
-        $discount = 0;
-        if ($coupon_condition == 1) {
-            $discount = ($total * $coupon_number) / 100;
-        } else {
-            $discount = $coupon_number;
-        }
+        // Calculate totals
+        $discount = $coupon_condition == 1 ? ($total * $coupon_number) / 100 : $coupon_number;
         $total_after_discount = $total - $discount + $feeShip;
 
         $output .= '
-        <tr>
-            <td colspan="4" style="text-align: right;"><strong>Phí vận chuyển</strong></td>
-            <td>' . number_format($feeShip, 0, ',', '.') . 'đ</td>
-        </tr>';
-
-        $output .= '
-        <tr>
-            <td colspan="4" style="text-align: right;"><strong>Tổng giảm</strong></td>
-            <td>' . $coupon_echo . '</td>
-        </tr>';
-
-        $output .= '
-        <tr>
-            <td colspan="4" style="text-align: right;"><strong>Thanh toán</strong></td>
-            <td>' . number_format($total_after_discount, 0, ',', '.') . 'đ</td>
-        </tr>';
-
-        $output .= '
-        </tbody>
-    </table>';
-
-        $output .= '
-    <p class="text-end" >Ký tên</p>
-    <table>
-        <thead>
             <tr>
-                <th width="200px">Người lập phiếu</th>
-                <th width="800px">Người nhận</th>
+                <td colspan="4" style="text-align: right;"><strong>Phí vận chuyển:</strong></td>
+                <td>' . number_format($feeShip, 0, ',', '.') . 'đ</td>
             </tr>
-        </thead>
-        <tbody>
+            <tr>
+                <td colspan="4" style="text-align: right;"><strong>Tổng giảm:</strong></td>
+                <td>' . $coupon_echo . '</td>
+            </tr>
+            <tr>
+                <td colspan="4" style="text-align: right;"><strong>Thanh toán:</strong></td>
+                <td>' . number_format($total_after_discount, 0, ',', '.') . 'đ</td>
+            </tr>
         </tbody>
-    </table>';
+        </table>';
+
+        // Signatures
+        $output .= '
+        <p class="text-end" style=" margin-top: 30px; font-weight: bold;">Ký tên</p>
+        <table style="width: 100%; margin-top: 50px; border-collapse: collapse;">
+            <thead>
+                <tr>
+                    <th style="width: 50%; text-align: center; border: none;">Người lập phiếu</th>
+                    <th style="width: 50%; text-align: center; border: none;">Người nhận</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td style="text-align: center; padding-top: 50px;">______________________</td>
+                    <td style="text-align: center; padding-top: 50px;">______________________</td>
+                </tr>
+            </tbody>
+        </table>';
+
+
 
         return $output;
     }
+
 
 
 
@@ -336,8 +373,22 @@ class OrderController extends Controller
 
         $order->update(['status' => $request->status]);
 
+        $order_date = $order->date_deliver;
+        $statistic = Statistic::where('order_date', $order_date)->get();
+        if ($statistic) {
+            $statistic_count = $statistic->count();
+        } else {
+            $statistic_count = 0;
+        }
+
         // Update product quantities if the order status is changed to "Delivered"
         if ($request->status == 'Delivered') {
+
+            $total_order = 0;
+            $sales = 0;
+            $profit = 0;
+            $quantity = 0;
+
             foreach ($order->items as $item) { // Ensure orderItems is not null
                 $product = Product::find($item->product_id);
 
@@ -345,9 +396,32 @@ class OrderController extends Controller
                     $product->qty -= $item->quantity; // Decrease product quantity by ordered amount
                     $product->sold += $item->quantity; // Increase sold count by ordered amount
                     $product->save();
+
+                    $quantity += $item->quantity;
+                    $total_order += 1;
+                    $sales += $product->price * $item->quantity;
+                    $profit += ($product->price - $product->price_cost) * $item->quantity;
                 }
             }
-        } elseif ($request->status != 'Delivered' && $request->status != 'Cancelled') {
+
+            if ($statistic_count > 0) {
+                $statistic_update = Statistic::where('order_date', $order_date)->first();
+                $statistic_update->sales = $statistic_update->sales + $sales;
+                $statistic_update->profit = $statistic_update->profit + $profit;
+                $statistic_update->quantity = $statistic_update->quantity + $quantity;
+                $statistic_update->total_order = $statistic_update->total_order + $total_order;
+                $statistic_update->save();
+            } else {
+                $statistic_new = new Statistic();
+                $statistic_new->order_date = $order_date;
+                $statistic_new->sales = $sales;
+                $statistic_new->profit = $profit;
+                $statistic_new->quantity = $quantity;
+                $statistic_new->total_order = $total_order;
+                $statistic_new->save();
+            }
+
+        } elseif ($request->status != 'Delivered' && $request->status = 'Cancelled' && $request->status != 'Out for Delivery' && $request->status != 'Accepted') {
             foreach ($order->items as $item) { // Ensure orderItems is not null
                 $product = Product::find($item->product_id);
 
@@ -372,6 +446,21 @@ class OrderController extends Controller
 
     }
 
+    public function cancel_order($id)
+    {
+        $order = Order::findOrFail($id);
+
+        if ($order->status === 'Cancelled') {
+            return response()->json(['message' => 'Đơn hàng đã bị hủy trước đó.'], 400);
+        }
+
+        $order->status = 'Cancelled';
+        $order->save();
+
+        return response()->json(['message' => 'Đơn hàng đã bị hủy thành công.']);
+    }
+
+
     public function confirm_order(Request $request)
     {
         // Fetch cart items from session instead of request input
@@ -392,7 +481,8 @@ class OrderController extends Controller
             $order = new Order();
             $order->user_id = Auth::id();
             $order->total_price = $total;
-            $order->date_deliver = now();
+            $order->date_deliver = Carbon::now('Asia/Ho_Chi_Minh')->toDateString();
+            ;
             $order->payment_method = '1';  // Thanh toán bằng tiền mặt
             $order->status = 'Pending'; // Initial status
             $order->save();

@@ -48,7 +48,7 @@ export default function Index() {
   };
 
   const handleCategorySelect = (categoryId) => {
-    setFilters((prev) => ({ ...prev, category_posts_id: categoryId }));
+    setFilters((prev) => ({ ...prev, category_id: categoryId }));
     setCurrentPage(1);
   };
 

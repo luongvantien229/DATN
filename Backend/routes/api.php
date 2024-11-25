@@ -162,6 +162,8 @@ Route::group(['prefix' => 'orders'], function ($router) {
         Route::post('/change_order_status/{id}', 'change_order_status');
         Route::post('/update_order_qty', 'update_order_qty');
         Route::get('/print_order/{order_code}', 'print_order');
+        Route::post('/cancel-order/{id}', [OrderController::class, 'cancel_order']);
+
     });
 });
 
@@ -251,6 +253,12 @@ Route::post('/send_comment', [CommentController::class, 'send_comment']);  // Gá
 
 Route::get('/filter', [IndexController::class, 'filter']);
 Route::get('/filter_post', [IndexController::class, 'filter_post']);
+// ADMIN filter
+Route::post('/filter-by-date', [IndexController::class, 'filter_by_date']);
+Route::post('/dashboard-filter', [IndexController::class, 'dashboard_filter']);
+Route::post('/days-order', [IndexController::class, 'days_order']);
+Route::get('/show-user-visit', [IndexController::class, 'show_user_visit']);
+
 Route::get('/generate-token', [CallStringeeController::class, 'generateToken']);
 
 // Login Google Account
@@ -259,7 +267,7 @@ Route::get('/login-google', [GoogleController::class, 'login_google']);
 Route::get('/login/google/callback', [GoogleController::class, 'callback_google']);
 
 Route::get('/login-customer-google', [GoogleController::class, 'login_customer_google']);
-Route::get('/customer/google/callback', [GoogleController::class, 'callback_customer_google']);
+Route::get('/login/customer/google/callback', [GoogleController::class, 'callback_customer_google']);
 
 // Login Facebook Account
 
@@ -267,7 +275,7 @@ Route::get('/login-facebook', [FacebookController::class, 'login_facebook']);
 Route::get('/login/facebook/callback', [FacebookController::class, 'callback_facebook']);
 
 Route::get('/login-customer-facebook', [FacebookController::class, 'login_customer_facebook']);
-Route::get('/customer/facebook/callback', [FacebookController::class, 'callback_customer_facebook']);
+Route::get('/login/customer/facebook/callback', [FacebookController::class, 'callback_customer_facebook']);
 
 Route::post('/check-coupon', [CouponController::class, 'check_coupon']);
 
@@ -284,6 +292,7 @@ Route::post('/pay/order', [PaymentController::class, 'payByStripe']);
 Route::post('/pay', [PaymentController::class, 'pay']);
 
 // Order user
+
 Route::get('/get_user_orders/{id}', [OrderController::class, 'get_order_items_user']);
 
 // Change user info
@@ -291,3 +300,4 @@ Route::put('/change_user_info/{id}', [UserController::class, 'change_user_info']
 
 // Change user password
 Route::put('/change_user_password/{id}', [UserController::class, 'change_user_password']);
+

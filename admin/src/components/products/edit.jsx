@@ -10,6 +10,7 @@ const EditProducts = () => {
   const [product, setProduct] = useState({
     name: "",
     slug: "",
+    price_cost: "",
     price: "",
     description: "",
     category_id: [],
@@ -108,6 +109,7 @@ const EditProducts = () => {
         setProduct({
           name: fetchedProduct.name,
           slug: fetchedProduct.slug,
+          price_cost: fetchedProduct.price_cost,
           price: fetchedProduct.price,
           description: fetchedProduct.description,
           category_id: fetchedProduct.category_id,
@@ -183,6 +185,7 @@ const EditProducts = () => {
     const formData = new FormData();
     formData.append("name", product.name);
     formData.append("slug", product.slug);
+    formData.append("price_cost", product.price_cost);
     formData.append("price", product.price);
     formData.append("description", product.description);
      // Gửi category_id như một mảng
@@ -266,6 +269,18 @@ const EditProducts = () => {
                 name="slug"
                 value={product.slug}
                 readOnly // Make slug readonly as it will be auto-generated
+              />
+            </div>
+
+            <div className="mb-3">
+              <label className="form-label">Giá gốc</label>
+              <input
+                type="number"
+                className="form-control"
+                name="price_cost"
+                value={product.price_cost}
+                onChange={handleChange}
+                required
               />
             </div>
 

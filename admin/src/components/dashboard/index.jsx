@@ -1,10 +1,372 @@
-import React from "react";
+
+import React, { useEffect, useState, useRef } from "react";
+import DatePicker from 'react-datepicker';
+import 'react-datepicker/dist/react-datepicker.css';
+import axios from 'axios';
+
+import {
+  Chart,
+  BarController,
+  BarElement,
+  CategoryScale,
+  LinearScale,
+  Title,
+  Tooltip,
+  Legend,
+  DoughnutController, // Import DoughnutController
+  ArcElement,         // Import ArcElement
+} from 'chart.js';
+
+Chart.register(
+  BarController,
+  BarElement,
+  CategoryScale,
+  LinearScale,
+  Title,
+  Tooltip,
+  Legend,
+  DoughnutController, // Import DoughnutController
+  ArcElement,         // Import ArcElement
+);
+
+
 
 const Index = () => {
+
+  const [fromDate, setFromDate] = useState(null);
+  const [toDate, setToDate] = useState(null);
+  const [chartData, setChartData] = useState([]);
+  const [morrisData, setMorrisData] = useState([]);
+  const [dashboardValue, setDashboardValue] = useState('');
+  const chartInstanceRef = useRef(null); // Sử dụng useRef để giữ đối tượng Chart
+  const chartCanvasRef = useRef(null);
+  const doughnutChartInstance = useRef(null);
+  const chartDonutRef = useRef(null);
+  const [userVisits, setUserVisits] = useState({
+    visitors_total: 0,
+    visitor_count: 0,
+    visitor_last_month_count: 0,
+    visitor_this_month_count: 0,
+    visitor_year_count: 0,
+  });
+  const [postViews, setPostViews] = useState([]);
+  const [productViews, setProductViews] = useState([]);
+
+
+  const chart60daysorder = async () => {
+    try {
+      const response = await axios.post("http://127.0.0.1:8000/api/days-order", {});
+      if (response.status === 200) {
+        renderChart(response.data);
+      } else {
+        console.error("Error fetching chart data:", response.data.message);
+      }
+    } catch (error) {
+      console.error("Error:", error);
+    }
+  };
+
+  const fetchChartData = async (value) => {
+    try {
+      const response = await axios.post('http://127.0.0.1:8000/api/dashboard-filter', {
+        dashboard_value: value,
+      });
+
+      if (response.status === 200) {
+        renderChart(response.data);
+      } else {
+        console.error('Error fetching chart data:', response.data.message);
+      }
+    } catch (error) {
+      console.error('Error:', error);
+    }
+  };
+
+  const handleFilter = () => {
+    axios.post('http://127.0.0.1:8000/api/filter-by-date', {
+      from_date: fromDate,
+      to_date: toDate,
+    })
+      .then(response => {
+        setChartData(response.data);
+        renderChart(response.data);
+      })
+      .catch(error => {
+        console.error('Error filtering data:', error);
+      });
+  };
+
+
+
+  const renderChart = (data) => {
+    if (chartInstanceRef.current) {
+      chartInstanceRef.current.destroy(); // Hủy bỏ biểu đồ cũ nếu có
+    }
+    if (!chartCanvasRef.current) {
+      console.error("Canvas element not found.");
+      return;
+    }
+    const ctx = chartCanvasRef.current.getContext("2d");
+    chartInstanceRef.current = new Chart(ctx, {
+      type: 'bar',
+      data: {
+        labels: data.map(item => item.period), // Dates on the x-axis
+        datasets: [
+          {
+            label: 'Doanh số',
+            data: data.map(item => item.sales),
+            backgroundColor: 'rgba(54, 162, 235, 0.8)', // Blue color for Sales
+          },
+          {
+            label: 'Lợi nhuận',
+            data: data.map(item => item.profit),
+            backgroundColor: 'rgba(75, 192, 192, 0.8)', // Green color for Profit
+          },
+          {
+            label: 'Số đơn hàng',
+            data: data.map(item => item.order),
+            backgroundColor: 'rgba(153, 102, 255, 0.8)', // Purple color for Orders
+          },
+          {
+            label: 'Số lượng',
+            data: data.map(item => item.quantity),
+            backgroundColor: 'rgba(255, 159, 64, 0.8)', // Orange color for Quantity
+          },
+        ],
+      },
+      options: {
+        responsive: true,
+        scales: {
+          x: {
+            stacked: false,
+            title: { display: true, text: 'Ngày' }, // "Date" in Vietnamese
+          },
+          y: {
+            stacked: false,
+            title: { display: true, text: 'Giá trị (VND)' }, // "Value (VND)" in Vietnamese
+          },
+        },
+        plugins: {
+          tooltip: {
+            callbacks: {
+              label: function (context) {
+                let label = context.dataset.label || '';
+                if (label) label += ': ';
+                // Format "Doanh số" and "Lợi nhuận" as currency, and others as numbers
+                if (label === 'Doanh số' || label === 'Lợi nhuận') {
+                  label += new Intl.NumberFormat('vi-VN', {
+                    style: 'currency',
+                    currency: 'VND',
+                  }).format(context.raw);
+                } else {
+                  label += new Intl.NumberFormat('vi-VN').format(context.raw);
+                }
+                return label;
+              },
+            },
+          },
+          legend: {
+            position: 'top',
+            labels: {
+              font: { size: 12 },
+              color: '#333', // Adjust color for visibility if needed
+            },
+          },
+        },
+        locale: 'vi', // Set locale for default translations (if applicable)
+      },
+    });
+  };
+
+
+
+  useEffect(() => {
+    chart60daysorder();
+  }, []);
+
+  useEffect(() => {
+    axios
+      .get("http://127.0.0.1:8000/api/show-user-visit")
+      .then((response) => {
+        const [
+          visitors_total,
+          visitor_count,
+          visitor_last_month_count,
+          visitor_this_month_count,
+          visitor_year_count
+          , product, post, order, user,product_views,post_views,
+        ] = response.data;
+
+        setUserVisits({
+          visitors_total,
+          visitor_count,
+          visitor_last_month_count,
+          visitor_this_month_count,
+          visitor_year_count,
+        });
+        setMorrisData([
+          { label: "Sản phẩm", value: product },
+          { label: "Bài viết", value: post },
+          { label: "Đơn hàng", value: order },
+          { label: "Khách hàng", value: user },
+        ]);
+        setPostViews(post_views || []); // Handle undefined or null gracefully
+        setProductViews(product_views || []);
+      })
+      .catch((error) => console.error("Error fetching data:", error));
+  }, []);
+
+  useEffect(() => {
+    if (doughnutChartInstance.current) {
+      doughnutChartInstance.current.destroy();
+    }
+
+    if (morrisData.length > 0) {
+      const ctx = chartDonutRef.current.getContext("2d");
+      doughnutChartInstance.current = new Chart(ctx, {
+        type: "doughnut", // Biểu đồ dạng donut
+        data: {
+          labels: morrisData.map((data) => data.label), // Các nhãn (label)
+          datasets: [
+            {
+              data: morrisData.map((data) => data.value), // Dữ liệu (value)
+              backgroundColor: ["#3498db", "#e74c3c", "#2ecc71", "#9b59b6"], // Màu sắc
+              borderWidth: 1,
+            },
+          ],
+        },
+        options: {
+          responsive: true, // Tự động co giãn
+          plugins: {
+            legend: {
+              position: "top", // Hiển thị chú thích ở phía trên
+            },
+          },
+        },
+      });
+    }
+  }, [morrisData]);
+
+
   return (
     <div className="content-wrapper">
       <div className="container-xxl flex-grow-1 container-p-y">
-        
+
+        <div className="row">
+          <h5 className="m-0 me-2">Thống kê đơn hàng doanh số :</h5>
+          <div className="col-md-2">
+            <p>Từ ngày:</p>
+            <DatePicker
+              selected={fromDate}
+              onChange={(date) => setFromDate(date)}
+              className="form-control"
+              dateFormat="yyyy-MM-dd"
+              maxDate={toDate}
+            />
+            <button onClick={handleFilter} className="btn btn-primary btn-sm m-2">
+              Lọc kết quả
+            </button>
+          </div>
+
+          <div className="col-md-2">
+            <p>Đến ngày:</p>
+            <DatePicker
+              selected={toDate}
+              onChange={(date) => setToDate(date)}
+              className="form-control"
+              dateFormat="yyyy-MM-dd"
+              minDate={fromDate}
+            />
+          </div>
+          <div className="col-md-2">
+            <p>Lọc theo:</p>
+            <select
+              className="form-control"
+              value={dashboardValue}
+              onChange={(e) => {
+                const value = e.target.value;
+                setDashboardValue(value);
+                if (value) {
+                  fetchChartData(value);
+                }
+              }}
+            >
+              <option value="">--Chọn--</option>
+              <option value="7ngay">7 ngày qua</option>
+              <option value="thangtruoc">Tháng trước</option>
+              <option value="thangnay">Tháng này</option>
+              <option value="365ngayqua">365 ngày qua</option>
+            </select>
+          </div>
+
+          <div className="col-md-12">
+            <canvas ref={chartCanvasRef}></canvas>
+          </div>
+        </div>
+
+        <div className="row">
+          <h5 className="  m-0 me-2">Thống kê truy câp :</h5>
+          <table className="table table-bordered table-dark" >
+            <thead>
+              <tr>
+                <th scope="col">Đang Online</th>
+                <th scope="col">Tổng tháng trước</th>
+                <th scope="col">Tổng tháng này</th>
+                <th scope="col">Tổng một năm</th>
+                <th scope="col">Tổng truy cập</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>{userVisits.visitor_count}</td>
+                <td>{userVisits.visitor_last_month_count}</td>
+                <td>{userVisits.visitor_this_month_count}</td>
+                <td>{userVisits.visitor_year_count}</td>
+                <td>{userVisits.visitors_total}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div className="row">
+          <div className="col-md-4 col-xs-12">
+            <h5 className="m-0 me-2">Thống kê tổng sản phẩm, bài viết, đơn hàng:</h5>
+              <canvas
+                id="donut"
+                ref={chartDonutRef}
+                style={{ width: "100%", height: "250px" }}
+                className="morris-donut-inverse"
+              ></canvas>
+          </div>
+
+         <div className="col-md-4 col-xs-12">
+          <h5>Bài viết xem nhiều: </h5>
+          <ul className="">
+          {postViews.map((post, index) => (
+            <li key={index}>
+              <a href={`/post/${post.id}`} target="_blank" rel="noopener noreferrer">
+                {post.title} | <span style={{ color: "black" }}>{post.viewt}</span>
+              </a>
+            </li>
+          ))}
+          </ul>
+         </div>
+
+         <div className="col-md-4 col-xs-12">
+          <h5>Sản phẩm xem nhiều: </h5>
+          <ul className="">
+          {productViews.map((product, index) => (
+            <li key={index}>
+              <a href={`/product/${product.id}`} target="_blank" rel="noopener noreferrer">
+                {product.name} | <span style={{ color: "black" }}>{product.view}</span>
+              </a>
+            </li>
+          ))}
+          </ul>
+         </div>
+        </div>
+
+
         <div className="row">
           <div className="col-xxl-8 mb-6 order-0">
             <div className="card">

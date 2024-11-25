@@ -10,6 +10,8 @@ const Comments = () => {
   const [commentReplies, setCommentReplies] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [currentComment, setCurrentComment] = useState(null); // Bình luận hiện tại được chọn
+  const [replyMessage, setReplyMessage] = useState(""); // Nội dung trả lời
   const tableInitialized = useRef(false);
 
   useEffect(() => {
@@ -97,22 +99,32 @@ const Comments = () => {
     }
   };
 
-  const replyToComment = async (id, replyMessage, productId) => {
+  const replyToComment = async () => {
+    if (!currentComment || !replyMessage.trim()) return;
+
     try {
       const token = localStorage.getItem("token");
       await axios.post(
         "http://localhost:8000/api/comments/reply",
-        { parent_id: id, message: replyMessage, product_id: productId },
+        {
+          parent_id: currentComment.id,
+          message: replyMessage,
+          product_id: currentComment.product.id,
+        },
         {
           headers: { Authorization: `Bearer ${token}` },
         }
       );
       alert("Phản hồi đã được gửi.");
-      setComments(
-        comments.map((comment) =>
-          comment.id === id ? { ...comment, replyMessage: "" } : comment
-        )
-      );
+      setCommentReplies([
+        ...commentReplies,
+        {
+          id: Date.now(),
+          parent_id: currentComment.id,
+          message: replyMessage,
+        },
+      ]);
+      setReplyMessage("");
     } catch (error) {
       setError("Đã có lỗi xảy ra khi gửi phản hồi!");
       console.error(
@@ -141,11 +153,6 @@ const Comments = () => {
           }}
         >
           <h5 className="card-header">Danh sách bình luận</h5>
-          {/* <Link to="/add-comment">
-            <button type="button" className="btn rounded-pill btn-primary m-6">
-              Thêm bình luận
-            </button>
-          </Link> */}
         </div>
 
         <div className="table-responsive text-nowrap">
@@ -182,65 +189,25 @@ const Comments = () => {
                   <td>{comment.product.name}</td>
                   <td>
                     {comment.message}
-                    <br />
-                    Trả lời:
-                    <ul
-                      style={{
-                        listStyleType: "decimal",
-                        color: "blue",
-                        margin: "5px 5px",
-                      }}
+                    <button
+                      className="btn btn-link text-primary"
+                      data-bs-toggle="modal"
+                      data-bs-target="#commentModal"
+                      onClick={() => setCurrentComment(comment)}
                     >
-                      {commentReplies
-                        .filter((reply) => reply.parent_id === comment.id)
-                        .map((reply) => (
-                          <li key={reply.id}>{reply.message}</li>
-                        ))}
-                    </ul>
-                    {comment.status === 0 && (
-                      <>
-                        <br />
-                        <textarea
-                          rows={5}
-                          className="form-control"
-                          placeholder="Nhập phản hồi..."
-                          value={comment.replyMessage || ""}
-                          onChange={(e) =>
-                            setComments(
-                              comments.map((c) =>
-                                c.id === comment.id
-                                  ? { ...c, replyMessage: e.target.value }
-                                  : c
-                              )
-                            )
-                          }
-                        ></textarea>
-                        <br />
-                        <button
-                          className="btn btn-default btn-ms"
-                          onClick={() =>
-                            replyToComment(
-                              comment.id,
-                              comment.replyMessage,
-                              comment.product.id
-                            )
-                          }
-                        >
-                          Trả lời bình luận
-                        </button>
-                      </>
-                    )}
+                      Xem chi tiết
+                    </button>
                   </td>
                   <td>{comment.date}</td>
                   <td>{comment.parent_id}</td>
                   <td>
                     <div>
-                      <Link
+                    <Link
                         className="btn btn-sm btn-outline-primary me-2"
-                        to={`/edit-comment/${comment.id}`}
+                        to={"http://localhost:3000/"}
                       >
                         <i
-                          className="bx bx-edit-alt me-1"
+                          className="bx bx-show-alt me-1"
                           style={{ color: "blue" }}
                         ></i>{" "}
                         xem bình luận
@@ -261,6 +228,83 @@ const Comments = () => {
               ))}
             </tbody>
           </table>
+        </div>
+      </div>
+
+      {/* Modal */}
+      <div
+        className="modal fade"
+        id="commentModal"
+        tabIndex="-1"
+        aria-labelledby="commentModalLabel"
+        aria-hidden="true"
+      >
+        <div className="modal-dialog">
+          <div className="modal-content">
+            <div className="modal-header">
+              <h5 className="modal-title" id="commentModalLabel">
+                Chi tiết bình luận
+              </h5>
+              <button
+                type="button"
+                className="btn-close"
+                data-bs-dismiss="modal"
+                aria-label="Close"
+              ></button>
+            </div>
+            <div className="modal-body">
+              {currentComment && (
+                <>
+                  <p>
+                    <strong>Tên:</strong> {currentComment.name}
+                  </p>
+                  <p>
+                    <strong>Email:</strong> {currentComment.email}
+                  </p>
+                  <p>
+                    <strong>Nội dung:</strong> {currentComment.message}
+                  </p>
+                  <p>
+                    <strong>Trả lời:</strong>
+                    <ul>
+                      {commentReplies
+                        .filter(
+                          (reply) => reply.parent_id === currentComment.id
+                        )
+                        .map((reply) => (
+                          <li key={reply.id}>{reply.message}</li>
+                        ))}
+                    </ul>
+                  </p>
+                  <textarea
+                    rows={3}
+                    className="form-control"
+                    placeholder="Nhập phản hồi..."
+                    value={replyMessage}
+                    onChange={(e) => setReplyMessage(e.target.value)}
+                  ></textarea>
+                </>
+              )}
+            </div>
+            <div className="modal-footer">
+              <button
+                type="button"
+                className="btn btn-secondary m-2"
+                data-bs-dismiss="modal"
+              >
+                <i className="bx bx-x"></i>
+                Đóng
+              </button>
+              <button
+                type="button"
+                className="btn btn-primary"
+                onClick={replyToComment}
+              >
+                <i className="bx bx-reply me-1"></i>
+                Gửi phản hồi
+              </button>
+            </div>
+          </div>
         </div>
       </div>
     </div>

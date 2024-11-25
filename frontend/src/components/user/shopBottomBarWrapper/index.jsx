@@ -120,9 +120,6 @@ export default function Index() {
     setSelectedBrand(id);
   }
 
-  useEffect(() => {
-    fetchAllBrands(); 
-  }, []);
 
   return (
     <div className="row flex-row-reverse">

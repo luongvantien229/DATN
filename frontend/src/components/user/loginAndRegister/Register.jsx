@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
 import Swal from "sweetalert2";
 import { Link, useNavigate } from "react-router-dom";
@@ -9,10 +9,44 @@ export default function Register() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [password2, setPassword2] = useState("");
-  const [captcha, setCaptcha] = useState("");
+  const [captchaReady, setCaptchaReady] = useState(false);
+
+  useEffect(() => {
+    const loadRecaptcha = () => {
+      if (window.grecaptcha) {
+        window.grecaptcha.ready(() => {
+          setCaptchaReady(true);
+          window.grecaptcha.render("recaptcha-container", {
+            sitekey: "6LdPo2oqAAAAAI3NTsOV8sCti5T2SODCiC20eZHa",
+          });
+        });
+      }
+    };
+
+    // Ensure reCAPTCHA is loaded after component mounts
+    if (typeof window.grecaptcha === "undefined") {
+      const script = document.createElement("script");
+      script.src = "https://www.google.com/recaptcha/api.js";
+      script.async = true;
+      script.defer = true;
+      script.onload = loadRecaptcha;
+      document.body.appendChild(script);
+    } else {
+      loadRecaptcha();
+    }
+  }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    if (!captchaReady) {
+      Swal.fire({
+        icon: "error",
+        title: "Lỗi",
+        text: "reCAPTCHA chưa sẵn sàng. Vui lòng thử lại sau.",
+      });
+      return;
+    }
 
     const recaptchaResponse = window.grecaptcha.getResponse();
     if (!recaptchaResponse) {
@@ -25,18 +59,14 @@ export default function Register() {
     }
 
     try {
-      const response = await axios.post(
-        "/auth/register",
-        {
-          name,
-          email,
-          password,
-          password2,
-          'g-recaptcha-response': recaptchaResponse,
-        }
-      );
+      const response = await axios.post("/auth/register", {
+        name,
+        email,
+        password,
+        password2,
+        "g-recaptcha-response": recaptchaResponse,
+      });
 
-      // If successful
       if (response && response.data) {
         Swal.fire({
           icon: "success",
@@ -47,7 +77,6 @@ export default function Register() {
           window.location.reload();
         });
       }
-
     } catch (error) {
       if (error.response) {
         if (error.response.status === 401) {
@@ -121,16 +150,15 @@ export default function Register() {
                 onChange={(e) => setPassword2(e.target.value)}
               />
             </div>
-            
-            {/* Add Google reCAPTCHA */}
-            <div className="g-recaptcha" data-sitekey="6LdPo2oqAAAAAI3NTsOV8sCti5T2SODCiC20eZHa"></div>
+
+            <div id="recaptcha-container" style={{ marginBottom: "15px" }}></div>
 
             <div className="privacy-policy-wrap">
               <p>
                 Your personal data will be used to support your experience
-                throughout this website, to manage access to your account, and
-                for other purposes described in our{" "}
-                <a href="#">privacy policy</a>
+                throughout this website, to manage access to your account,
+                and for other purposes described in our{" "}
+                <a href="#">privacy policy</a>.
               </p>
             </div>
             <div className="login-register-btn">

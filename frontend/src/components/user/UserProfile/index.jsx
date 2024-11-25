@@ -103,10 +103,11 @@ const UserProfile = () => {
 
       if (response.status === 200) {
         setSuccess("Password updated successfully");
-        Swal.fire("Success", "Password updated successfully", "success")
-        .then(() => {
-          window.location.reload();
-      });
+        Swal.fire("Success", "Password updated successfully", "success").then(
+          () => {
+            window.location.reload();
+          }
+        );
       }
     } catch (error) {
       console.error("Error updating password:", error);
@@ -209,21 +210,27 @@ const UserProfile = () => {
                             <fieldset>
                               <legend>Thông tin tài khoản</legend>
                               <div className="row">
-                              <div className="mb-3">
-              <label className="form-label">Ảnh thương hiệu</label>
-              {existingImage && (
-                <div className="mb-3">
-                  <img src={`${existingImage}`} alt="Thương hiệu" width="100" />
-                </div>
-              )}
-              <input
-                type="file"
-                name="image"
-                className="form-control"
-                accept="image/*"
-                onChange={handleImageChange}
-              />
-            </div>
+                                <div className="mb-3">
+                                  <label className="form-label">
+                                    Ảnh thương hiệu
+                                  </label>
+                                  {existingImage && (
+                                    <div className="mb-3">
+                                      <img
+                                        src={`${existingImage}`}
+                                        alt="Thương hiệu"
+                                        width="100"
+                                      />
+                                    </div>
+                                  )}
+                                  <input
+                                    type="file"
+                                    name="image"
+                                    className="form-control"
+                                    accept="image/*"
+                                    onChange={handleImageChange}
+                                  />
+                                </div>
                                 <div className="col-lg-12">
                                   <div className="account-info input-style mb-30">
                                     <label>Name *</label>

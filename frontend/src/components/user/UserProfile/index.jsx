@@ -1,120 +1,160 @@
 import React, { useState, useEffect } from "react";
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import Swal from "sweetalert2";
 
 const UserProfile = () => {
   const [activeTab, setActiveTab] = useState("dashboard");
-  const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [currentPassword, setCurrentPassword] = useState("");
+  // user information
+  const [user, setUser] = useState({});
+  const [name, setName] = useState(user.name);
+  const [email, setEmail] = useState(user.email);
+  const [phone, setPhone] = useState(user.phone);
+  const [image, setImage] = useState(null); // To store new image
+  const [existingImage, setExistingImage] = useState(null); // To store the current image
+  const [statusMessage, setStatusMessage] = useState("");
+  // orders
+  const [orders, setOrders] = useState([]);
+
+  // Password reset
+  const [password, setPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  const [passwordError, setPasswordError] = useState("");
-  const [updateMessage, setUpdateMessage] = useState("");
-  
+
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
+  const [orderDetail, setOrderDetail] = useState(false);
+  const [orderDetailId, setOrderDetailId] = useState(null);
+  //user orders
+
   const handleTabChange = (tab) => {
-    setActiveTab(tab); 
+    setActiveTab(tab);
   };
 
-  const fetchData = async () => {
+  // Fetch the user data from the API when the component mounts
+  useEffect(() => {
+    const fetchUserData = async () => {
+      try {
+        const response = await axios.get("/auth/your_profile", {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        });
+        const userData = response.data;
+        setUser(userData);
+        setName(userData.name);
+        setEmail(userData.email);
+        setPhone(userData.phone);
+        setExistingImage(userData.image);
+      } catch (error) {
+        console.error("Error fetching user data:", error);
+      }
+    };
+    fetchUserData();
+  }, []);
+  // get user orders
+  const fetchOrders = async () => {
     try {
-      const response = await axios.get('/auth/your_profile', {
-        headers: {
-          'Authorization': `Bearer ${localStorage.getItem('token')}`,
-        },
-      });
-      setUser(response.data);
+      const response = await axios.get(
+        `/get_user_orders/${localStorage.getItem("user_id")}`,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
+      );
+      setOrders(response.data);
     } catch (error) {
       console.error(error);
-    } finally {
-      setLoading(false);
     }
+  };
+
+  // Handle form submit
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    // Clear previous messages
+    setError("");
+    setSuccess("");
+
+    // Check if new passwords match
+    if (newPassword !== confirmPassword) {
+      setError("New password and confirm password do not match");
+      return;
+    }
+
+    // Validate that the new password is at least 8 characters long
+    if (newPassword.length < 8) {
+      setError("Password must be at least 8 characters long");
+      return;
+    }
+
+    try {
+      const response = await axios.put(
+        `/change_user_password/${user.id}`, // Assuming user_id is stored in localStorage
+        { password, newPassword, confirmPassword },
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
+      );
+
+      if (response.status === 200) {
+        setSuccess("Password updated successfully");
+        Swal.fire("Success", "Password updated successfully", "success")
+        .then(() => {
+          window.location.reload();
+      });
+      }
+    } catch (error) {
+      console.error("Error updating password:", error);
+      setError("Sai mật khẩu cũ");
+    }
+  };
+
+  const changeUserInformation = async (e) => {
+    e.preventDefault();
+
+    try {
+      const response = await axios.put(
+        `/change_user_info/${user.id}`,
+        { name, email, phone, image },
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
+      );
+
+      if (response.status === 200) {
+        setSuccess("User information updated successfully");
+        Swal.fire(
+          "Success",
+          "User information updated successfully",
+          "success"
+        );
+      }
+    } catch (error) {
+      setError("Failed to update user information");
+      console.error("Update error:", error);
+    }
+  };
+
+  // Handle new image selection
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    setImage(file); // Save the new image
+    setUser((prev) => ({ ...prev, image: file })); // Update the user with the new image
   };
 
   useEffect(() => {
-    fetchData();
+    if (performance.navigation.type === 1) {
+      setOrderDetail(true);
+    }
+    fetchOrders();
   }, []);
-
-  // Handle password change
-  const handlePasswordChange = async (e) => {
-    e.preventDefault();
-
-    // Validate password fields
-    if (newPassword !== confirmPassword) {
-      setPasswordError("Mật khẩu mới và xác nhận mật khẩu không khớp.");
-      return;
-    }
-
-    if (newPassword.length < 6) {
-      setPasswordError("Mật khẩu mới phải có ít nhất 6 ký tự.");
-      return;
-    }
-
-    setPasswordError(""); // Clear previous error
-
-    try {
-      // Send password change request to the API
-      const response = await axios.post('/auth/reset', {
-        email,
-        currentPassword,
-        newPassword,
-      }, {
-        headers: {
-          'Authorization': `Bearer ${localStorage.getItem('token')}`,
-        }
-      });
-      console.log("🚀 ~ handlePasswordChange ~ response:", response)
-
-      // if (response.data.success) {
-      //   setUpdateMessage("Mật khẩu đã được thay đổi thành công.");
-      //   setCurrentPassword("");
-      //   setNewPassword("");
-      //   setConfirmPassword("");
-      // } else {
-      //   setUpdateMessage("Đã có lỗi xảy ra. Vui lòng thử lại.");
-      // }
-    } catch (error) {
-      console.log("🚀 ~ handlePasswordChange ~ error:", error);
-      
-      // console.error("Error during password change:", error);
-      // setUpdateMessage("Có lỗi xảy ra, vui lòng thử lại.");
-    }
-  };
-
-  if (loading) {
-    return <div>Loading...</div>;
-  }
-
-  const handleLogout = async (event) => {
-    event.preventDefault(); 
-
-    try {
-      const response = await axios.post('/auth/logout', {}, {
-        headers: {
-          'Authorization': `Bearer ${localStorage.getItem('token')}`, 
-        },
-      });
-      
-      localStorage.removeItem('token');
-      localStorage.removeItem('user_name');
-      Swal.fire({
-        title: 'Đăng xuất thành công!',
-        text: response.data.message,
-        icon: 'success',
-        confirmButtonText: 'OK',
-      }).then(() => {
-        navigate('/'); 
-      });
-    } catch (error) {
-      Swal.fire({
-        title: 'Lỗi!',
-        text: 'Đã xảy ra lỗi khi đăng xuất. Vui lòng thử lại.',
-        icon: 'error',
-        confirmButtonText: 'OK',
-      });
-    }
-  };
 
   return (
     <div className="my-account-area pt-75 pb-75">
@@ -127,81 +167,243 @@ const UserProfile = () => {
               <div className="row">
                 <div className="col-lg-4 col-md-4">
                   <div className="myaccount-tab-menu nav" role="tablist">
-                    <Link to="#dashboard" className={activeTab === "dashboard" ? "active" : ""} onClick={() => handleTabChange("dashboard")}>Dashboard</Link>
-                    <Link to="#orders" className={activeTab === "orders" ? "active" : ""} onClick={() => handleTabChange("orders")}>Orders</Link>
-                    <Link to="#address-edit" className={activeTab === "address-edit" ? "active" : ""} onClick={() => handleTabChange("address-edit")}>Address</Link>
-                    <Link to="#account-info" className={activeTab === "account-info" ? "active" : ""} onClick={() => handleTabChange("account-info")}>Account Details</Link>
                     <Link
-                      to='/'
+                      to="#dashboard"
+                      className={activeTab === "dashboard" ? "active" : ""}
+                      onClick={() => handleTabChange("dashboard")}
                     >
-                      Thoát
+                      Thông tin tài khoản
                     </Link>
+                    <Link
+                      to="#orders"
+                      className={activeTab === "orders" ? "active" : ""}
+                      onClick={() => handleTabChange("orders")}
+                    >
+                      Đơn hàng
+                    </Link>
+                    {/* <Link to="#address-edit" className={activeTab === "address-edit" ? "active" : ""} onClick={() => handleTabChange("address-edit")}>Address</Link> */}
+                    <Link
+                      to="#account-info"
+                      className={activeTab === "account-info" ? "active" : ""}
+                      onClick={() => handleTabChange("account-info")}
+                    >
+                      Đổi mật khẩu
+                    </Link>
+                    <Link to="/">Thoát</Link>
                   </div>
                 </div>
-                
+
                 <div className="col-lg-8 col-md-8">
                   <div className="tab-content" id="myaccountContent">
                     {/* Dashboard Tab Content */}
-                    <div className={`tab-pane fade ${activeTab === "dashboard" ? "show active" : ""}`} id="dashboard" role="tabpanel">
+                    <div
+                      className={`tab-pane fade ${
+                        activeTab === "dashboard" ? "show active" : ""
+                      }`}
+                      id="dashboard"
+                      role="tabpanel"
+                    >
                       <div className="myaccount-content">
-                        <div className="welcome">
-                          <p>Hello, <strong>{localStorage.getItem('user_name')}</strong> (Not <strong>{localStorage.getItem('user_name')} !</strong><Link className='logout' to="/login-register"> Logout</Link>)</p>
+                        <div className="account-details-form">
+                          <form onSubmit={changeUserInformation}>
+                            <fieldset>
+                              <legend>Thông tin tài khoản</legend>
+                              <div className="row">
+                              <div className="mb-3">
+              <label className="form-label">Ảnh thương hiệu</label>
+              {existingImage && (
+                <div className="mb-3">
+                  <img src={`${existingImage}`} alt="Thương hiệu" width="100" />
+                </div>
+              )}
+              <input
+                type="file"
+                name="image"
+                className="form-control"
+                accept="image/*"
+                onChange={handleImageChange}
+              />
+            </div>
+                                <div className="col-lg-12">
+                                  <div className="account-info input-style mb-30">
+                                    <label>Name *</label>
+                                    <input
+                                      type="text"
+                                      name="name"
+                                      value={name}
+                                      onChange={(e) => setName(e.target.value)}
+                                      required
+                                    />
+                                  </div>
+                                </div>
+                                <div className="col-lg-12">
+                                  <div className="account-info input-style mb-30">
+                                    <label>Email</label>
+                                    <input
+                                      type="email"
+                                      name="email"
+                                      value={email}
+                                      onChange={(e) => setEmail(e.target.value)}
+                                      required
+                                    />
+                                  </div>
+                                </div>
+                                <div className="col-lg-12">
+                                  <div className="account-info input-style">
+                                    <label>Phone</label>
+                                    <input
+                                      type="number"
+                                      name="phone"
+                                      value={phone}
+                                      onChange={(e) => setPhone(e.target.value)}
+                                      required
+                                    />
+                                  </div>
+                                </div>
+                              </div>
+                            </fieldset>
+
+                            <div className="account-info-btn">
+                              <button type="submit">Lưu</button>
+                            </div>
+                            {/* Display success or error message */}
+                            {success && (
+                              <p style={{ color: "green" }}>{success}</p>
+                            )}
+                            {error && <p style={{ color: "red" }}>{error}</p>}
+                          </form>
                         </div>
-                        <p className="mb-0">From your account dashboard you can view your <Link to="#">recent orders</Link>, manage your <Link to="#">shipping and billing addresses</Link>, and <Link to="#">edit your password and account details</Link>.</p>
                       </div>
                     </div>
                     {/* Orders Tab Content */}
-                    <div className={`tab-pane fade ${activeTab === "orders" ? "show active" : ""}`} id="orders" role="tabpanel">
+                    <div
+                      className={`tab-pane fade ${
+                        activeTab === "orders" ? "show active" : ""
+                      }`}
+                      id="orders"
+                      role="tabpanel"
+                    >
                       <div className="myaccount-content">
                         <div className="myaccount-table table-responsive text-center">
-                          <table className="table table-bordered">
-                            <thead className="thead-light">
-                              <tr>
-                                <th>Order</th>
-                                <th>Date</th>
-                                <th>Status</th>
-                                <th>Total</th>
-                                <th>Action</th>
-                              </tr>
-                            </thead>
-                            <tbody>
-                              <tr>
-                                <td>1</td>
-                                <td>Aug 22, 2018</td>
-                                <td>Pending</td>
-                                <td>$3000</td>
-                                <td><Link className='check-btn sqr-btn' to='cart.html'>View</Link></td>
-                              </tr>
-                              <tr>
-                                <td>2</td>
-                                <td>July 22, 2018</td>
-                                <td>Approved</td>
-                                <td>$200</td>
-                                <td><Link className='check-btn sqr-btn' to='cart.html'>View</Link></td>
-                              </tr>
-                              <tr>
-                                <td>3</td>
-                                <td>June 12, 2017</td>
-                                <td>On Hold</td>
-                                <td>$990</td>
-                                <td><Link className='check-btn sqr-btn' to='cart.html'>View</Link></td>
-                              </tr>
-                            </tbody>
-                          </table>
+                          {orderDetail ? (
+                            <table className="table table-bordered">
+                              <thead className="thead-light">
+                                <tr>
+                                  <th>Mã đơn hàng</th>
+                                  <th>Ngày đặt</th>
+                                  <th>Trạng thái</th>
+                                  <th>Tổng tiền</th>
+                                  <th>Hành động</th>
+                                </tr>
+                              </thead>
+                              <tbody>
+                                {orders ? (
+                                  orders.map((order) => {
+                                    return (
+                                      <tr key={order.id}>
+                                        <td>{order.order_code}</td>{" "}
+                                        {/* Display order code */}
+                                        <td>
+                                          {new Date(
+                                            order.date_deliver
+                                          ).toLocaleDateString()}
+                                        </td>{" "}
+                                        {/* Format date */}
+                                        <td>{order.status}</td>{" "}
+                                        {/* Display status */}
+                                        <td>
+                                          {order.total_price.toLocaleString()}{" "}
+                                          VND
+                                        </td>{" "}
+                                        {/* Format total price */}
+                                        <td>
+                                          <button
+                                            type="button"
+                                            className="btn btn-link"
+                                            onClick={() => {
+                                              setOrderDetailId(order.id);
+                                              setOrderDetail(false);
+                                            }}
+                                          >
+                                            Xem chi tiết
+                                          </button>
+                                        </td>
+                                      </tr>
+                                    );
+                                  })
+                                ) : (
+                                  <tr>
+                                    <td colSpan="5">No orders found.</td>
+                                  </tr>
+                                )}
+                              </tbody>
+                            </table>
+                          ) : (
+                            <div>
+                              <h3>Order Detail</h3>
+                              {/* table show chi tiet san pham */}
+                              <table className="table table-bordered">
+                                <thead className="thead-light">
+                                  <tr>
+                                    <th>Tên sản phẩm</th>
+                                    <th>Giá</th>
+                                    <th>Số lượng</th>
+                                  </tr>
+                                </thead>
+                                <tbody>
+                                  {orderDetailId &&
+                                    orders.map((order) => {
+                                      if (order.id == orderDetailId) {
+                                        return order.items.map((item) => (
+                                          <tr key={item.id}>
+                                            <td>{item.product_name}</td>
+                                            <td>
+                                              {item.price.toLocaleString()} VND
+                                            </td>
+                                            <td>{item.quantity}</td>
+                                          </tr>
+                                        ));
+                                      }
+                                    })}
+                                  <td>
+                                    <button
+                                      type="button"
+                                      className="btn btn-link"
+                                      onClick={() => setOrderDetail(true)}
+                                    >
+                                      Back
+                                    </button>
+                                  </td>
+                                </tbody>
+                              </table>
+                            </div>
+                          )}
                         </div>
                       </div>
                     </div>
                     {/* Address Edit Tab Content */}
-                    <div className={`tab-pane fade ${activeTab === "address-edit" ? "show active" : ""}`} id="address-edit" role="tabpanel">
+                    <div
+                      className={`tab-pane fade ${
+                        activeTab === "address-edit" ? "show active" : ""
+                      }`}
+                      id="address-edit"
+                      role="tabpanel"
+                    >
                       <div className="myaccount-content myaccount-address">
-                        <p>The following addresses will be used on the checkout page by default.</p>
+                        <p>
+                          The following addresses will be used on the checkout
+                          page by default.
+                        </p>
                         <div className="row">
                           <div className="col-lg-6 col-md-6 col-12 col-sm-6">
                             <div className="myaccount-address-wrap">
                               <h3>Billing address</h3>
                               <div className="myaccount-address-content">
                                 <h4>Alex Tuntuni</h4>
-                                <p>1355 Market St, Suite 900 <br />San Francisco, CA 94103</p>
+                                <p>
+                                  1355 Market St, Suite 900 <br />
+                                  San Francisco, CA 94103
+                                </p>
                                 <p>Mobile: (123) 456-7890</p>
                               </div>
                             </div>
@@ -211,7 +413,10 @@ const UserProfile = () => {
                               <h3>Shipping address</h3>
                               <div className="myaccount-address-content">
                                 <h4>Alex Tuntuni</h4>
-                                <p>1355 Market St, Suite 900 <br />San Francisco, CA 94103</p>
+                                <p>
+                                  1355 Market St, Suite 900 <br />
+                                  San Francisco, CA 94103
+                                </p>
                                 <p>Mobile: (123) 456-7890</p>
                               </div>
                             </div>
@@ -220,83 +425,80 @@ const UserProfile = () => {
                       </div>
                     </div>
                     {/* Account Info Tab Content */}
-                    <div className={`tab-pane fade ${activeTab === "account-info" ? "show active" : ""}`} id="account-info" role="tabpanel">
+                    <div
+                      className={`tab-pane fade ${
+                        activeTab === "account-info" ? "show active" : ""
+                      }`}
+                      id="account-info"
+                      role="tabpanel"
+                    >
                       <div className="myaccount-content">
                         <div className="account-details-form">
-                          <form onSubmit={handlePasswordChange}>
-                            <div className="row">
-                              <div className="col-lg-12">
-                                <div className="account-info input-style mb-30">
-                                  <label>Name *</label>
-                                  <input type="text" value={user.name} readOnly />
-                                </div>
-                              </div>
-                              <div className="col-lg-12">
-                                <div className="account-info input-style">
-                                  <label>Email</label>
-                                  <input type="email" value={user.email} readOnly />
-                                </div>
-                              </div>
-                              <div className="col-lg-12">
-                                <div className="account-info input-style">
-                                  <label>Phone</label>
-                                  <input type="number" value={user.phone} readOnly />
-                                </div>
-                              </div>
-                            </div>
-
+                          <form onSubmit={handleSubmit}>
                             <fieldset>
-                              <legend>Password Change</legend>
+                              <legend>Đổi mật khẩu</legend>
                               <div className="row">
                                 <div className="col-lg-12">
                                   <div className="account-info input-style mb-30">
-                                    <label>Current Password</label>
-                                    <input 
-                                      type="password" 
-                                      value={currentPassword} 
-                                      onChange={(e) => setCurrentPassword(e.target.value)} 
+                                    <label>Mật khẩu hiện tại</label>
+                                    <input
+                                      type="password"
+                                      value={password}
+                                      onChange={(e) =>
+                                        setPassword(e.target.value)
+                                      }
+                                      required
                                     />
                                   </div>
                                 </div>
                                 <div className="col-lg-12">
                                   <div className="account-info input-style mb-30">
-                                    <label>New Password</label>
-                                    <input 
-                                      type="password" 
-                                      value={newPassword} 
-                                      onChange={(e) => setNewPassword(e.target.value)} 
+                                    <label>Mật khẩu mới</label>
+                                    <input
+                                      type="password"
+                                      value={newPassword}
+                                      onChange={(e) =>
+                                        setNewPassword(e.target.value)
+                                      }
+                                      required
                                     />
                                   </div>
                                 </div>
                                 <div className="col-lg-12">
                                   <div className="account-info input-style">
-                                    <label>Confirm New Password</label>
-                                    <input 
-                                      type="password" 
-                                      value={confirmPassword} 
-                                      onChange={(e) => setConfirmPassword(e.target.value)} 
+                                    <label>Nhập lại mật khẩu</label>
+                                    <input
+                                      type="password"
+                                      value={confirmPassword}
+                                      onChange={(e) =>
+                                        setConfirmPassword(e.target.value)
+                                      }
+                                      required
                                     />
                                   </div>
                                 </div>
                               </div>
                             </fieldset>
 
-                            {/* Display Error or Success Messages */}
-                            {passwordError && <div style={{ color: "red", marginTop: "10px" }}>{passwordError}</div>}
-                            {updateMessage && <div style={{ color: "green", marginTop: "10px" }}>{updateMessage}</div>}
+                            {/* Display success or error messages */}
+                            {success && (
+                              <p style={{ color: "green" }}>{success}</p>
+                            )}
 
+                            {error && <p style={{ color: "red" }}>{error}</p>}
                             <div className="account-info-btn">
-                              <button type="submit">Save Changes</button>
+                              <button type="submit">Lưu</button>
                             </div>
                           </form>
                         </div>
                       </div>
                     </div>
-            
-                  </div> {/* My Account Tab Content End */}
+                  </div>{" "}
+                  {/* My Account Tab Content End */}
                 </div>
               </div>
-            </div> {/* My Account Page End */}
+            </div>{" "}
+            {/* My Account Page End */}
           </div>
         </div>
       </div>

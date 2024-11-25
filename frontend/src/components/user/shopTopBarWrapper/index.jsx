@@ -27,7 +27,7 @@ export default function Index() {
   const fetchProducts = async () => {
     setLoading(true);
     try {
-      const response = await axios.get("http://127.0.0.1:8000/api/filter", {
+      const response = await axios.get("/filter", {
         params: { ...filters, page: currentPage },
       });
       setProducts(response.data.products.data);
@@ -119,11 +119,11 @@ export default function Index() {
           <SidebarCategoriesList onCategorySelect={handleCategorySelect} />
           <SidebarBrandList onBrandSelect={handleBrandSelect} />{" "}
           {/* Pass handleBrandSelect here */}
-          <PriceFilter />
+          {/* <PriceFilter /> */}
           {/* Uncomment if needed */}
           {/* <SidebarRatingList /> */}
           {/* <SidebarColorList /> */}
-          <SlidebarProductContent />
+          {/* <SlidebarProductContent /> */}
         </div>
       </div>
     </>

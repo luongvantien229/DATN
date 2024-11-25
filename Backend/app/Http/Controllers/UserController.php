@@ -8,6 +8,7 @@ use App\Models\User;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;
+use Symfony\Component\HttpFoundation\File\Exception\FileException;
 
 class UserController extends Controller
 {
@@ -168,6 +169,88 @@ class UserController extends Controller
             $user->update(['lock' =>$request->lock]);
             return response()->json('Lock change successfully');
         } else return response()->json('Order was not found');
+    }
+
+    public function change_user_info(Request $request)
+    {
+        try {
+            var_dump($request->all());
+            // 3 fields name, email, phone
+            $validated = $request->validate([
+                'name' => 'required',
+                'email' => 'required|email',
+                'phone' => 'required',
+                'image' => 'nullable|image|image|mimes:jpeg,png,gif,webp|max:2048',
+            ]);
+
+            $user = User::find($request->id);
+
+            if (!$user) {
+                return response()->json('user not found', 404);
+            }
+
+            // Handle image update
+            if ($request->hasFile('image')) {
+                // Delete the existing image if it exists
+                $path = 'assets/uploads/user/' . $user->image;
+                if (File::exists($path)) {
+                    File::delete($path); // Delete the old image
+                }
+
+                // Save the new image
+                $file = $request->file('image');
+                $filename = time() . '.' . $file->getClientOriginalExtension();
+                $file->move('assets/uploads/user/', $filename);
+                $user->image = $filename; // Update image field in the brand
+            } 
+
+            $user->update([
+                'name' => $request->name,
+                'email' => $request->email,
+                'phone' => $request->phone,
+            ]);
+
+            return response()->json('user updated', 200);
+
+        } catch (Exception $e) {
+            return response()->json($e, 500);
+        }
+    } 
+
+    public function change_user_password(Request $request){
+        try {
+            // Validate the incoming request
+            $validated = $request->validate([
+                'password' => 'required|min:8',       // Current password
+                'newPassword' => 'required|min:8',    // New password
+                'confirmPassword' => 'required|min:8' // Confirm new password
+            ]);
+    
+            $user = User::find($request->id);
+    
+            if (!$user) {
+                return response()->json('User not found', 404);
+            }
+    
+            // Check if the current password is correct
+            if (!app('hash')->check($request->input('password'), $user->password)) {
+                return response()->json('Current password is incorrect', 400);
+            }
+    
+            // Check if new password matches confirm password
+            if ($request->newPassword !== $request->confirmPassword) {
+                return response()->json('New password and confirm password do not match', 400);
+            }
+    
+            // Hash the new password and save it
+            $user->password = app('hash')->make($request->input('newPassword'));
+            $user->save();
+    
+            return response()->json('Password updated successfully', 200);
+    
+        } catch (Exception $e) {
+            return response()->json($e->getMessage(), 500);
+        }
     }
 
 }

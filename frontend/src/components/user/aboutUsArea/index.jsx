@@ -1,6 +1,7 @@
 
 import React from "react";
 import CounterUp from "../../../hooks/user/counterUp";
+import Style from "./style.scss";
 
 export default function Index() {
   return (
@@ -45,11 +46,11 @@ export default function Index() {
                 như vậy. Cảm ơn bạn đã ghé thăm trang web của chúng tôi. Chúng
                 tôi mong được hợp tác với bạn!
               </p>
-              <div className="about-btn">
+              {/* <div className="about-btn">
                 <a href="#">
                   Khám phá ngay <i className="far fa-long-arrow-right"></i>
                 </a>
-              </div>
+              </div> */}
             </div>
           </div>
         </div>

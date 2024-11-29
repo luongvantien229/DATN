@@ -11,7 +11,6 @@ export default function FooterAbout() {
         </div>
         <div className="copyright">
           <p>
-            Copyright © 2024 |{" "}
             <a target="_blank" href="https://hasthemes.com/">
               Được xây dựng bởi nhóm <span>CF5D</span>
             </a>

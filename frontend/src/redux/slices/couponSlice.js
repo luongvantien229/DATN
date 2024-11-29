@@ -11,25 +11,19 @@ export const couponSlice = createSlice({
     reducers: {
 
         applyCoupon(state, action) {
-            const { discount, condition, code, used } = action.payload;
-
+            const { discount, condition } = action.payload; 
             if (discount !== undefined && condition !== undefined) {
                 state.coupon = {
                     number: discount,
                     condition: condition,
-                    code: code,
-                    used: used,
                 };
                 toast.success('Mã giảm giá đã được áp dụng!');
-                localStorage.setItem('coupon', JSON.stringify(state.coupon)); // Save coupon to localStorage
-            } else if (used === true) { // Assuming `used` is `true` if the coupon has been used
-                toast.error('Mã giảm giá đã được sử dụng, vui lòng nhập mã khác!');
             } else {
-                toast.error('Mã giảm giá không hợp lệ hoặc đã hết hạn!');
+                toast.error('Mã giảm giá không hợp lệ!');
             }
+            localStorage.setItem('coupon', JSON.stringify(state.coupon)); // Save coupon to localStorage
         },
-
-
+        
 
         clearCoupon(state) {
             state.coupon = null;
@@ -40,7 +34,7 @@ export const couponSlice = createSlice({
 });
 
 export const {
-
+   
     applyCoupon,
     clearCoupon
 } = couponSlice.actions;

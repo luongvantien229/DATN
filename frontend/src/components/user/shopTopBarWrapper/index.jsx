@@ -48,7 +48,7 @@ export default function Index() {
   };
 
   const handleCategorySelect = (categoryId) => {
-    setFilters((prev) => ({ ...prev, category_posts_id: categoryId }));
+    setFilters((prev) => ({ ...prev, category_id: categoryId }));
     setCurrentPage(1);
   };
 
@@ -82,7 +82,7 @@ export default function Index() {
                 </span>
               </div>
               <div className="sort-by-dropdown-wrap">
-                <select name="sort_by" onChange={handleFilterChange}>
+                <select name="sort_by" onChange={handleFilterChange} value={filters.sort_by}>
                   <option value="default">Mặc định</option>
                   <option value="Sort_A_Z">Sắp xếp A-Z</option>
                   <option value="Sort_Z_A">Sắp xếp Z-A</option>

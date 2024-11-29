@@ -1,4 +1,5 @@
 import React from "react";
+import "./Style.scss";
 
 export default function Pagination({ currentPage, totalPages, onPageChange }) {
   const handleClick = (page) => {

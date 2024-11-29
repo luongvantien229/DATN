@@ -1,7 +1,8 @@
 import React, { useEffect, useState, useRef } from 'react';
 import SliderArena from "./SliderArea";
 import axios from 'axios';
-import Slider from 'react-slick';  // Import react-slick
+import Slider from 'react-slick'; 
+import { Link } from 'react-router-dom';
 
 const SliderComponent = () => {
   const [sliderImg, setSliderImg] = useState([]);
@@ -35,7 +36,6 @@ const SliderComponent = () => {
         <div className="row">
           <div className="custom-common-column custom-column-width-100 custom-padding-5">
             <div className="slider-area">
-              {/* Sử dụng Slider từ react-slick và cấu hình */}
               <Slider ref={sliderRef} {...slickSettings} className="hero-slider-active-1 nav-style-1 nav-style-1-position-1">
                 {sliderImg.slice(0, 3).map((item) => (
                   <SliderArena key={item.id} item={item} />

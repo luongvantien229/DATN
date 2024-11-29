@@ -4,8 +4,6 @@ import { useDispatch } from "react-redux";
 import { addToCart } from "../../../redux/slices/cartSlice";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import { ToastContainer, toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
 
 export default function ProductDetail_Right({ product }) {
   const [quantity, setQuantity] = useState(1);
@@ -49,18 +47,9 @@ export default function ProductDetail_Right({ product }) {
   const navigate = useNavigate();
 
   const handleAddToCart = () => {
-    if (product.qty <= 0) {
-      toast.error("Sản phẩm hiện tại tạm hết, quý khách vui lòng mua sản phẩm khác. Xin cảm ơn!");
-      return;
-    }
-    if (quantity > product.qty) {
-      toast.error("Sản phẩm không đủ số lượng. Quý khách vui lòng đặt số lượng nhỏ hơn.");
-      return;
-    }
-    
     const productWithQuantity = { ...product, quantity };
     dispatch(addToCart(productWithQuantity));
-    toast.success("Sản phẩm đã được thêm vào giỏ hàng!");
+
   };
 
   return (
@@ -165,7 +154,6 @@ export default function ProductDetail_Right({ product }) {
           </a>
         </div>
       </div>
-      <ToastContainer />
     </div>
   );
 }

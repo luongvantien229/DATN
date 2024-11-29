@@ -3,12 +3,19 @@ import Countdown from 'react-countdown';
 import ProductArena1 from './ProductArea1';
 import useSlick from '../../../hooks/user/slick';
 import axios from 'axios';
+import Style from './style.scss';
 
 export default function Index() {
   const { productArena1 } = useSlick(); // Lấy các ref từ hook
 
   // Xác định thời gian đếm ngược
-  const countdownDate = new Date('2024-09-30T23:59:59').getTime();
+  const now = new Date();
+  const midnight = new Date(
+    now.getFullYear(),
+    now.getMonth(),
+    now.getDate() + 1, // Ngày mai 12:00 AM
+    0, 0, 0, 0
+  ).getTime();
 
   // State để lưu trữ sản phẩm mới
   const [newProducts, setNewProducts] = useState([]);
@@ -29,24 +36,25 @@ export default function Index() {
   useEffect(() => {
     fetchNewProducts();
   }, []);
+  
 
   return (
-    <div className="product-area pt-80 pb-75">
+    <div className="product-area pt-80 pb-75 productArea1">
       <div className="custom-container">
         <div className="product-area-border">
           <div className="section-title-timer-wrap">
             <div className="section-title-1">
 
-              <h2>Khuyến mãi hàng ngày</h2>
+              <h2>Săn Deal giảm sốc</h2>
 
             </div>
             <div id="timer-1-active" className="timer-style-1">
               <span>Kết thúc:</span>
               <Countdown
-                date={countdownDate}
+                date={midnight}
                 renderer={({ hours, minutes, seconds, completed }) => {
                   if (completed) {
-                    return <span>Time's up!</span>;
+                    return <span>It's midnight!</span>;
                   } else {
                     return (
                       <span>
@@ -62,7 +70,7 @@ export default function Index() {
           </div>
           <div className="product-slider-active-1 nav-style-2 product-hm1-mrg d-flex" ref={productArena1}>
             {newProducts.slice(0, 5).map((product) => (
-              <ProductArena1 key={product.id} product={product} /> // Pass product to the component
+              <ProductArena1 key={product.id} product={product} />
             ))}
           </div>
         </div>

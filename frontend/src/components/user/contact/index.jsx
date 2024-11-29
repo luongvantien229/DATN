@@ -3,6 +3,7 @@ import SectionTitle from "./SectionTitle";
 import SingleContactInfo from "./SingleContactInfo";
 import ContactMap from "./ContactMap";
 import ContactForm from "./ContactForm";
+import "./style.scss";
 
 export default function Index() {
   return (

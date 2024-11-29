@@ -525,7 +525,7 @@ class OrderController extends Controller
 
     public function get_order_items_user($id){
         $orders = Order::where('user_id', $id)
-        ->with(['items' => function ($query) {
+        ->with(['items.product' => function ($query) {
             $query->orderBy('created_at', 'desc');
         }])
         ->get();

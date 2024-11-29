@@ -2,11 +2,17 @@ import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import Swal from "sweetalert2";
+import "./style.scss";
 
 const UserProfile = () => {
   const [activeTab, setActiveTab] = useState("dashboard");
   // user information
-  const [user, setUser] = useState({});
+  const [user, setUser] = useState({
+    name: "",
+    email: "",
+    phone: "",
+    image: null,
+  });
   const [name, setName] = useState(user.name);
   const [email, setEmail] = useState(user.email);
   const [phone, setPhone] = useState(user.phone);
@@ -53,6 +59,7 @@ const UserProfile = () => {
     };
     fetchUserData();
   }, []);
+
   // get user orders
   const fetchOrders = async () => {
     try {
@@ -103,10 +110,11 @@ const UserProfile = () => {
 
       if (response.status === 200) {
         setSuccess("Password updated successfully");
-        Swal.fire("Success", "Password updated successfully", "success")
-        .then(() => {
-          window.location.reload();
-      });
+        Swal.fire("Success", "Password updated successfully", "success").then(
+          () => {
+            window.location.reload();
+          }
+        );
       }
     } catch (error) {
       console.error("Error updating password:", error);
@@ -148,6 +156,22 @@ const UserProfile = () => {
     setImage(file); // Save the new image
     setUser((prev) => ({ ...prev, image: file })); // Update the user with the new image
   };
+  // const handleChange = (e) => {
+  //   const { name, value, type, checked, files } = e.target;
+  //   if (name === "image") {
+  //     const file = files[0];
+  //     if (file && file.size > 2 * 1024 * 1024) { // Example: 2MB max size
+  //       setError("File size exceeds 2MB");
+  //       return;
+  //     }
+  //     setBrand({ ...brand, image: file });
+  //   } else {
+  //     setBrand({ ...brand, [name]: type === "checkbox" ? checked : value,
+  //       ...(name === 'name' && { slug: generateSlug(value) }) // Automatically update slug when the name changes
+  //      });
+      
+  //   }
+  // };
 
   useEffect(() => {
     if (performance.navigation.type === 1) {
@@ -209,21 +233,27 @@ const UserProfile = () => {
                             <fieldset>
                               <legend>Thông tin tài khoản</legend>
                               <div className="row">
-                              <div className="mb-3">
-              <label className="form-label">Ảnh thương hiệu</label>
-              {existingImage && (
-                <div className="mb-3">
-                  <img src={`${existingImage}`} alt="Thương hiệu" width="100" />
-                </div>
-              )}
-              <input
-                type="file"
-                name="image"
-                className="form-control"
-                accept="image/*"
-                onChange={handleImageChange}
-              />
-            </div>
+                                <div className="mb-3">
+                                  <label className="form-label">
+                                    Ảnh thương hiệu
+                                  </label>
+                                  {existingImage && (
+                                    <div className="mb-3">
+                                      <img
+                                        src={`${existingImage}`}
+                                        alt="Thương hiệu"
+                                        width="100"
+                                      />
+                                    </div>
+                                  )}
+                                  <input
+                                    type="file"
+                                    name="image"
+                                    className="form-control"
+                                    accept="image/*"
+                                    onChange={handleImageChange}
+                                  />
+                                </div>
                                 <div className="col-lg-12">
                                   <div className="account-info input-style mb-30">
                                     <label>Name *</label>
@@ -340,12 +370,13 @@ const UserProfile = () => {
                             </table>
                           ) : (
                             <div>
-                              <h3>Order Detail</h3>
+                              {/* <h3>Order Detail</h3> */}
                               {/* table show chi tiet san pham */}
                               <table className="table table-bordered">
                                 <thead className="thead-light">
                                   <tr>
-                                    <th>Tên sản phẩm</th>
+                                    <th>Ảnh sản phẩm</th>
+                                    <th className="name-order-userinfo">Tên sản phẩm</th>
                                     <th>Giá</th>
                                     <th>Số lượng</th>
                                   </tr>
@@ -356,7 +387,10 @@ const UserProfile = () => {
                                       if (order.id == orderDetailId) {
                                         return order.items.map((item) => (
                                           <tr key={item.id}>
-                                            <td>{item.product_name}</td>
+                                            <td>
+                                              <img src={item.product.image} alt="" className="img-order-userinfo" />
+                                            </td>
+                                            <td className="name-order-userinfo">{item.product_name} {item.product_name}</td>
                                             <td>
                                               {item.price.toLocaleString()} VND
                                             </td>

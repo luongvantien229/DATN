@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Coupon;
+use Auth;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -20,28 +21,53 @@ class CouponController extends Controller
 
     public function store(Request $request)
     {
+
+        try {
+            $request->merge([
+                'date_start' => Carbon::createFromFormat('d/m/Y', $request->date_start)->format('d/m/Y'),
+                'date_end' => Carbon::createFromFormat('d/m/Y', $request->date_end)->format('d/m/Y'),
+            ]);
+        } catch (\Exception $e) {
+            return response()->json(['errors' => ['date_format' => 'Invalid date format. Use dd/MM/yyyy']], 422);
+        }
+
         // Validate the request
         $validator = Validator::make($request->all(), [
+            'user_id' => 'required|exists:users,id',
             'name' => 'required|string|max:255',
-            'number' => 'required|integer',
+            'number' => 'required|integer|min:1',
             'code' => 'required|string|max:255|unique:coupons,code',
-            'time' => 'required|integer',
-            'condition' => 'required|integer',
-            'date_start' => 'required|date',
-            'date_end' => 'required|date',
-            'status' => 'required',
+            'time' => 'required|integer|min:1',
+            'condition' => 'required|integer|in:1,2',
+            'date_start' => 'required|string', // Thay vì date, hãy để nó là string
+            'date_end' => 'required|string',
+            'status' => 'required|boolean',
         ]);
 
         if ($validator->fails()) {
             return response()->json(['errors' => $validator->errors()], 422);
         }
 
-        // Create the coupon
-        $coupon = new Coupon($request->all());
-        $coupon->save();
+        // Tạo mới một Coupon
+        $coupon = Coupon::create($request->only([
+            'user_id',
+            'name',
+            'number',
+            'code',
+            'time',
+            'condition',
+            'date_start',  // Lưu chuỗi ngày
+            'date_end',    // Lưu chuỗi ngày
+            'status'
+        ]));
 
-        return response()->json(['message' => 'Coupon created successfully', 'coupon' => $coupon], 201);
+        return response()->json([
+            'message' => 'Coupon created successfully',
+            'coupon' => $coupon
+        ], 201);
     }
+
+
 
     public function show($id)
     {
@@ -62,15 +88,25 @@ class CouponController extends Controller
             return response()->json(['message' => 'Coupon not found'], 404);
         }
 
+        try {
+            $request->merge([
+                'date_start' => Carbon::createFromFormat('d/m/Y', $request->date_start)->format('d/m/Y'),
+                'date_end' => Carbon::createFromFormat('d/m/Y', $request->date_end)->format('d/m/Y'),
+            ]);
+        } catch (\Exception $e) {
+            return response()->json(['errors' => ['date_format' => 'Invalid date format. Use dd/MM/yyyy']], 422);
+        }
+
         // Validate the request
         $validator = Validator::make($request->all(), [
+            'user_id' => 'sometimes|required|exists:users,id',
             'name' => 'sometimes|required|string|max:255',
             'number' => 'sometimes|required|integer',
             'code' => 'sometimes|required|string|max:255|unique:coupons,code,' . $coupon->id,
             'time' => 'sometimes|required|integer',
             'condition' => 'sometimes|required|integer',
-            'date_start' => 'sometimes|required|date',
-            'date_end' => 'sometimes|required|date',
+            'date_start' => 'sometimes',
+            'date_end' => 'sometimes|after_or_equal:date_start',
             'status' => 'sometimes|required',
         ]);
 
@@ -78,8 +114,15 @@ class CouponController extends Controller
             return response()->json(['errors' => $validator->errors()], 422);
         }
 
-
-        $coupon->fill($request->all());
+        $coupon->user_id = $request->user_id;
+        $coupon->name = $request->name;
+        $coupon->number = $request->number;
+        $coupon->code = $request->code;
+        $coupon->time = $request->time;
+        $coupon->condition = $request->condition;
+        $coupon->date_start = $request->date_start;
+        $coupon->date_end = $request->date_end;
+        $coupon->status = $request->status;
         $coupon->save();
 
         return response()->json(['message' => 'Coupon updated successfully', 'coupon' => $coupon]);
@@ -108,149 +151,18 @@ class CouponController extends Controller
 
     }
 
-    // public function check_coupon(Request $request)
-    // {
-    //     // Get the coupon code directly
-    //     $couponCode = $request->input('coupon');
-
-    //     // Search for the coupon by its code
-    //     $coupon = Coupon::where('code', $couponCode)->first();
-
-    //     if ($coupon) {
-    //         // Check if a coupon session exists
-    //         $couponSession = Session::get('coupon');
-    //         $cou = [];
-
-    //         if ($couponSession) {
-    //             $isAvailable = 0;
-
-    //             // Add the coupon details to the session if not already available
-    //             if ($isAvailable == 0) {
-    //                 $cou[] = [
-    //                     'code' => $coupon->code,
-    //                     'condition' => $coupon->condition,
-    //                     'number' => $coupon->number,
-    //                 ];
-    //                 Session::put('coupon', $cou);
-    //             }
-    //         } else {
-    //             $cou[] = [
-    //                 'code' => $coupon->code,
-    //                 'condition' => $coupon->condition,
-    //                 'number' => $coupon->number,
-    //             ];
-    //             Session::put('coupon', $cou);
-    //         }
-
-    //         Session::save();
-
-    //         return response()->json([
-    //             'success' => true,
-    //             'coupon' => $coupon,
-    //         ]);
-    //     } else {
-    //         return response()->json([
-    //             'success' => false,
-    //             'message' => 'Invalid coupon code.',
-    //         ]);
-    //     }
-    // }
-
-
-
-    // public function check_coupon(Request $request)
-    // {
-    //     $today = Carbon::now('Asia/Ho_Chi_Minh')->format('d/m/Y');
-    //     $couponCode = $request->input('coupon');
-
-    //     if (Session::get('user_id')) {
-    //         $coupon = Coupon::where('code', $couponCode)
-    //             ->where('status', 1)
-    //             ->where('date_end', '>=', $today)
-    //             ->where('used', 'NOT LIKE', '%' . Session::get('user_id') . '%')
-    //             ->first();
-
-    //         if ($coupon) {
-    //             return redirect()->back()->with('error', 'Mã giảm giá đã sử dụng, vui lòng nhập mã khác');
-    //         } else {
-    //             $coupon_login = Coupon::where('code', $couponCode)
-    //                 ->where('status', 1)
-    //                 ->where('date_end', '>=', $today)
-    //                 ->first();
-
-    //             $coupon_session = Session::get('coupon');
-    //             if ($coupon_session == true) {
-    //                 $is_available = 0;
-    //                 if ($is_available == 0) {
-    //                     $cou[] = array(
-    //                         'code' => $coupon_login->code,
-    //                         'condition' => $coupon_login->condition,
-    //                         'number' => $coupon_login->number,
-    //                     );
-    //                     Session::put('coupon', $cou);
-    //                 }
-    //             } else {
-    //                 $cou[] = array(
-    //                     'code' => $coupon_login->code,
-    //                     'condition' => $coupon_login->condition,
-    //                     'number' => $coupon_login->number,
-    //                 );
-    //                 Session::put('coupon', $cou);
-    //             }
-    //             Session::save();
-    //             return redirect()->back()->with('message', 'Thêm mã giảm giá thành công');
-    //         }
-
-    //         // nếu chưa đăng nhập
-    //     } else {
-
-    //         $coupon = Coupon::where('code', $couponCode)
-    //             ->where('status', 1)
-    //             ->where('date_end', '>=', $today)
-    //             ->first();
-    //         if ($coupon) {
-    //             $count_coupon = $coupon->count();
-    //             if ($count_coupon > 0) {
-    //                 $coupon_session = Session::get('coupon');
-    //                 if ($coupon_session == true) {
-    //                     $is_available = 0;
-    //                     if ($is_available == 0) {
-    //                         $cou[] = array(
-    //                             'code' => $coupon->code,
-    //                             'condition' => $coupon->condition,
-    //                             'number' => $coupon->number,
-    //                         );
-    //                         Session::put('coupon', $cou);
-    //                     }
-    //                 } else {
-    //                     $cou[] = array(
-    //                         'code' => $coupon->code,
-    //                         'condition' => $coupon->condition,
-    //                         'number' => $coupon->number,
-    //                     );
-    //                     Session::put('coupon', $cou);
-    //                 }
-    //                 Session::save();
-    //                 return Redirect()->back()->with('message', 'Thêm mã giảm giá thành công!!');
-    //             }
-    //         } else {
-    //             return Redirect()->back()->with('message', 'Thêm mã giảm giá không đúng.');
-    //         }
-    //     }
-    // }
-
     public function check_coupon(Request $request)
     {
-        $today = Carbon::now('Asia/Ho_Chi_Minh')->format('d/m/y');
+        $today = Carbon::now('Asia/Ho_Chi_Minh')->format('d/m/Y');
         $couponCode = $request->input('coupon');
-        $userId = auth()->id();
+        $userId = Auth::id();
 
         // Step 1: Check if user is logged in and if the coupon has been used
         if ($userId) {
             $coupon = Coupon::where('code', $couponCode)
+                ->where('used', 'LIKE', '%' . $userId . '%')
                 ->where('status', 1)
                 ->where('date_end', '>=', $today)
-                ->where('used', 'NOT LIKE', '%' . $userId . '%')
                 ->first();
 
             if ($coupon) {
@@ -281,6 +193,7 @@ class CouponController extends Controller
                     'code' => $coupon->code,
                     'condition' => $coupon->condition,
                     'number' => $coupon->number,
+                    'used' => $coupon->used,
                 ];
                 Session::put('coupon', $couponSession);
                 Session::save();

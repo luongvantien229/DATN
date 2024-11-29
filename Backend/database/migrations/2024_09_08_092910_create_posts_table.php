@@ -18,6 +18,7 @@ return new class extends Migration
             $table->string('description');
             $table->text('content');
             $table->string('image');
+            $table->integer('view');
             $table->foreignId('user_id')->constrained()->onDelete('cascade'); // Khóa ngoại đến bảng users
             $table->foreignId('category_posts_id')->constrained()->onDelete('cascade'); // Khóa ngoại đến bảng  categories posts
             $table->integer('status');

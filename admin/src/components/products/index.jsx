@@ -137,6 +137,7 @@ const Products = () => {
                 <th>ID</th>
                 <th>Tên</th>
                 <th>Slug</th>
+                <th>Giá gốc</th>
                 <th>Giá</th>
                 <th>Thương hiệu</th>
                 <th>Dạnh mục</th>
@@ -184,6 +185,13 @@ const Products = () => {
                     {product.name}
                   </td>
                   <td>{product.slug}</td>
+                  <td>
+                    {new Intl.NumberFormat("vi-VN", {
+                      style: "currency",
+                      currency: "VND",
+                      maximumFractionDigits: 0,
+                    }).format(product.price_cost)}
+                  </td>
                   <td>
                     {new Intl.NumberFormat("vi-VN", {
                       style: "currency",

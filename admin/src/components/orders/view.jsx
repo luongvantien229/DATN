@@ -52,7 +52,7 @@ function ViewOrder() {
           // Check if new quantity exceeds stock
           if (newQuantity > item.product.qty) {
             alert("Số lượng yêu cầu vượt quá số lượng trong kho!");
-            return item; 
+            return item;
           }
           return { ...item, quantity: newQuantity };
         }
@@ -271,7 +271,7 @@ function ViewOrder() {
                             marginRight: "10px",
                             textAlign: "center",
                           }}
-                          disabled={orders[0]?.status === "Delivered"} // Disable input if order is delivered
+                          disabled={orders[0]?.status === "Delivered" || orders[0]?.status === "Out for Delivery"|| orders[0]?.status === "Cancelled" || orders[0]?.status === "Accepted"} // Disable input if order is delivered
                         />
                         <button
                           className="btn btn-default"
@@ -283,7 +283,7 @@ function ViewOrder() {
                               item.quantity
                             )
                           }
-                          disabled={orders[0]?.status === "Delivered"} // Disable button if order is delivered
+                          disabled={orders[0]?.status === "Delivered" || orders[0]?.status === "Out for Delivery"|| orders[0]?.status === "Cancelled" || orders[0]?.status === "Accepted"} // Disable button if order is delivered
                         >
                           Cập nhật
                         </button>
@@ -315,11 +315,42 @@ function ViewOrder() {
             onChange={(e) => updateOrderStatus(orders[0]?.id, e.target.value)}
           >
             <option value="">--------Chọn trạng thái đơn hàng--------</option>
-            <option value="Pending">Đơn hàng mới-chờ xử lý</option>
-            <option value="Delivered">Đã xử lí đơn hàng</option>
-            <option value="Out for Delivery">Đơn hàng đang được giao</option>
-            <option value="Cancelled">Đơn hàng bị hủy</option>
-            <option value="Accepted">Đơn hàng đã được giao</option>
+
+           
+            {orders[0]?.status === "Pending" && (
+              <>
+                <option value="Pending" disabled>Đơn hàng mới - chờ xử lý</option>
+                <option value="Delivered">Đã xử lí đơn hàng</option>
+              </>
+            )}
+
+            {orders[0]?.status === "Delivered" && (
+              <>
+                <option disabled value="Delivered">Đã xử lí đơn hàng</option>
+                <option value="Out for Delivery">Đơn hàng đang được giao</option>
+                <option value="Cancelled">Đơn hàng bị hủy</option>
+              </>
+            )}
+
+            {orders[0]?.status === "Out for Delivery" && (
+              <>
+                <option value="Out for Delivery" disabled>Đơn hàng đang được giao</option>
+                <option value="Accepted">Đơn hàng đã được giao</option>
+                <option value="Cancelled">Đơn hàng bị hủy</option>
+              </>
+            )}
+
+            {orders[0]?.status === "Cancelled" && (
+              <>
+                <option value="Cancelled" disabled>Đơn hàng bị hủy</option>
+              </>
+            )}
+
+            {orders[0]?.status === "Accepted" && (
+              <>
+                <option value="Accepted" disabled>Đơn hàng đã được giao</option>
+              </>
+            )}
           </select>
         </div>
       </div>

@@ -27,13 +27,30 @@ export default function CartItem() {
         const { coupon } = response.data;
         const { number: discount, condition: condition } = coupon;
         // Kiểm tra xem giá trị này có đúng không
-        console.log("Dispatching coupon with discount:", discount, "and condition:", condition);
-        dispatch(applyCoupon({ discount, condition })); 
+
+        // console.log("Dispatching coupon with discount:", discount, "and condition:", condition);
+        // dispatch(applyCoupon({ discount, condition })); 
         
-        if (coupon.condition === 1) {
+        // if (coupon.condition === 1) {
+        //   setMessage(`Coupon applied! Discount: ${discount}%`);
+        // } else if (coupon.condition === 2) {
+        //   setMessage(`Coupon applied! Discount: ${discount.toLocaleString("vi-VN")}đ`);
+
+        console.log(
+          "Dispatching coupon with discount:",
+          discount,
+          "and condition:",
+          condition
+        );
+        dispatch(applyCoupon({ discount, condition, code, used }));
+
+        // Handle success case, update the message based on coupon condition
+        if (condition === 1) {
           setMessage(`Coupon applied! Discount: ${discount}%`);
-        } else if (coupon.condition === 2) {
-          setMessage(`Coupon applied! Discount: ${discount.toLocaleString("vi-VN")}đ`);
+        } else if (condition === 2) {
+          setMessage(
+            `Coupon applied! Discount: ${discount.toLocaleString("vi-VN")}đ`
+          );
         }
          
        
@@ -41,6 +58,9 @@ export default function CartItem() {
         setMessage(response.data.message || "Invalid coupon code.");
       }
     } catch (error) {
+      if (response.data.used) {
+        toast.error("Mã giảm giá đã được sử dụng, vui lòng nhập mã khác");
+      }
       setMessage("An error occurred while applying the coupon.");
       console.error("Error applying coupon:", error);
     }

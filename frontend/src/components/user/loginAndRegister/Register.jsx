@@ -9,6 +9,7 @@ export default function Register() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [password2, setPassword2] = useState("");
+
   const [errors, setErrors] = useState({}); // Lưu lỗi ở đây
   const [captchaReady, setCaptchaReady] = useState(false);
 
@@ -58,11 +59,29 @@ export default function Register() {
     return Object.keys(validationErrors).length === 0;
   };
 
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!validate()) {
-      return; // Dừng xử lý nếu có lỗi validate
+
+    if (!captchaReady) {
+      Swal.fire({
+        icon: "error",
+        title: "Lỗi",
+        text: "reCAPTCHA chưa sẵn sàng. Vui lòng thử lại sau.",
+      });
+      return;
+    }
+
+    const recaptchaResponse = window.grecaptcha.getResponse();
+    if (!recaptchaResponse) {
+      Swal.fire({
+        icon: "error",
+        title: "Lỗi",
+        text: "Vui lòng xác minh reCAPTCHA.",
+      });
+      return;
+
     }
 
     try {
@@ -161,6 +180,7 @@ export default function Register() {
               />
               {errors.password2 && <p style={{ color: "red" }}>{errors.password2}</p>}
             </div>
+
             <div id="recaptcha-container" style={{ marginBottom: "15px" }}></div>
             <div className="privacy-policy-wrap">
               <p>
@@ -168,6 +188,7 @@ export default function Register() {
                 bạn trên toàn bộ trang web này, để quản lý quyền truy cập vào tài
                 khoản của bạn và cho các mục đích khác được mô tả trong chính sách
                 bảo mật của chúng tôi.
+
               </p>
             </div>
             <div className="login-register-btn">

@@ -128,10 +128,10 @@ const Coupons = () => {
                 <th>ID</th>
                 <th>Tên</th>
                 <th>Người tạo</th>
-                <th>Thời gian</th>
-                <th>Điều kiện</th>
-                <th>Số lượng</th>
                 <th>Mã</th>
+                <th>Số lượng</th>
+                <th>Số tiền</th>
+                <th>Định dạng</th>
                 <th>Ngày bắt đầu</th>
                 <th>Ngày kết thúc</th>
                 <th>Trạng thái</th>
@@ -144,10 +144,10 @@ const Coupons = () => {
                   <td>{coupon.id}</td>
                   <td>{coupon.name}</td>
                   <td>{coupon.user_id}</td>
-                  <td>{coupon.time}</td>
-                  <td>{coupon.condition}</td>
-                  <td>{coupon.number}</td>
                   <td>{coupon.code}</td>
+                  <td>{coupon.time}</td>
+                  <td>{coupon.number}</td>
+                  <td>{coupon.condition === 1 ? "%" : "đ"}</td>
                   <td>{coupon.date_start}</td>
                   <td>{coupon.date_end}</td>
                   <td>

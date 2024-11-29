@@ -1,26 +1,46 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 
 const AddCoupon = () => {
   const [coupon, setCoupon] = useState({
     name: "",
-    user_id: "",
-    time: "",
-    condition: "",
     number: "",
     code: "",
-    date_start: "",
-    date_end: "",
+    time: "",
+    condition: "",
+    date_start: null, // Lưu dưới dạng Date object
+    date_end: null,   // Lưu dưới dạng Date object
+    status: false,    // Checkbox trạng thái
+    user_id: "",
   });
+
   const [error, setError] = useState(null);
   const navigate = useNavigate();
 
+  const handleDateChange = (name, date) => {
+    setCoupon((prevState) => ({
+      ...prevState,
+      [name]: date,
+    }));
+  };
+
+  const formatDate = (date) => {
+    if (!date) return "";
+    const d = new Date(date);
+    const day = String(d.getDate()).padStart(2, "0");
+    const month = String(d.getMonth() + 1).padStart(2, "0");
+    const year = d.getFullYear();
+    return `${day}/${month}/${year}`;
+  };
+
   const handleChange = (e) => {
-    const { name, value } = e.target;
+    const { name, value, type, checked } = e.target;
     setCoupon({
       ...coupon,
-      [name]: value,
+      [name]: type === "checkbox" ? checked : value,
     });
   };
 
@@ -28,33 +48,26 @@ const AddCoupon = () => {
     e.preventDefault();
     const token = localStorage.getItem("token");
 
-    // Date validation to ensure start date is before end date
-    if (new Date(coupon.date_start) > new Date(coupon.date_end)) {
-      setError("Ngày bắt đầu phải trước ngày kết thúc!");
-      return;
-    }
+    const formattedCoupon = {
+      ...coupon,
+      date_start: formatDate(coupon.date_start),
+      date_end: formatDate(coupon.date_end),
+    };
 
     try {
-      await axios.post("http://localhost:8000/api/coupons/store", coupon, {
+      await axios.post("http://localhost:8000/api/coupons/store", formattedCoupon, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
       alert("Coupon added successfully!");
-      setCoupon({
-        name: "",
-        user_id: "",
-        time: "",
-        condition: "",
-        number: "",
-        code: "",
-        date_start: "",
-        date_end: "",
-      }); // Reset form
-      navigate("/coupons"); // Redirect to coupon list after successful creation
+      navigate("/coupons");
     } catch (error) {
-      setError(error.response ? error.response.data.message : "Error occurred while adding the coupon!");
-      console.error("Error:", error.response ? error.response.data : error.message);
+      setError("Error occurred while adding the coupon!");
+      console.error(
+        "Error:",
+        error.response ? error.response.data : error.message
+      );
     }
   };
 
@@ -99,17 +112,16 @@ const AddCoupon = () => {
               />
             </div>
             <div className="mb-3">
-              <label className="form-label">condition</label>
+              <label className="form-label">Condition</label>
               <select
                 name="condition"
                 value={coupon.condition}
                 onChange={handleChange}
                 className="form-control"
               >
-                <option value="">Chọn condition</option>
+                <option value="">Select Condition</option>
                 <option value={1}>%</option>
                 <option value={2}>Đ</option>
-                
               </select>
             </div>
             <div className="mb-3">
@@ -136,25 +148,33 @@ const AddCoupon = () => {
             </div>
             <div className="mb-3">
               <label className="form-label">Start Date</label>
-              <input
-                type="date"
+              <DatePicker
+                selected={coupon.date_start}
+                onChange={(date) => handleDateChange("date_start", date)}
                 className="form-control"
-                name="date_start"
-                value={coupon.date_start}
-                onChange={handleChange}
+                dateFormat="dd/MM/yyyy"
                 required
               />
             </div>
             <div className="mb-3">
               <label className="form-label">End Date</label>
-              <input
-                type="date"
+              <DatePicker
+                selected={coupon.date_end}
+                onChange={(date) => handleDateChange("date_end", date)}
                 className="form-control"
-                name="date_end"
-                value={coupon.date_end}
-                onChange={handleChange}
+                dateFormat="dd/MM/yyyy"
                 required
               />
+            </div>
+            <div className="mb-3 form-check">
+              <input
+                type="checkbox"
+                className="form-check-input"
+                name="status"
+                checked={coupon.status}
+                onChange={handleChange}
+              />
+              <label className="form-check-label">Active</label>
             </div>
             <button type="submit" className="btn btn-primary">
               Add Coupon

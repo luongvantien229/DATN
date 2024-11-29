@@ -50,6 +50,7 @@ export default function ProductDetail_Right({ product }) {
     const productWithQuantity = { ...product, quantity };
     dispatch(addToCart(productWithQuantity));
 
+    // toast.success("Sản phẩm đã được thêm vào giỏ hàng!");
   };
 
   return (

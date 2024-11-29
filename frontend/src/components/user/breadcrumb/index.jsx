@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
+import style from "./style.scss";
 
 const Breadcrumb = () => {
   // Lấy đường dẫn hiện tại và tách thành các phần

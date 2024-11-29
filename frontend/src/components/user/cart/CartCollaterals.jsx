@@ -34,11 +34,11 @@ export default function CartCollaterals() {
           <div className="input-style input-style-mb">
             <input type="text" placeholder="Mã bưu điện / ZIP" />
           </div>
-          <div className="common-btn-style">
-            <a className="common-btn-padding-2" href="#">
+          {/* <div className="common-btn-style">
+            <a className="common-btn-padding-2 common-btn-outline" href="#">
               Cập nhật
             </a>
-          </div>
+          </div> */}
         </div>
       </div>
     </div>

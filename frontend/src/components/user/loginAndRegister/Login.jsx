@@ -74,7 +74,6 @@
         });
         localStorage.setItem('user_name', user.data.name)
         localStorage.setItem('user_id', user.data.id)
-
         
       } catch (error) {
         if (error.response) {
@@ -101,7 +100,7 @@
     }
 
     try {
-      const response = await axios.post("/auth/forgot-password", { email });
+      const response = await axios.post("/forgot-password", { email });
 
       // Show success message if the email was sent
       if (response.status === 200) {
@@ -178,7 +177,7 @@
             // Login Form
             <form onSubmit={handleSubmit}>
               <div className="login-register-input-style input-style input-style-white">
-                <label>Username or email address *</label>
+                <label>Nhập Email *</label>
                 <input
                   type="email"
                   name="email"
@@ -189,7 +188,7 @@
                 {emailError && <div style={{ color: "red" }}>{emailError}</div>}
               </div>
               <div className="login-register-input-style input-style input-style-white">
-                <label>Password *</label>
+                <label>Mật khẩu *</label>
                 <input
                   type="password"
                   name="password"
@@ -202,7 +201,7 @@
               <div className="lost-remember-wrap">
                 <div className="remember-wrap">
                   <input type="checkbox" />
-                  <span>Remember me</span>
+                  <span>Lưu mật khẩu</span>
                 </div>
                 <div className="lost-wrap">
                   <button

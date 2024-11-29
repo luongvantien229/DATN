@@ -1,7 +1,6 @@
-
 import React from "react"; // Đừng quên import React
 import { Link } from "react-router-dom";
-import { useSelector,useDispatch } from "react-redux"; // Import useSelector
+import { useSelector, useDispatch } from "react-redux"; // Import useSelector
 import CartItem from "./CartItem";
 
 export default function CartTableContent() {
@@ -30,22 +29,21 @@ export default function CartTableContent() {
                   </tr>
                 </thead>
                 <tbody>
-
                   {cartItems.map((item, index) => (
                     <CartItem key={index} item={item} /> // Truyền từng sản phẩm vào CartItem
-
                   ))}
                 </tbody>
                 <thead>
                   <tr>
                     <td colSpan={3} className="px-0">
-                      <th  className="width-thumbnail">Tổng cộng</th>
+                      <th className="width-thumbnail">Tổng cộng</th>
                     </td>
-                    <th colSpan={3} className="text-center">
-                    <span className="badge bg-danger rounded-pill">
-                      {sub_total.toLocaleString("vi-VN")}đ
-                    </span>
-                  </th>
+                    <td></td>
+                    <th className="text-center">
+                      <span className="total-price-cart">
+                        {sub_total.toLocaleString("vi-VN")}đ
+                      </span>
+                    </th>
                   </tr>
                 </thead>
               </table>
@@ -61,9 +59,9 @@ export default function CartTableContent() {
                   </a>
                 </div>
               </div>
-              <div className="update-btn">
+              {/* <div className="update-btn">
                 <a href="cart.html">Cập nhật giỏ hàng</a>
-              </div>
+              </div> */}
             </div>
           </div>
         </form>

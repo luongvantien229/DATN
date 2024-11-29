@@ -13,27 +13,29 @@ export default function CartItem() {
     e.preventDefault(); // Ensure e is an event object
 
     try {
-      const token = localStorage.getItem("token");
       // Send the coupon code to the API
       const response = await axios.post(
         "http://127.0.0.1:8000/api/check-coupon",
         {
           coupon: couponCode,
-        },
-        { headers: { Authorization: `Bearer ${token}` } }
+        }
       );
       console.log("API Response:", response.data);
 
       // Check response and dispatch the appropriate action
       if (response.data.success) {
         const { coupon } = response.data;
-        const {
-          number: discount,
-          condition: condition,
-          code: code,
-          used: used,
-        } = coupon;
+        const { number: discount, condition: condition } = coupon;
         // Kiểm tra xem giá trị này có đúng không
+
+        // console.log("Dispatching coupon with discount:", discount, "and condition:", condition);
+        // dispatch(applyCoupon({ discount, condition })); 
+        
+        // if (coupon.condition === 1) {
+        //   setMessage(`Coupon applied! Discount: ${discount}%`);
+        // } else if (coupon.condition === 2) {
+        //   setMessage(`Coupon applied! Discount: ${discount.toLocaleString("vi-VN")}đ`);
+
         console.log(
           "Dispatching coupon with discount:",
           discount,
@@ -50,6 +52,8 @@ export default function CartItem() {
             `Coupon applied! Discount: ${discount.toLocaleString("vi-VN")}đ`
           );
         }
+         
+       
       } else {
         setMessage(response.data.message || "Invalid coupon code.");
       }
@@ -93,10 +97,10 @@ export default function CartItem() {
           <div className="common-btn-style">
             <button
               type="button"
-              className="common-btn-padding-2"
+              className="button-del-coupon"
               onClick={clearCouponCode} // Clear coupon handler
             >
-              Xóa mã giảm giá
+              <i className="fal fa-times"></i> Xóa mã giảm giá
             </button>
           </div>
           {message && <p className="message">{message}</p>}

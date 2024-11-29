@@ -7,6 +7,9 @@ import BannerArena2 from "../../../components/user/bannerArea2";
 import BrandLogoArea from "../../../components/user/brandLogoArea";
 import TestimonialArea from "../../../components/user/testimonialArea";
 import ContactArea from "../../../components/user/contactArea";
+import ProductArena3 from "../../../components/user/productArea3";
+import ProductArena4 from "../../../components/user/productArea4";
+
 
 const Home = () => {
   return (
@@ -14,9 +17,11 @@ const Home = () => {
       <Slider />
       <ProductArena1 />
       <BannerArena1 />
+      <ProductArena3 />
       <CategoriesArena1 />
       <ProductArena2 />
       <BannerArena2 />
+      <ProductArena4 />
       <BrandLogoArea />
       <TestimonialArea />
       <ContactArea />

@@ -32,8 +32,9 @@ const ProductArena1 = forwardRef(({ product }, ref) => {
             <Link to={`/product-detail/${product.slug}/${product.id}`}>{product.name}</Link> {/* Tên sản phẩm */}
           </h2>
           <div className="product-price">
-            <span className="new-price">{Number(product.price).toLocaleString()}đ</span> {/* Giá sản phẩm */}
+            <span className="new-price">{Number(product.price).toLocaleString()} đ</span> {/* Giá sản phẩm */}
             {/* Nếu có giá cũ, hiển thị tại đây */}
+            <span className="old-price">{Number(product.price * 1.1).toLocaleString()} đ</span> {/* Giá sản phẩm */}
           </div>
         </div>
       </div>

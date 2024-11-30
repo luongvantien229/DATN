@@ -3,12 +3,14 @@
 namespace App\Http\Controllers;
 
 use App\Models\Coupon;
+use App\Models\User;
 use Auth;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Redirect;
 use Session;
+use Mail;
 
 class CouponController extends Controller
 {
@@ -216,4 +218,53 @@ class CouponController extends Controller
 
     }
 
+    public function send_mail_user_vip_coupon(Request $request){
+        $data = $request->all();
+        $user_vip = User::where('points','>=','1000')->get();
+        $now = Carbon::now('Asia/Ho_Chi_Minh')->format('d-m-Y H:i:s');
+        $title_mail = "Mã khuyến mãi ngày".' '.$now;
+        foreach ($user_vip as $vip) {
+            $email_data = [
+                'email' => $vip->email,
+                'name' => $vip->name,
+                'coupon' => $data,
+            ];
+
+            try {
+                Mail::send('emails.send-user-vip-coupon', $email_data, function ($message) use ($title_mail, $email_data) {
+                    $message->to($email_data['email'])->subject($title_mail);
+                    $message->from('thanntps27233@fpt.edu.vn', 'Nhà thuốc Yên Tâm');
+                });
+            } catch (\Exception $e) {
+                \Log::error('Failed to send email to ' . $data['email'] . ': ' . $e->getMessage());
+            }
+        }
+
+        return response()->json(['message' => 'Gửi mã khuyến mãi khách Vip thành công!']);
+    }
+
+    public function send_mail_user_coupon(Request $request){
+        $data = $request->all();
+        $user = User::where('points','<','1000')->get();
+        $now = Carbon::now('Asia/Ho_Chi_Minh')->format('d-m-Y H:i:s');
+        $title_mail = "Mã khuyến mãi ngày".' '.$now;
+        foreach ($user as $normal) {
+            $email_data = [
+                'email' => $normal->email,
+                'name' => $normal->name,
+                'coupon' => $data,
+            ];
+
+            try {
+                Mail::send('emails.send-user-coupon', $email_data, function ($message) use ($title_mail, $email_data) {
+                    $message->to($email_data['email'])->subject($title_mail);
+                    $message->from('thanntps27233@fpt.edu.vn', 'Nhà thuốc Yên Tâm');
+                });
+            } catch (\Exception $e) {
+                \Log::error('Failed to send email to ' . $email_data['email'] . ': ' . $e->getMessage());
+            }
+        }
+
+        return response()->json(['message' => 'Gửi mã khuyến mãi khách thường thành công!']);
+    }
 }

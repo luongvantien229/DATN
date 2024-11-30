@@ -275,4 +275,31 @@ class ProductController extends Controller
         }
     }
 
+    public function incrementFavorite($id)
+    {
+        $product = Product::find($id);
+
+        if (!$product) {
+            return response()->json(['message' => 'Sản phẩm không tồn tại'], 404);
+        }
+
+        $product->increment('favorite'); 
+        return response()->json(['message' => 'Đã tăng số lần yêu thích', 'favorite' => $product->favorite], 200);
+    }
+
+    public function decrementFavorite($id)
+    {
+        $product = Product::find($id);
+
+        if (!$product) {
+            return response()->json(['message' => 'Sản phẩm không tồn tại'], 404);
+        }
+
+
+        if ($product->favorite > 0) {
+            $product->decrement('favorite');
+        }
+
+        return response()->json(['message' => 'Đã giảm số lần yêu thích', 'favorite' => $product->favorite], 200);
+    }
 }

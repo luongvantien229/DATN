@@ -130,6 +130,7 @@ class IndexController extends Controller
     {
 
         $list_favorite_products = Product::where('status', 1)
+            ->orderBy('favorite', 'DESC')
             ->orderBy('created_at', 'desc')->limit(8)->get();
 
         return response()->json([

@@ -2,6 +2,8 @@ import { useState } from "react";
 import { useDispatch } from "react-redux";
 import { applyCoupon, clearCoupon } from "../../../redux/slices/couponSlice";
 import axios from "axios";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 export default function CartItem() {
   const [couponCode, setCouponCode] = useState("");
@@ -54,7 +56,7 @@ export default function CartItem() {
         setMessage(response.data.message || "Invalid coupon code.");
       }
     } catch (error) {
-      if (response.data.used) {
+      if (used===true) {
         toast.error("Mã giảm giá đã được sử dụng, vui lòng nhập mã khác");
       }
       setMessage("An error occurred while applying the coupon.");

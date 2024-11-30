@@ -6,6 +6,8 @@ import {
   incrementQ,
   removeFromCart,
 } from "../../../redux/slices/cartSlice";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 export default function CartItem({ item }) {
   // Nhận prop product từ CartTableContent
@@ -28,7 +30,13 @@ export default function CartItem({ item }) {
   //   }
   // };
 
+  if (item.quantity > item.qty) {
+    toast.error(`Vui lòng đặt ${item.name} nhỏ hơn ${item.qty}`);
+  }
+  
+
   return (
+    <>
     <tr>
       <td className="product-thumbnail">
         <Link to="/product-details">
@@ -84,5 +92,6 @@ export default function CartItem({ item }) {
         </button>
       </td>
     </tr>
+    </>
   );
 }

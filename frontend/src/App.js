@@ -37,6 +37,7 @@ import './assets/css/plugins/jquery-ui.css';
 import './assets/css/style.css';
 import './assets/css/button.css';
 import './assets/css/index.css';
+import Wishlist from "./components/user/wishlist";
 
 
 const backendUrl = process.env.REACT_APP_BACKEND_URL;
@@ -105,6 +106,14 @@ function App() {
           element={
             <MainLayout>
               <Contact />
+            </MainLayout>
+          }
+        />
+        <Route
+          path="/wishlist"
+          element={
+            <MainLayout>
+              <Wishlist />
             </MainLayout>
           }
         />

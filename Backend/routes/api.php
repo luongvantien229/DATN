@@ -278,6 +278,13 @@ Route::get('/login-customer-facebook', [FacebookController::class, 'login_custom
 Route::get('/login/customer/facebook/callback', [FacebookController::class, 'callback_customer_facebook']);
 
 Route::post('/check-coupon', [CouponController::class, 'check_coupon']);
+Route::post('/coupons/send-user-vip-coupon', [CouponController::class, 'send_mail_user_vip_coupon']);
+Route::post('/coupons/send-user-coupon', [CouponController::class, 'send_mail_user_coupon']);
+
+// Wishlist
+
+Route::post('/products/{id}/increment-favorite', [ProductController::class, 'incrementFavorite']);
+Route::post('/products/{id}/decrement-favorite', [ProductController::class, 'decrementFavorite']);
 
 
 

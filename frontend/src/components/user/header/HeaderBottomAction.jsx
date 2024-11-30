@@ -6,6 +6,7 @@ import axios from "axios";
 
 export default function HeaderBottomAction() {
   const { cartItems } = useSelector((state) => state.cart);
+  const { wishlist } = useSelector((state) => state.wishlist);
   const dispatch = useDispatch();
   const [isSearchActive, setIsSearchActive] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
@@ -119,8 +120,9 @@ export default function HeaderBottomAction() {
           )}
         </div>
         <div className="header-action-icon">
-          <a href="wishlist.html">
+          <a href="/wishlist">
             <i className="far fa-heart"></i>
+            <span className="pro-count blue">{wishlist.length}</span>
           </a>
         </div>
         <div className="header-action-icon header-action-mrg-none">

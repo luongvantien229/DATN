@@ -37,9 +37,9 @@ export default function SidebarCategoriesList({ onCategorySelect }) {
             onClick={() => handleCategoryClick(category.id)}
             className={selectedCategory === category.id ? "active" : ""}
           >
-            {category.name}
+            {category.name}<span>({category.products_count})</span>
           </a>
-          <ul>{renderCategories(categories, category.id)}</ul>
+          <ul>{renderCategories(categories, category.id)} </ul>
         </li>
       ));
   };

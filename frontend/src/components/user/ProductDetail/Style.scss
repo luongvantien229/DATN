@@ -39,17 +39,40 @@
     }
   }
 }
-.product_related{
-  .btn-style-2{
-   font-size: 28px;
-    font-weight: 700; 
+.product_related {
+  .btn-style-2 {
+    font-size: 28px;
+    font-weight: 700;
   }
 
   margin-top: 50px;
 }
-.product-details-content{
+.product-details-content {
   h1 {
     font-weight: bold;
-    font-size:28px !important;
+    font-size: 28px !important;
   }
+}
+
+.product-details-content
+  .pro-details-action-wrap
+  .pro-details-add-to-cart
+  button {
+  background-color: #27c77c !important;
+}
+
+.product-details-content
+  .pro-details-action-wrap
+  .pro-details-add-to-cart
+  button:hover {
+  background-color: #188653 !important;
+}
+.pro-details-review .ratting-form-wrapper .rating-form-style form .form-submit input {
+  background-color: #27c77c !important;
+}
+.pro-details-review p span {
+  color: #27c77c !important;
+}
+.btn-style-2 a i {
+  color: #27c77c !important;
 }

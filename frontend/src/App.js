@@ -59,7 +59,7 @@ const MainLayout = ({ children }) => (
     <Footer />
     <SearchPopup />
     <BoxChat />
-    {/* <LuckyWheel /> */}
+    <LuckyWheel />
   </div>
 );
 

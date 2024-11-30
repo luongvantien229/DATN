@@ -1,15 +1,10 @@
-import React, { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 import Stripe from "../payments/Stripe";
 
 export default function GrandTotal() {
   const { cartItems } = useSelector((state) => state.cart);
   const coupon = useSelector((state) => state.coupon.coupon);
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const token = localStorage.getItem("token");
-  useEffect(() => {
-    setIsLoggedIn(!!token); // Đặt trạng thái đăng nhập chỉ khi token thay đổi
-  }, [token]); // Chỉ chạy khi token thay đổi
+
   // Calculate subtotal
   const sub_total = (cartItems || []).reduce(
     (acc, item) => acc + (item.price * item.quantity || 0),
@@ -26,17 +21,17 @@ export default function GrandTotal() {
       discount = (sub_total * (coupon.number || 0)) / 100; // Ensure coupon.number is a number
     } else if (coupon.condition === 2) {
       // fixed discount in currency
-      discount = coupon.number || 0; // Ensure coupon.number is a number
+      discount = (coupon.number || 0) ; // Ensure coupon.number is a number
     }
   }
 
-  const total = sub_total - discount + shippingFee;
+  const total =sub_total- discount + shippingFee ;
 
-  // console.log("Coupon applied:", coupon);
-  // console.log("Subtotal:", sub_total);
-  // console.log("Shipping fee:", shippingFee);
-  // console.log("Discount:", discount);
-  // console.log("Total after discount:", total);
+  console.log("Coupon applied:", coupon);
+  console.log("Subtotal:", sub_total);
+  console.log("Shipping fee:", shippingFee);
+  console.log("Discount:", discount);
+  console.log("Total after discount:", total);
   return (
     <div className="col-lg-6 col-md-6 col-12">
       <div className="grand-total-wrap mb-40">
@@ -74,25 +69,8 @@ export default function GrandTotal() {
             <span>{total > 0 ? total.toLocaleString("vi-VN") : 0}đ</span>
           </h4>
         </div>
-        <>
-          {isLoggedIn ? (
-            <div className="grand-total-btn">
-              {total > 50000 ? (
-                <Stripe />
-              ) : (
-                <p>
-                  Đơn hàng của bạn cần có tổng tiền lớn hơn tiền shipping 50,000 để có thể 
-                  thanh toán.
-                </p>
-              )}
-            </div>
-          ) : (
-            <p>
-              Bạn phải <a href="/login-register">đăng nhập</a> để tiếp tục thanh
-              toán.
-            </p>
-          )}
-        </>
+
+        <div className="grand-total-btn">{total > 50000 && <Stripe />}</div>
       </div>
     </div>
   );

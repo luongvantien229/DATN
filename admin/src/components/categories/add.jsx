@@ -1,12 +1,14 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
 const AddCategories = () => {
+  const [categories, setCategories] = useState([]);
   const [category, setCategory] = useState({
     name: "",
     slug: "",
     sort_order: 0,
+    parent_id: 0,
     showHome: false,
     status: false,
     image: null,
@@ -27,10 +29,34 @@ const AddCategories = () => {
       .replace(/ý|ỳ|ỷ|ỹ|ỵ/g, "y")
       .replace(/đ/g, "d");
 
-    text = text.replace(/[\'\"\`\~\!\@\#\$\%\^\&\*\(\)\+\=\[\]\{\}\|\\\;\:\,\.\/\?\>\<\-\_]/g, "");
+    text = text.replace(
+      /[\'\"\`\~\!\@\#\$\%\^\&\*\(\)\+\=\[\]\{\}\|\\\;\:\,\.\/\?\>\<\-\_]/g,
+      ""
+    );
     text = text.replace(/\s+/g, "-").replace(/-+/g, "-").trim("-");
     return text;
   };
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const token = localStorage.getItem("token");
+
+        // Fetch categories
+        const categoryRes = await axios.get(
+          "http://localhost:8000/api/categories/index",
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          }
+        );
+        setCategories(categoryRes.data);
+      } catch (error) {
+        console.error("Error fetching data: ", error);
+      }
+    };
+
+    fetchData();
+  }, []);
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -55,6 +81,7 @@ const AddCategories = () => {
     formData.append("name", category.name);
     formData.append("slug", category.slug);
     formData.append("sort_order", category.sort_order);
+    formData.append("parent_id", category.parent_id);
     formData.append("showHome", category.showHome ? 1 : 0);
     formData.append("status", category.status ? 1 : 0);
     if (image) {
@@ -73,6 +100,9 @@ const AddCategories = () => {
       setCategory({
         name: "",
         slug: "",
+        sort_order: 0,
+        parent_id: 0,
+        showHome: false,
         status: false,
         image: null,
       });
@@ -139,6 +169,32 @@ const AddCategories = () => {
                 required
               />
             </div>
+            <div className="mb-3">
+              <label className="form-label">Thuộc Danh mục</label>
+              <select
+                name="parent_id"
+                className="form-control input-sm m-bot15"
+                value={category.parent_id || "0"}
+                onChange={handleChange}
+              >
+                <option value="0">-------Danh mục cha-------</option>
+
+                {categories.map((cate) => {
+                  // Add indentation based on the category level
+                  let indent = "";
+                  for (let i = 1; i < cate.level; i++) {
+                    indent += "--";
+                  }
+
+                  return (
+                    <option key={cate.id} value={cate.id}>
+                      {indent} {cate.name}
+                    </option>
+                  );
+                })}
+              </select>
+            </div>
+
             <div className="mb-3 form-check">
               <input
                 type="checkbox"

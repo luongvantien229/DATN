@@ -16,8 +16,9 @@ return new class extends Migration
             $table->string('name'); // Tên sản phẩm
             $table->string('slug')->unique(); // Slug duy nhất
             $table->text('description')->nullable(); // Mô tả sản phẩm
-            $table->decimal('price', 12); // Giá sản phẩm
-            $table->foreignId('category_id')->constrained()->onDelete('cascade'); // Khóa ngoại đến bảng categories
+            $table->integer('price_cost'); // Giá gốc sản phẩm
+            $table->integer('price'); // Giá sản phẩm
+            $table->text('category_id'); // Thay đổi từ foreignId sang text
             $table->foreignId('brand_id')->constrained()->onDelete('cascade'); // Khóa ngoại đến bảng brands
             $table->integer('favorite');
             $table->integer('view');
@@ -32,6 +33,8 @@ return new class extends Migration
             $table->integer('track_qty')
                 ->default('1'); // theo dỗi số lượng tồn kho
             $table->integer('qty')->nullable(); // số lượng sản phẩm
+            $table->integer('sold')->nullable(); // số lượng sản phẩm bán
+            $table->softDeletes();
             $table->timestamps();
         });
 

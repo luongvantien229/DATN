@@ -13,7 +13,7 @@ export default function SingleContactInfo() {
             <div className="single-contact-info3-content">
               <h3>Địa chỉ</h3>
               <p className="width-1">
-                152 Đoàn Văn Bơ Phường 9 Quận 4
+                Công viên phần mềm Quang Trung, Phường Tân Chánh Hiệp, Quận 12
               </p>
             </div>
           </div>
@@ -26,13 +26,13 @@ export default function SingleContactInfo() {
             <div className="single-contact-info3-content">
               <h3>Liên hệ</h3>
               <p>
-                Di động: <span>(+61) - 1990 - 6886</span>
+                Di động: <span>(+84) 394 444 686</span>
               </p>
               <p>
                 Đường dây nóng: <span>1800 - 1102</span>
               </p>
               <p>
-                Email: <span>contact@medizin.com</span>
+                Email: <span>contact.yentam@gmail.com</span>
               </p>
             </div>
           </div>

@@ -6,11 +6,18 @@ use App\Models\Banner;
 use App\Models\Brand;
 use App\Models\Category;
 use App\Models\CategoryPost;
+use App\Models\Comment;
+use App\Models\Order;
 use App\Models\Post;
 use App\Models\Product;
 use App\Models\QA;
+use App\Models\Statistic;
 use App\Models\SubCategory;
+use App\Models\User;
+use App\Models\Visitors;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 
 class IndexController extends Controller
@@ -33,26 +40,28 @@ class IndexController extends Controller
 
     public function all_brands()
     {
-        $brands = Brand::all()->where('status', 1)
-            ->orderBy('created_at', 'desc')->get();
-
+        $brands = Brand::where('status', 1)
+            ->withCount('products')
+            ->orderBy('created_at', 'desc')
+            ->get();
 
         return response()->json([
             'brands' => $brands,
-
         ], 200);
     }
     public function all_categories()
     {
-        $categories = Category::all()->where('status', 1)
+        $categories = Category::where('status', 1)
             ->orderBy('created_at', 'desc')->get();
 
+        $listCategory = [];
+        Category::recursive($categories, 0, 1, $listCategory);
 
         return response()->json([
-            'categories' => $categories,
-
+            'categories' => $listCategory,
         ], 200);
     }
+
 
     public function all_products()
     {
@@ -66,9 +75,38 @@ class IndexController extends Controller
         ], 200);
     }
 
+    public function all_posts()
+    {
+        $posts = Post::where('status', 1)
+            ->orderBy('created_at', 'desc')->get();
+
+        return response()->json([
+            'posts' => $posts,
+
+        ], 200);
+    }
+
+    public function post_detail($id, Request $request)
+    {
+        $post = Post::find($id);
+        if ($post === null) {
+            return response()->json('Post not found', 404);
+        }
+        $post->increment('view');
+        $category_posts_id = $post->category_posts_id;
+        $related_posts = Post::where('category_posts_id', $category_posts_id)
+            ->orderBy('created_at', 'desc')
+            ->limit(4)->get()->except($id);
+
+        return response()->json([
+            'post' => $post,
+            'related_posts' => $related_posts,
+        ], 200);
+    }
+
     public function all_category_posts()
     {
-        $categoryPosts = CategoryPost::all()->where('status', 1)
+        $categoryPosts = CategoryPost::where('status', 1)
             ->orderBy('created_at', 'desc')->get();
 
 
@@ -92,6 +130,7 @@ class IndexController extends Controller
     {
 
         $list_favorite_products = Product::where('status', 1)
+            ->orderBy('favorite', 'DESC')
             ->orderBy('created_at', 'desc')->limit(8)->get();
 
         return response()->json([
@@ -107,6 +146,7 @@ class IndexController extends Controller
         if ($product === null) {
             return response()->json('Product not found', 404);
         }
+        $product->increment('view');
         $category_id = $product->category_id;
         $related_products = Product::where('category_id', $category_id)
             ->orderBy('created_at', 'desc')
@@ -168,7 +208,7 @@ class IndexController extends Controller
         $suggestions = Product::where('name', 'LIKE', '%' . $searchTerm . '%')
             ->orWhere('description', 'LIKE', '%' . $searchTerm . '%')
             ->take(10) // Lấy tối đa 10 kết quả
-            ->get(['id', 'name', 'image', 'price']); // Lấy các trường cần thiết cho gợi ý
+            ->get(['id', 'name', 'slug', 'image', 'price']); // Lấy các trường cần thiết cho gợi ý
 
         // Trả về kết quả dưới dạng JSON
         return response()->json($suggestions);
@@ -261,8 +301,18 @@ class IndexController extends Controller
                 case 'Sort_Z_A':
                     $query->orderBy('name', 'DESC');
                     break;
+                case 'newest':
+                    $query->orderBy('id', 'DESC');
+                    break;
+                default:
+                    $query->orderBy('id', 'DESC');
+                    break;
             }
+        } else {
+            // Default sorting if sort_by is not provided
+            $query->orderBy('id', 'DESC');
         }
+
 
 
         if ($request->has('price')) {
@@ -302,7 +352,7 @@ class IndexController extends Controller
         // }
 
         // Paginate the results
-        $products = $query->paginate(6);
+        $products = $query->paginate(8);
 
         // // Min and Max price for filters
         // $min_price = Product::min('price');
@@ -313,10 +363,11 @@ class IndexController extends Controller
         // Prepare the response data
         $response = [
             'products' => $products,
-            // 'min_price' => $min_price,
-            // 'max_price' => $max_price,
-            // 'min_price_range' => $min_price_range,
-            // 'max_price_range' => $max_price_range,
+            'pagination' => [
+                'current_page' => $products->currentPage(),
+                'last_page' => $products->lastPage(),
+                'total' => $products->total(),
+            ],
         ];
 
         // Return JSON response
@@ -333,7 +384,7 @@ class IndexController extends Controller
 
         // Filtering by category
         if ($request->has('category_id') && !empty($request->category_id)) {
-            $query->where('category_id', $request->category_id);
+            $query->where('category_posts_id', $request->category_id);
         }
 
 
@@ -376,5 +427,184 @@ class IndexController extends Controller
         return response()->json($response);
     }
 
+    public function filter_by_date(Request $request)
+    {
+        $data = $request->all();
 
+        if (!isset($data['from_date']) || !isset($data['to_date'])) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Missing from_date or to_date',
+            ], 400);
+        }
+
+        $from_date = $data['from_date'];
+        $to_date = $data['to_date'];
+
+        $get = Statistic::whereBetween('order_date', [$from_date, $to_date])
+            ->orderBy('order_date', 'ASC')
+            ->get();
+
+        $chart_data = $get->map(function ($value) {
+            return [
+                'period' => $value->order_date,
+                'order' => $value->total_order,
+                'sales' => $value->sales,
+                'profit' => $value->profit,
+                'quantity' => $value->quantity,
+            ];
+        });
+
+        return response()->json($chart_data, 200);
+    }
+
+
+    public function dashboard_filter(Request $request)
+    {
+        $data = $request->all();
+        $dauthangnay = Carbon::now('Asia/Ho_Chi_Minh')->startOfMonth()->toDateString();
+        $dau_thangtruoc = Carbon::now('Asia/Ho_Chi_Minh')->subMonth()->startOfMonth()->toDateString();
+        $cuoi_thangtruoc = Carbon::now('Asia/Ho_Chi_Minh')->subMonth()->endOfMonth()->toDateString();
+
+        $sub7days = Carbon::now('Asia/Ho_Chi_Minh')->subDays(7)->toDateString();
+        $sub365days = Carbon::now('Asia/Ho_Chi_Minh')->subDays(365)->toDateString();
+        $now = Carbon::now('Asia/Ho_Chi_Minh')->toDateString();
+
+        // Kiểm tra giá trị của dashboard_value
+        if (!isset($data['dashboard_value'])) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'dashboard_value is required',
+            ], 400);
+        }
+
+        switch ($data['dashboard_value']) {
+            case '7ngay':
+                $get = Statistic::whereBetween('order_date', [$sub7days, $now])->orderBy('order_date', 'ASC')->get();
+                break;
+
+            case 'thangtruoc':
+                $get = Statistic::whereBetween('order_date', [$dau_thangtruoc, $cuoi_thangtruoc])->orderBy('order_date', 'ASC')->get();
+                break;
+
+            case 'thangnay':
+                $get = Statistic::whereBetween('order_date', [$dauthangnay, $now])->orderBy('order_date', 'ASC')->get();
+                break;
+
+            case '365ngayqua':
+                $get = Statistic::whereBetween('order_date', [$sub365days, $now])->orderBy('order_date', 'ASC')->get();
+                break;
+
+            default:
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Invalid dashboard_value',
+                ], 400);
+        }
+
+        // Đảm bảo $chart_data được khởi tạo, ngay cả khi $get trống
+        $chart_data = [];
+
+        foreach ($get as $key => $value) {
+            $chart_data[] = [
+                'period' => $value->order_date,
+                'order' => $value->total_order,
+                'sales' => $value->sales,
+                'profit' => $value->profit,
+                'quantity' => $value->quantity,
+            ];
+        }
+
+        // Trả về JSON response
+        return response()->json($chart_data, 200);
+    }
+
+    public function days_order()
+    {
+        $sub60days = Carbon::now('Asia/Ho_Chi_Minh')->subDays(60)->toDateString();
+        $now = Carbon::now('Asia/Ho_Chi_Minh')->toDateString();
+        $get = Statistic::whereBetween('order_date', [$sub60days, $now])->orderBy('order_date', 'ASC')->get();
+
+        $chart_data = [];
+
+        foreach ($get as $key => $value) {
+            $chart_data[] = [
+                'period' => $value->order_date,
+                'order' => $value->total_order,
+                'sales' => $value->sales,
+                'profit' => $value->profit,
+                'quantity' => $value->quantity,
+            ];
+        }
+
+        // Trả về JSON response
+        return response()->json($chart_data, 200);
+    }
+
+    public function AuthLogin()
+    {
+        if (!Auth::id()) {
+            abort(401, 'Không có quyền truy cập'); // Dừng lại nếu người dùng chưa đăng nhập
+        }
+    }
+
+    public function show_user_visit(Request $request)
+    {
+        $this->AuthLogin();
+
+        $user_ip_address = $request->ip();
+        $early_last_month = Carbon::now('Asia/Ho_Chi_Minh')->subMonth()->startOfMonth()->toDateString();
+        $end_of_last_month = Carbon::now('Asia/Ho_Chi_Minh')->subMonth()->endOfMonth()->toDateString();
+        $early_this_month = Carbon::now('Asia/Ho_Chi_Minh')->startOfMonth()->toDateString();
+        $oneyears = Carbon::now('Asia/Ho_Chi_Minh')->subDays(365)->toDateString();
+        $now = Carbon::now('Asia/Ho_Chi_Minh')->toDateString();
+
+        $visitor_of_last_month = Visitors::whereBetween('date_visit', [$early_last_month, $end_of_last_month])->get();
+        $visitor_last_month_count = $visitor_of_last_month->count();
+
+        $visitor_of_thismonth = Visitors::whereBetween('date_visit', [$early_this_month, $now])->get();
+        $visitor_this_month_count = $visitor_of_thismonth->count();
+
+        $visitor_of_year = Visitors::whereBetween('date_visit', [$oneyears, $now])->get();
+        $visitor_year_count = $visitor_of_year->count();
+
+        // Tổng người truy cập
+        $visitors = Visitors::all();
+        $visitors_total = $visitors->count();
+
+        // hiện tại đang online
+        $visitor_current = Visitors::where('ip_address', $user_ip_address)->get();
+        $visitor_count = $visitor_current->count();
+
+        if ($visitor_count < 1) {
+            $visitor = new Visitors();
+            $visitor->ip_address = $user_ip_address;
+            $visitor->date_visit = Carbon::now('Asia/Ho_Chi_Minh')->toDateString();
+            $visitor->save();
+        }
+
+        $product = Product::all()->count();
+        $product_views = Product::orderBy('view', 'DESC')->take(20)->get();
+
+        $post = Post::all()->count();
+        $post_views = Post::orderBy('view', 'DESC')->take(20)->get();
+
+        $order = Order::all()->count();
+
+        $user = User::all()->count();
+
+        return response()->json([
+            $visitors_total,
+            $visitor_count,
+            $visitor_last_month_count,
+            $visitor_this_month_count,
+            $visitor_year_count,
+            $product,
+            $post,
+            $order,
+            $user,
+            $product_views,
+            $post_views
+        ], 200);
+    }
 }

@@ -1,8 +1,14 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import axios from "axios";
+import "datatables.net-dt/css/dataTables.dataTables.css";
+import $ from "jquery";
+import "datatables.net";
 
 const Products = () => {
+  // const [categories, setCategories] = useState([]);
+  const [brands, setBrands] = useState([]);
+  const [productTypes, setProductTypes] = useState([]);
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -11,6 +17,32 @@ const Products = () => {
     const fetchProducts = async () => {
       try {
         const token = localStorage.getItem("token");
+        // Fetch categories
+        // const categoryRes = await axios.get(
+        //   "http://localhost:8000/api/categories/index",
+        //   {
+        //     headers: { Authorization: `Bearer ${token}` },
+        //   }
+        // );
+        // setCategories(categoryRes.data.data);
+
+        // Fetch brands
+        const brandRes = await axios.get(
+          "http://localhost:8000/api/brands/index",
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          }
+        );
+        setBrands(brandRes.data.data);
+
+        // Fetch product types
+        const productTypeRes = await axios.get(
+          "http://localhost:8000/api/product_types/index",
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          }
+        );
+        setProductTypes(productTypeRes.data.data);
         const response = await axios.get(
           "http://localhost:8000/api/products/index",
           {
@@ -33,6 +65,21 @@ const Products = () => {
 
     fetchProducts();
   }, []);
+
+  useEffect(() => {
+    if (!loading && products.length > 0) {
+      // Kiểm tra nếu DataTable đã được khởi tạo trước đó
+      if ($.fn.DataTable.isDataTable("#myTable")) {
+        $("#myTable").DataTable().clear().destroy(); // Phá hủy DataTable trước khi khởi tạo lại
+      }
+
+      // Khởi tạo lại DataTable
+      $("#myTable").DataTable({
+        paging: true,
+        searching: true,
+      });
+    }
+  }, [loading, products]);
 
   const deleteProduct = async (id) => {
     const confirmDelete = window.confirm(
@@ -84,13 +131,17 @@ const Products = () => {
         </div>
 
         <div className="table-responsive text-nowrap">
-          <table className="table table-bordered">
+          <table id="myTable" className="table table-bordered">
             <thead>
               <tr>
                 <th>ID</th>
                 <th>Tên</th>
                 <th>Slug</th>
+                <th>Giá gốc</th>
                 <th>Giá</th>
+                <th>Thương hiệu</th>
+                <th>Dạnh mục</th>
+                <th>Dạng sản phẩm</th>
                 <th>Trạng thái</th>
                 <th>Hành động</th>
               </tr>
@@ -134,11 +185,44 @@ const Products = () => {
                     {product.name}
                   </td>
                   <td>{product.slug}</td>
-                  <td>{product.price}</td>
+                  <td>
+                    {new Intl.NumberFormat("vi-VN", {
+                      style: "currency",
+                      currency: "VND",
+                      maximumFractionDigits: 0,
+                    }).format(product.price_cost)}
+                  </td>
+                  <td>
+                    {new Intl.NumberFormat("vi-VN", {
+                      style: "currency",
+                      currency: "VND",
+                      maximumFractionDigits: 0,
+                    }).format(product.price)}
+                  </td>
+                  <td>
+                    {brands.find((brand) => brand.id === product.brand_id)
+                      ?.name || "Chưa phân loại"}
+                  </td>
+                  <td>
+                    {product.category_product.length > 0
+                      ? product.category_product
+                          .map((category) => category.name)
+                          .join(", ")
+                      : "Chưa phân loại"}
+                  </td>
+                  <td>
+                    {productTypes.find(
+                      (product_type) =>
+                        product_type.id === product.product_type_id
+                    )?.name || "Chưa phân loại"}
+                  </td>
+
                   <td>
                     <span
                       className={`badge ${
-                        product.status ? "bg-label-primary" : "bg-label-secondary"
+                        product.status
+                          ? "bg-label-primary"
+                          : "bg-label-secondary"
                       }`}
                     >
                       {product.status ? "Hoạt động" : "Ngưng hoạt động"}

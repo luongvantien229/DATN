@@ -37,6 +37,14 @@ export default function Index() {
             </div>
           </Link>
         </li>
+        <li className={`menu-item ${activeMenu === "/orders" ? "active open" : ""}`}>
+          <Link to="/orders" className="menu-link" onClick={() => handleMenuClick("/orders")}>
+            <i className="menu-icon tf-icons bx bx-layout"></i>
+            <div className="text-truncate" data-i18n="Đơn hàng">
+              Đơn hàng
+            </div>
+          </Link>
+        </li>
         <li className={`menu-item ${activeMenu === "/brands" ? "active open" : ""}`}>
           <Link to="/brands" className="menu-link" onClick={() => handleMenuClick("/brands")}>
             <i className="menu-icon tf-icons bx bx-layout"></i>
@@ -66,6 +74,70 @@ export default function Index() {
             <i className="menu-icon tf-icons bx bx-layout"></i>
             <div className="text-truncate" data-i18n="Sản phẩm">
               Sản phẩm
+            </div>
+          </Link>
+        </li>
+        <li className={`menu-item ${activeMenu === "/roles" ? "active open" : ""}`}>
+          <Link to="/roles" className="menu-link" onClick={() => handleMenuClick("/roles")}>
+            <i className="menu-icon tf-icons bx bx-layout"></i>
+            <div className="text-truncate" data-i18n="Vai trò">
+              Vai trò
+            </div>
+          </Link>
+        </li>
+        <li className={`menu-item ${activeMenu === "/users" ? "active open" : ""}`}>
+          <Link to="/users" className="menu-link" onClick={() => handleMenuClick("/users")}>
+            <i className="menu-icon tf-icons bx bx-layout"></i>
+            <div className="text-truncate" data-i18n="Người dùng">
+              Người dùng
+            </div>
+          </Link>
+        </li>
+        <li className={`menu-item ${activeMenu === "/banners" ? "active open" : ""}`}>
+          <Link to="/banners" className="menu-link" onClick={() => handleMenuClick("/banners")}>
+            <i className="menu-icon tf-icons bx bx-layout"></i>
+            <div className="text-truncate" data-i18n="Quảng cáo">
+              Banners
+            </div>
+          </Link>
+        </li>
+        <li className={`menu-item ${activeMenu === "/category_posts" ? "active open" : ""}`}>
+          <Link to="/category_posts" className="menu-link" onClick={() => handleMenuClick("/category_posts")}>
+            <i className="menu-icon tf-icons bx bx-layout"></i>
+            <div className="text-truncate" data-i18n="Danh mục bài viết">
+              Danh mục bài viết
+            </div>
+          </Link>
+        </li>
+        <li className={`menu-item ${activeMenu === "/posts" ? "active open" : ""}`}>
+          <Link to="/posts" className="menu-link" onClick={() => handleMenuClick("/posts")}>
+            <i className="menu-icon tf-icons bx bx-layout"></i>
+            <div className="text-truncate" data-i18n="Bài viết">
+              Bài viết
+            </div>
+          </Link>
+        </li>
+        <li className={`menu-item ${activeMenu === "/warehouses" ? "active open" : ""}`}>
+          <Link to="/warehouses" className="menu-link" onClick={() => handleMenuClick("/warehouses")}>
+            <i className="menu-icon tf-icons bx bx-layout"></i>
+            <div className="text-truncate" data-i18n="Nhà kho">
+              Nhà kho
+            </div>
+          </Link>
+        </li>
+        <li className={`menu-item ${activeMenu === "/coupons" ? "active open" : ""}`}>
+          <Link to="/coupons" className="menu-link" onClick={() => handleMenuClick("/coupons")}>
+            <i className="menu-icon tf-icons bx bx-layout"></i>
+            <div className="text-truncate" data-i18n="Mã khuyến mãi">
+              Mã khuyến mãi
+            </div>
+          </Link>
+        </li>
+        <li className={`menu-item ${activeMenu === "/comments" ? "active open" : ""}`}>
+          <Link to="/comments" className="menu-link" onClick={() => handleMenuClick("/comments")}>
+            <i className="menu-icon tf-icons bx bx-layout"></i>
+            <div className="text-truncate" data-i18n="Bình luận đánh giá">
+              Bình luận đánh giá
             </div>
           </Link>
         </li>

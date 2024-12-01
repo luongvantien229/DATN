@@ -1,39 +1,23 @@
 import React, { useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
+import style from "./style.scss";
 
 const Breadcrumb = () => {
+  // Lấy đường dẫn hiện tại và tách thành các phần
   const location = useLocation();
   const pathnames = location.pathname.split("/").filter((x) => x); // Tách đường dẫn thành các phần
-
-  // Tạo ra các tên tùy chỉnh cho các đường dẫn
   const breadcrumbNameMap = {
     "/about": "Giới thiệu",
     "/shop": "Cửa hàng",
     "/contact": "Liên hệ",
     "/blog": "Bài viết",
     "/cart": "Giỏ hàng",
-    "/product": "Sản phẩm", // Cập nhật để hiển thị cho sản phẩm
+    "/product": "Sản phẩm",
+    "/product-detail": "Chi tiết sản phẩm",
+    "/login-register": "Đăng nhập - Đăng ký",
   };
 
-  const [slug, setSlug] = useState("");
-
-  // Lấy slug từ API dựa trên ID trong đường dẫn
-  useEffect(() => {
-    const fetchProduct = async () => {
-      const id = pathnames[pathnames.length - 1]; // Lấy ID từ đường dẫn
-      if (!isNaN(id)) {
-        try {
-          const response = await fetch(`http://127.0.0.1:8000/api/product_detail/${id}`);
-          const data = await response.json();
-          setSlug(data.product.slug); // Lưu slug từ API
-        } catch (error) {
-          console.error("Error fetching product:", error);
-        }
-      }
-    };
-
-    fetchProduct();
-  }, [pathnames]);
+  const slug = pathnames[pathnames.length - 1]; 
 
   // Nếu người dùng đang ở trang chủ thì không hiển thị Breadcrumb
   if (location.pathname === "/") {

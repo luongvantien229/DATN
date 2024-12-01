@@ -7,142 +7,21 @@ namespace App\Http\Controllers;
 // use Stripe\Stripe;
 // use Stripe\Charge;
 // use Illuminate\Http\Request;
-// use Illuminate\Support\Facades\Auth;
-// use App\Models\Order;
-// use App\Models\OrderItem;
-// use Stripe\Exception\CardException;
+use App\Events\OrderCompletedEvent;
+use App\Mail\OrderInvoiceMail;
+use App\Models\Coupon;
+use App\Models\Product;
+use Carbon\Carbon;
+use Illuminate\Support\Facades\Auth;
+use App\Models\Order;
+use App\Models\OrderItem;
+use Illuminate\Support\Facades\Mail;
+use Stripe\Exception\CardException;
 use App\Http\Controllers\Controller;
 use ErrorException;
 use Illuminate\Http\Request;
 use Stripe\Checkout\Session;
 use Stripe\Stripe;
-
-// class PaymentController extends Controller
-// {
-//     // public function pay(Request $request)
-//     // {
-//     //     $cart = session()->get('cart', []);
-
-//     //     if (!$cart) {
-//     //         return response()->json(['message' => 'Cart is empty!'], 400);
-//     //     }
-
-//     //     $total = 0;
-//     //     foreach ($cart as $item) {
-//     //         $total += $item['price'] * $item['quantity'];
-//     //     }
-
-//     //     // Validate the payment request
-//     //     $request->validate([
-//     //         'stripeToken' => 'required'
-//     //     ]);
-
-//     //     // Set Stripe API key
-//     //     Stripe::setApiKey(env('STRIPE_KEY'));
-
-//     //     // Create charge on Stripe
-//     //     try {
-//     //         $charge = Charge::create([
-//     //             'amount' => $total * 1000,
-//     //             'currency' => 'VND',
-//     //             'source' => $request->stripeToken,
-//     //             'description' => 'Order Payment',
-//     //             'success_url' =>$request->success_url
-//     //         ]);
-
-//     //         // Create the order in the database
-//     //         $order = new Order();
-//     //         $order->user_id = Auth::id();
-//     //         $order->total_price = $total;
-//     //         $order->date_deliver = now();
-//     //         $order->payment_method = 'COD';
-//     //         $order->status = 'Pending';  // Initial status
-//     //         $order->save();
-
-//     //         // Save order items
-//     //         foreach ($cart as $productId => $item) {
-//     //             $orderItem = new OrderItem();
-//     //             $orderItem->order_id = $order->id;
-//     //             $orderItem->product_id = $productId;
-//     //             $orderItem->price = $item['price'];
-//     //             $orderItem->quantity = $item['quantity'];
-//     //             $orderItem->save();
-//     //         }
-
-//     //         // Clear the cart
-//     //         session()->forget('cart');
-
-//     //         return response()->json(['message' => 'Payment successful and order created!', 'order' => $order], 201);
-//     //     } catch (\Exception $e) {
-//     //         return response()->json(['message' => 'Payment failed! ' . $e->getMessage()], 500);
-//     //     }
-//     // }
-
-//     public function pay(Request $request)
-//     {
-//         $cartItems = $request->input('cartItems', []);
-
-//         if (empty($cartItems)) {
-//             return response()->json(['message' => 'Cart is empty!'], 400);
-//         }
-
-//         $total = 0;
-//         foreach ($cartItems as $item) {
-//             $total += $item['price'] * $item['quantity'];
-//         }
-
-//         // Validate the payment request
-//         $request->validate([
-//             'stripeToken' => 'required',
-//             'success_url' => 'required'
-//         ]);
-
-//         // Set Stripe API key
-//         Stripe::setApiKey(env('STRIPE_KEY'));
-
-//         try {
-//             // Create charge on Stripe
-//             $charge = Charge::create([
-//                 'amount' => $total * 100, // Amount in cents, use correct multiplier
-//                 'currency' => 'vnd',
-//                 'source' => $request->stripeToken,
-//                 'description' => 'Order Payment',
-//             ]);
-
-//             // Create the order in the database
-//             $order = new Order();
-//             $order->user_id = Auth::id();
-//             $order->total_price = $total;
-//             $order->date_deliver = now();
-//             $order->payment_method = 'Stripe'; // Specify that payment was done through Stripe
-//             $order->status = 'Pending'; // Initial status
-//             $order->save();
-
-//             // Save order items
-//             foreach ($cartItems as $item) {
-//                 $orderItem = new OrderItem();
-//                 $orderItem->order_id = $order->id;
-//                 $orderItem->product_id = $item['product_id'];
-//                 $orderItem->price = $item['price'];
-//                 $orderItem->quantity = $item['quantity'];
-//                 $orderItem->save();
-//             }
-
-//             // Clear the cart (if stored in session or user)
-//             session()->forget('cart');
-
-//             return response()->json(['message' => 'Payment successful and order created!', 'order' => $order], 201);
-//         } catch (CardException $e) {
-//             // Catch any Stripe-specific errors
-//             return response()->json(['message' => 'Payment failed! ' . $e->getMessage()], 500);
-//         } catch (\Exception $e) {
-//             // General error handling
-//             return response()->json(['message' => 'An error occurred! ' . $e->getMessage()], 500);
-//         }
-//     }
-
-
-// }
 
 class PaymentController extends Controller
 {
@@ -155,16 +34,18 @@ class PaymentController extends Controller
         try {
             $checkout_session = Session::create([
                 'payment_method_types' => ['card'],
-                'line_items' => [[
-                    'price_data' => [
-                        'currency' => 'usd',
-                        'product_data' => [
-                            'name' => 'React Shop Orders'
+                'line_items' => [
+                    [
+                        'price_data' => [
+                            'currency' => 'usd',
+                            'product_data' => [
+                                'name' => 'React Shop Orders'
+                            ],
+                            'unit_amount' => $this->calculateOrderTotal($request->cartItems),
                         ],
-                        'unit_amount' => $this->calculateOrderTotal($request->cartItems),
-                    ],
-                    'quantity' => 1
-                ]],
+                        'quantity' => 1
+                    ]
+                ],
                 'mode' => 'payment',
                 'success_url' => $request->success_url
             ]);
@@ -185,5 +66,120 @@ class PaymentController extends Controller
             $total += $item['price'] * $item['qty'];
         }
         return $total * 100;
+    }
+
+    public function pay(Request $request)
+    {
+        $cartItems = $request->input('cartItems', []);
+        $coupon = $request->input('coupon');
+        if (empty($cartItems)) {
+            return response()->json(['message' => 'Cart is empty!'], 400);
+        }
+
+        // Validate the payment request
+        $request->validate([
+            'success_url' => 'required'
+        ]);
+
+        try {
+
+            $lineItems = [];
+            foreach ($cartItems as $item) {
+                $lineItems[] = [
+                    'price_data' => [
+                        'currency' => 'USD',
+                        'unit_amount' => $item['price'] * 100,
+                        'product_data' => [
+                            'name' => $item['name'], // assuming name is in $cartItems
+                            // 'description' => $item['description'] ?? '', // optional description
+                        ],
+                    ],
+                    'quantity' => $item['quantity'],
+                ];
+            }
+
+            $cou = Coupon::where('code', $coupon['code'])->first();
+            if ($cou) {
+                $cou->used .= $coupon['used'] . ',' . auth()->id();
+                $cou->time -= 1;
+                $cou->save();
+            }
+
+            $sub_total = 0;
+            foreach ($cartItems as $item) {
+                $sub_total += $item['price'] * $item['quantity'];
+            }
+            $discount = 0;
+            if (!empty($coupon)) {
+                if (isset($coupon['condition']) && $coupon['condition'] === 1) {
+                    $discount = ($sub_total * $coupon['number']) / 100;
+                } elseif (isset($coupon['condition']) && $coupon['condition'] === 2) {
+                    $discount = $coupon['number'];
+                }
+            }
+
+            $feeShip = 50000;
+
+            $total = ($sub_total - $discount + $feeShip);
+
+            date_default_timezone_set('Asia/Ho_Chi_Minh');
+            $today = Carbon::now('Asia/Ho_Chi_Minh')->format('Y-m-d');
+            // Create the order in the database
+            $order = new Order();
+            $order->user_id = auth()->id();
+            $order->total_price = $total;
+            $order->date_deliver = $today;
+            $order->order_code = 'ORD-' . time() . '-' . rand(1000, 9999);
+            $order->payment_method = 'Chuyển khoản';
+            $order->status = 'Pending';
+            $order->save();
+
+            // Save order items
+            foreach ($cartItems as $item) {
+                $product = Product::find($item['id']);
+                if (!$product || $product->qty < $item['quantity']) {
+                    return response()->json(['message' => 'Product stock is insufficient!'], 400);
+                }
+                $orderItem = new OrderItem();
+                $orderItem->order_id = $order->id;
+                $orderItem->product_id = $item['id'];
+                $orderItem->order_code = $order->order_code;
+                $orderItem->coupon_code = $coupon['code'];
+                $orderItem->price = $item['price'];
+                $orderItem->quantity = $item['quantity'];
+                $orderItem->save();
+            }
+
+            // Clear the cart (if stored in session or user)
+            session()->forget('cart');
+
+            // Set Stripe API key
+            Stripe::setApiKey(env('STRIPE_KEY'));
+
+            // Create a Stripe checkout session
+            $checkout_session = Session::create([
+                'payment_method_types' => ['card'],
+                'line_items' => $lineItems,
+                'mode' => 'payment',
+                'success_url' => $request->success_url,
+                'cancel_url' => $request->input('cancel_url', url('/cancel')), // Optional cancel URL
+            ]);
+
+            // Phát sự kiện đơn hàng hoàn thành (realtime cho admin)
+            broadcast(new OrderCompletedEvent($order))->toOthers();
+
+            // Gửi email hóa đơn sau khi đặt hàng
+            Mail::to(auth()->user()->email)->send(new OrderInvoiceMail($order));
+
+            return response()->json([
+                'message' => 'Payment successful and order created!',
+                'order' => $order,
+                'url' => $checkout_session->url
+            ], 201);
+        } catch (CardException $e) {
+            return response()->json(['message' => 'Payment failed! ' . $e->getMessage()], 500);
+        } catch (\Exception $e) {
+            return response()->json(['message' => 'An error occurred! ' . $e->getMessage()], 500);
+        }
     }
 }

@@ -1,6 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import axios from "axios";
+import 'datatables.net-dt/css/dataTables.dataTables.css';
+import $ from 'jquery';
+import 'datatables.net';
 
 const Brands = () => {
   const [brands, setBrands] = useState([]);
@@ -12,7 +15,7 @@ const Brands = () => {
       try {
         const token = localStorage.getItem("token"); // Đảm bảo sử dụng token nhất quán
         const response = await axios.get(
-          "/brands/index",
+          "http://localhost:8000/api/brands/index",
           {
             headers: {
               Authorization: `Bearer ${token}`, // Bao gồm token trong header của yêu cầu
@@ -34,6 +37,21 @@ const Brands = () => {
     fetchBrands();
   }, []);
 
+  useEffect(() => {
+    if (!loading && brands.length > 0) {
+      // Kiểm tra nếu DataTable đã được khởi tạo trước đó
+      if ($.fn.DataTable.isDataTable("#myTable")) {
+        $('#myTable').DataTable().clear().destroy(); // Phá hủy DataTable trước khi khởi tạo lại
+      }
+
+      // Khởi tạo lại DataTable
+      $('#myTable').DataTable({
+        paging: true,
+        searching: true,
+      });
+    }
+  }, [loading, brands]);
+
   const deleteBrand = async (id) => {
     const confirmDelete = window.confirm(
       "Bạn có chắc chắn muốn xóa thương hiệu này không?"
@@ -42,7 +60,7 @@ const Brands = () => {
 
     try {
       const token = localStorage.getItem("token"); // Đảm bảo sử dụng token nhất quán
-      await axios.delete(`/brands/destroy/${id}`, {
+      await axios.delete(`http://localhost:8000/api/brands/destroy/${id}`, {
         headers: {
           Authorization: `Bearer ${token}`, // Bao gồm token trong header của yêu cầu
         },
@@ -84,7 +102,7 @@ const Brands = () => {
         </div>
 
         <div className="table-responsive text-nowrap">
-          <table className="table table-bordered">
+          <table id="myTable" className="table table-bordered">
             <thead>
               <tr>
                 <th>ID</th>

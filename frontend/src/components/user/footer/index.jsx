@@ -2,6 +2,7 @@ import FooterAbout from "./FooterAbout";
 import FooterCustomerService from "./FooterCustomerService";
 import FooterOurCompany from "./FooterOurCompany";
 import FooterDownloadOurApp from "./FooterDownloadOurApp";
+import './style.scss';
 
 const Footer = () => {
   return (

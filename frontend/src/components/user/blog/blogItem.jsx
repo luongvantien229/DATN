@@ -1,16 +1,15 @@
-
 import React from "react";
 
-export default function BlogItem() {
+export default function BlogItem({ post }) {
   return (
     <div className="col-lg-4 col-md-6 col-12 col-sm-6 grid-item wow tmFadeInUp">
       <div className="blog-wrap-2 mb-30">
         <div className="blog-img-2">
-          <a href="blog-details.html">
-            <img src="assets/images/blog/blog-1.jpg" alt="" />
+          <a href={`blog-details/${post.slug}`}>
+            <img src={post.image} alt={post.title} />
           </a>
           <div className="blog-tag-2">
-            <a href="blog-details.html">Tin nóng</a>
+            <a href={`blog-details/${post.slug}`}>Tin nóng</a>
           </div>
         </div>
         <div className="blog-content-2">
@@ -25,10 +24,10 @@ export default function BlogItem() {
             </ul>
           </div>
           <h3>
-            <a href="blog-details.html">Cập nhật Coronavirus: Tóm tắt</a>
+            <a href={`blog-details/${post.slug}`}>{post.title}</a>
           </h3>
           <div className="blog-btn">
-            <a href="blog-details.html">
+            <a href={`blog-details/${post.slug}`}>
               Đọc thêm <i className="far fa-long-arrow-right"></i>
             </a>
           </div>
@@ -37,4 +36,3 @@ export default function BlogItem() {
     </div>
   );
 }
-

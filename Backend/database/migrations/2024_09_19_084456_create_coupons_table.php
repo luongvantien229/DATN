@@ -19,6 +19,10 @@ return new class extends Migration
             $table->integer('time');
             $table->integer('condition');
             $table->string('code');
+            $table->string('date_start');
+            $table->string('date_end');
+            $table->string('used');
+            $table->integer('status')->default(1);
             $table->timestamps();
         });
     }

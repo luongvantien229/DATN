@@ -184,7 +184,7 @@ class DatabaseSeeder extends Seeder
                     'sort_order' => $i,
                     'image' => $list_categories_images[$i],
                     'status' => 1,
-                    'parent_id' =>  mt_rand(1, 3),
+                    'parent_id' => 0,
                     'showHome' => 'YES'
                 ]
             );
@@ -323,7 +323,8 @@ class DatabaseSeeder extends Seeder
         for ($i = 0; $i < count($list_products); $i++) {
             $slug = Str::slug($list_products[$i]);
 
-            $price = $faker->numberBetween(10000, 100000); // Giá ngẫu nhiên từ 100,000 VNĐ đến 10,000,000 VNĐ
+            $price_cost = mt_rand(1,1000)*1000; // Giá gốc ngẫu nhiên
+            $price = mt_rand(10, 500) * 1000; // Giá ngẫu nhiên từ 100,000 VNĐ đến 10,000,000 VNĐ
 
             $description = $faker->sentence(20); // Mô tả ngẫu nhiên
             $brand_id = mt_rand(1, 5); // Brand id ngẫu nhiên, bạn có thể điều chỉnh theo thực tế
@@ -339,10 +340,12 @@ class DatabaseSeeder extends Seeder
             $barcode = $faker->ean13(); // Mã barcode
             $track_qty = mt_rand(0, 1); // Theo dõi số lượng: 0 - không, 1 - có
             $qty = mt_rand(1, 100); // Số lượng sản phẩm
+            $sold = 0;
             $status = 1; // Trạng thái: 1 - active, 0 - inactive
             DB::table('products')->insert([
                 'name' => $list_products[$i],
                 'slug' => $slug,
+                'price_cost' => $price_cost,
                 'price' => $price, // Ghi giá đã định dạng
                 'description' => $description,
                 'brand_id' => $brand_id,
@@ -358,10 +361,191 @@ class DatabaseSeeder extends Seeder
                 'barcode' => $barcode,
                 'track_qty' => $track_qty,
                 'qty' => $qty,
+                'sold'=> $sold,
                 'status' => $status,
 
             ]);
         }
+
+        $categories_post = [
+            'Công nghệ', 'Sức khỏe', 'Phong cách sống', 'Giáo dục', 'Du lịch',
+            'Ẩm thực', 'Kinh doanh', 'Giải trí', 'Thời trang', 'Thể thao'
+        ];
+
+        foreach ($categories_post as $category) {
+            DB::table('category_posts')->insert([
+                'name' => $category,
+                'slug' => Str::slug($category),
+                'status' => 1, // Hoặc 0 nếu bạn muốn danh mục ở trạng thái không kích hoạt
+            ]);
+        }
+
+        $posts = [
+            [
+                'title' => 'Công nghệ 4.0 và xu hướng phát triển',
+                'description' => 'Bài viết về xu hướng công nghệ 4.0 hiện nay',
+                'content' => 'Nội dung chi tiết về các công nghệ hiện đại trong thời đại 4.0...',
+                'image' => 'https://example.com/images/cong-nghe.jpg',
+                'user_id' => 1,
+                'category_posts_id' => 1,
+                'status' => 1
+            ],
+            [
+                'title' => 'Cách duy trì sức khỏe trong mùa lạnh',
+                'description' => 'Những mẹo nhỏ giúp bạn giữ gìn sức khỏe trong thời tiết lạnh',
+                'content' => 'Mùa lạnh khiến cơ thể dễ bị cảm cúm và các bệnh về đường hô hấp...',
+                'image' => 'https://example.com/images/suc-khoe.jpg',
+                'user_id' => 2,
+                'category_posts_id' => 2,
+                'status' => 1
+            ],
+            [
+                'title' => 'Những xu hướng thời trang năm nay',
+                'description' => 'Cập nhật các xu hướng thời trang mới nhất cho năm nay',
+                'content' => 'Thời trang luôn thay đổi theo thời gian, và năm nay cũng không ngoại lệ...',
+                'image' => 'https://example.com/images/thoi-trang.jpg',
+                'user_id' => 3,
+                'category_posts_id' => 3,
+                'status' => 1
+            ],
+            [
+                'title' => 'Các điểm du lịch nổi tiếng Việt Nam',
+                'description' => 'Khám phá những điểm đến tuyệt đẹp trên khắp Việt Nam',
+                'content' => 'Việt Nam sở hữu nhiều cảnh đẹp thiên nhiên từ miền Bắc đến miền Nam...',
+                'image' => 'https://example.com/images/du-lich.jpg',
+                'user_id' => 1,
+                'category_posts_id' => 4,
+                'status' => 1
+            ],
+            [
+                'title' => 'Bí quyết kinh doanh thành công',
+                'description' => 'Những kinh nghiệm quý báu giúp bạn đạt được thành công trong kinh doanh',
+                'content' => 'Kinh doanh là một lĩnh vực không hề đơn giản, đòi hỏi sự nỗ lực và kiên trì...',
+                'image' => 'https://example.com/images/kinh-doanh.jpg',
+                'user_id' => 2,
+                'category_posts_id' => 5,
+                'status' => 1
+            ],
+            [
+                'title' => 'Lợi ích của chế độ ăn uống lành mạnh',
+                'description' => 'Chế độ ăn uống đóng vai trò quan trọng trong việc duy trì sức khỏe',
+                'content' => 'Một chế độ ăn uống lành mạnh giúp tăng cường sức đề kháng và phòng chống bệnh tật...',
+                'image' => 'https://example.com/images/am-thuc.jpg',
+                'user_id' => 3,
+                'category_posts_id' => 6,
+                'status' => 1
+            ],
+            [
+                'title' => 'Giải trí lành mạnh trong cuộc sống hiện đại',
+                'description' => 'Hướng dẫn những cách giải trí để giảm stress và cải thiện sức khỏe tinh thần',
+                'content' => 'Giải trí là một phần không thể thiếu trong cuộc sống để giữ tinh thần thoải mái...',
+                'image' => 'https://example.com/images/giai-tri.jpg',
+                'user_id' => 1,
+                'category_posts_id' => 7,
+                'status' => 1
+            ],
+            [
+                'title' => 'Cách xây dựng phong cách cá nhân',
+                'description' => 'Mẹo để xây dựng một phong cách thời trang độc đáo và cá tính',
+                'content' => 'Phong cách cá nhân là yếu tố quan trọng để thể hiện bản thân một cách tự tin...',
+                'image' => 'https://example.com/images/phong-cach.jpg',
+                'user_id' => 2,
+                'category_posts_id' => 8,
+                'status' => 1
+            ],
+            [
+                'title' => 'Tầm quan trọng của thể thao trong cuộc sống',
+                'description' => 'Thể thao không chỉ là hoạt động giải trí mà còn giúp cải thiện sức khỏe',
+                'content' => 'Tham gia thể thao giúp tăng cường thể lực và nâng cao sức khỏe...',
+                'image' => 'https://example.com/images/the-thao.jpg',
+                'user_id' => 3,
+                'category_posts_id' => 9,
+                'status' => 1
+            ],
+            [
+                'title' => 'Phát triển bản thân qua sách và tài liệu',
+                'description' => 'Học hỏi không ngừng qua sách và các tài liệu hữu ích',
+                'content' => 'Đọc sách giúp mở rộng kiến thức và cải thiện kỹ năng sống...',
+                'image' => 'https://example.com/images/giao-duc.jpg',
+                'user_id' => 1,
+                'category_posts_id' => 10,
+                'status' => 1
+            ],
+        ];
+
+        foreach ($posts as $post) {
+            DB::table('posts')->insert([
+                'title' => $post['title'],
+                'slug' => Str::slug($post['title']),
+                'description' => $post['description'],
+                'content' => $post['content'],
+                'image' => $post['image'],
+                'view' => 0,
+                'user_id' => $post['user_id'],
+                'category_posts_id' => $post['category_posts_id'],
+                'status' => $post['status'],
+            ]);
+        }
+
+            DB::table('banners')->insert([
+                [
+                    'name' => 'Banner 1',
+                    'image_path' => 'https://res.cloudinary.com/dqob2h1f3/image/upload/v1730466096/1_lnmjoa.jpg',
+                    'size' => 1,
+                    'status' => 1,
+                    'description' => 'First banner with size 1',
+                ],
+                [
+                    'name' => 'Banner 2',
+                    'image_path' => 'https://res.cloudinary.com/dqob2h1f3/image/upload/v1730466096/2_zwhtaf.jpg',
+                    'size' => 1,
+                    'status' => 1,
+                    'description' => 'Second banner with size 1',
+                ],
+                [
+                    'name' => 'Banner 3',
+                    'image_path' => 'https://res.cloudinary.com/dqob2h1f3/image/upload/v1730466167/3_kcs8ak.jpg',
+                    'size' => 1,
+                    'status' => 1,
+                    'description' => 'Third banner with size 1',
+                ],
+                [
+                    'name' => 'Banner 4',
+                    'image_path' => 'https://res.cloudinary.com/dqob2h1f3/image/upload/v1730466367/20241029025143-0-Web3_afpjau.avif',
+                    'size' => 4,
+                    'status' => 1,
+                    'description' => 'Fourth banner with size 4',
+                ],
+                [
+                    'name' => 'Banner 5',
+                    'image_path' => 'https://res.cloudinary.com/dqob2h1f3/image/upload/v1730466369/20241029024908-0-Web4_iwujlg.avif',
+                    'size' => 4,
+                    'status' => 1,
+                    'description' => 'Fifth banner with size 4',
+                ],
+                [
+                    'name' => 'Banner 6',
+                    'image_path' => 'https://res.cloudinary.com/dqob2h1f3/image/upload/v1730466369/20241029024706-0-Web5_mpz2ag.avif',
+                    'size' => 4,
+                    'status' => 1,
+                    'description' => 'Sixth banner with size 4',
+                ],
+                [
+                    'name' => 'Banner 7',
+                    'image_path' => 'https://res.cloudinary.com/dqob2h1f3/image/upload/v1730466369/20241029024333-0-Web2_r0u9gp.avif',
+                    'size' => 4,
+                    'status' => 1,
+                    'description' => 'Seventh banner with size 4',
+                ],
+                [
+                    'name' => 'Banner 8',
+                    'image_path' => 'https://res.cloudinary.com/dqob2h1f3/image/upload/v1730466367/20241029024002-0-Web1-1_glpfvg.avif',
+                    'size' => 4,
+                    'status' => 1,
+                    'description' => 'Eighth banner with size 4',
+                ],
+            ]);
+
 
         // Function to replicate slug generation in PHP similar to the JavaScript version
         // function str_slug($text)

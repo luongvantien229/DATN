@@ -1,30 +1,29 @@
-
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom"; // Import useParams
+import { useParams } from "react-router-dom";
 import ProductDetail_Left from "./ProductDetail_Left";
 import ProductDetail_Right from "./ProductDetail_Right";
+import axios from "axios";
 
 export default function ProductDetail() {
-  const { id } = useParams(); // Lấy id từ URL
+  const { id , slug } = useParams(); // Lấy id từ URL
   const [product, setProduct] = useState(null);
 
   useEffect(() => {
     const fetchProductDetail = async () => {
       try {
-        const response = await fetch(`http://127.0.0.1:8000/api/product_detail/${id}`); // Sử dụng id ở đây
-        const data = await response.json();
-        setProduct(data.product);
+        const response = await axios.get(`/product_detail/${slug}/${id}`);
+        const data = response.data;
+        setProduct(data.product);    
       } catch (error) {
         console.error("Error fetching product details:", error);
       }
     };
 
-    if (id) {
-      fetchProductDetail(); // Gọi hàm chỉ khi có id
+    if (id && slug) {
+      fetchProductDetail(); 
     }
-  }, [id]); // Thêm id vào dependency array
+  }, [id, slug]); 
 
-  // Nếu product chưa được tải, có thể hiển thị loading hoặc placeholder
   if (!product) {
     return <div>Loading...</div>;
   }
@@ -38,4 +37,3 @@ export default function ProductDetail() {
     </div>
   );
 }
-

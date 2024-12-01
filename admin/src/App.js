@@ -17,7 +17,31 @@ import EditProductTypes from "./components/productTypes/edit.jsx";
 import Products from "./components/products/index.jsx";
 import AddProducts from "./components/products/add.jsx";
 import EditProducts from "./components/products/edit.jsx";
+import Roles from "./components/roles/index.jsx";
+import AddRoles from "./components/roles/add.jsx";
+import EditRoles from "./components/roles/edit.jsx";
+import Banners from "./components/banners/index.jsx";
+import AddBanners from "./components/banners/add.jsx";
+import EditBanners from "./components/banners/edit.jsx";
+import CategoriesPosts from "./components/categoriesPost/index.jsx";
+import AddCategoryPost from "./components/categoriesPost/add.jsx";
+import EditCategoryPost from "./components/categoriesPost/edit.jsx";
+import Posts from "./components/posts/index.jsx";
+import AddPosts from "./components/posts/add.jsx";
+import EditPosts from "./components/posts/edit.jsx";
+import Warehouses from "./components/warehouses/index.jsx";
+import AddWarehouse from "./components/warehouses/add.jsx";
+import EditWarehouse from "./components/warehouses/edit.jsx";
+import ViewWarehouse from "./components/warehouses/view.jsx";
+import AddProductsWarehouse from "./components/warehouses/add_products_warehouse.jsx";
 import AdminLogin from "./components/login/AdminLogin";
+import Users from "./components/users/index.jsx";
+import Coupons from "./components/coupons/index.jsx";
+import AddCoupon from "./components/coupons/add.jsx";
+import EditCoupon from "./components/coupons/edit.jsx";
+import Comments from "./components/comments/index.jsx";
+import Orders from "./components/orders/index.jsx";
+import ViewOrder from "./components/orders/view.jsx";
 
 axios.defaults.headers.common["Authorization"] = `Bearer ${localStorage.getItem(
   "token"
@@ -124,7 +148,7 @@ function App() {
             </MainLayout>
           }
         />
-         <Route
+        <Route
           path="/products"
           element={
             <MainLayout>
@@ -148,7 +172,205 @@ function App() {
             </MainLayout>
           }
         />
+        <Route
+          path="/roles"
+          element={
+            <MainLayout>
+              <Roles />
+            </MainLayout>
+          }
+        />
+        <Route
+          path="/add-roles"
+          element={
+            <MainLayout>
+              <AddRoles />
+            </MainLayout>
+          }
+        />
+        <Route
+          path="/edit-roles/:id"
+          element={
+            <MainLayout>
+              <EditRoles />
+            </MainLayout>
+          }
+        />
+        <Route
+          path="/users"
+          element={
+            <MainLayout>
+              <Users />
+            </MainLayout>
+          }
+        />
+        <Route
+          path="/banners"
+          element={
+            <MainLayout>
+              <Banners />
+            </MainLayout>
+          }
+        />
+        <Route
+          path="/add-banners"
+          element={
+            <MainLayout>
+              <AddBanners />
+            </MainLayout>
+          }
+        />
+        <Route
+          path="/edit-banners/:id"
+          element={
+            <MainLayout>
+              <EditBanners />
+            </MainLayout>
+          }
+        />
 
+        <Route
+          path="/category_posts"
+          element={
+            <MainLayout>
+              <CategoriesPosts />
+            </MainLayout>
+          }
+        />
+        <Route
+          path="/add-category_posts"
+          element={
+            <MainLayout>
+              <AddCategoryPost />
+            </MainLayout>
+          }
+        />
+        <Route
+          path="/edit-category_posts/:id"
+          element={
+            <MainLayout>
+              <EditCategoryPost />
+            </MainLayout>
+          }
+        />
+
+        <Route
+          path="/posts"
+          element={
+            <MainLayout>
+              <Posts />
+            </MainLayout>
+          }
+        />
+        <Route
+          path="/add-post"
+          element={
+            <MainLayout>
+              <AddPosts />
+            </MainLayout>
+          }
+        />
+        <Route
+          path="/edit-post/:id"
+          element={
+            <MainLayout>
+              <EditPosts />
+            </MainLayout>
+          }
+        />
+
+        <Route
+          path="/warehouses"
+          element={
+            <MainLayout>
+              <Warehouses />
+            </MainLayout>
+          }
+        />
+        <Route
+          path="/add-warehouse"
+          element={
+            <MainLayout>
+              <AddWarehouse />
+            </MainLayout>
+          }
+        />
+        <Route
+          path="/edit-warehouse/:id"
+          element={
+            <MainLayout>
+              <EditWarehouse />
+            </MainLayout>
+          }
+        />
+        <Route
+          path="/view-warehouse/:id"
+          element={
+            <MainLayout>
+              <ViewWarehouse />
+            </MainLayout>
+          }
+        />
+        <Route
+          path="/add-products-warehouse/:warehouseId"
+          element={
+            <MainLayout>
+              <AddProductsWarehouse />
+            </MainLayout>
+          }
+        />
+
+        <Route
+          path="/coupons"
+          element={
+            <MainLayout>
+              <Coupons />
+            </MainLayout>
+          }
+        />
+        <Route
+          path="/add-coupon"
+          element={
+            <MainLayout>
+              <AddCoupon />
+            </MainLayout>
+          }
+        />
+        <Route
+          path="/edit-coupon/:id"
+          element={
+            <MainLayout>
+              <EditCoupon />
+            </MainLayout>
+          }
+        />
+
+        <Route
+          path="/comments"
+          element={
+            <MainLayout>
+              <Comments />
+            </MainLayout>
+          }
+        />
+
+        <Route
+          path="/orders"
+          element={
+            <MainLayout>
+              <Orders />
+            </MainLayout>
+          }
+        />
+
+        <Route
+          path="/view-order/:order_code"
+          element={
+            <MainLayout>
+              <ViewOrder />
+            </MainLayout>
+          }
+        />
 
         <Route path="*" element={<NotFound />} /> {/* Trang 404 */}
       </Routes>

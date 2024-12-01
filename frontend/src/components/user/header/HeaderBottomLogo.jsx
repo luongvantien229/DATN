@@ -5,7 +5,7 @@ export default function HeaderBottomLogo() {
     <div className="logo logo-width-1">
       <Link to="/">
 
-        <img src="assets/images/logo/logoo.png" alt="logo" />
+        <img src="/assets/images/logo/logoo.png" alt="logo" />
 
       </Link>
     </div>

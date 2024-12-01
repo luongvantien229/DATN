@@ -1,12 +1,15 @@
-
 import React from "react"; // Đừng quên import React
 import { Link } from "react-router-dom";
-import { useSelector } from "react-redux"; // Import useSelector
+import { useSelector, useDispatch } from "react-redux"; // Import useSelector
 import CartItem from "./CartItem";
 
 export default function CartTableContent() {
   const cartItems = useSelector((state) => state.cart.cartItems); // Lấy danh sách sản phẩm từ Redux store
-  
+  const dispatch = useDispatch();
+  const sub_total = cartItems.reduce(
+    (acc, item) => (acc += item.price * item.quantity),
+    0
+  );
 
   return (
     <div className="row">
@@ -26,12 +29,23 @@ export default function CartTableContent() {
                   </tr>
                 </thead>
                 <tbody>
-
                   {cartItems.map((item, index) => (
-                    <CartItem key={index} product={item} /> // Truyền từng sản phẩm vào CartItem
-
+                    <CartItem key={index} item={item} /> // Truyền từng sản phẩm vào CartItem
                   ))}
                 </tbody>
+                <thead>
+                  <tr>
+                    <td colSpan={3} className="px-0">
+                      <th className="width-thumbnail">Tổng cộng</th>
+                    </td>
+                    <td></td>
+                    <th className="text-center">
+                      <span className="total-price-cart">
+                        {sub_total.toLocaleString("vi-VN")}đ
+                      </span>
+                    </th>
+                  </tr>
+                </thead>
               </table>
             </div>
             <div className="cart-shiping-update-wrapper">
@@ -45,9 +59,9 @@ export default function CartTableContent() {
                   </a>
                 </div>
               </div>
-              <div className="update-btn">
+              {/* <div className="update-btn">
                 <a href="cart.html">Cập nhật giỏ hàng</a>
-              </div>
+              </div> */}
             </div>
           </div>
         </form>

@@ -1,90 +1,72 @@
 import { Link } from "react-router-dom";
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 
 export default function HeaderTopHeaderInfoRight() {
+  const isLoggin = localStorage.getItem('token');
+  const [name, setName] = useState('');
+  const [userData, setUserData] = useState(null);
   const navigate = useNavigate();
-  const [userDetails, setUserDetails] = useState({}); // Khởi tạo dưới dạng đối tượng rỗng
 
-  // useEffect(() => {
-  //   const fetchUserDetails = async () => {
-  //     try {
-  //       const token = localStorage.getItem("token");
+  useEffect(() => {
+    const storedName = localStorage.getItem('user_name');
+    if (storedName) {
+          setName(storedName);
+        }
+      }, []);
 
-  //       if (!token) {
-  //         navigate("/login");
-  //         return;
-  //       }
+  const handleLogout = async (event) => {
+    event.preventDefault(); 
 
-  //       const response = await axios.get(
-  //         "http://127.0.0.1:8000/api/auth/your_profile",
-  //         {
-  //           headers: {
-  //             Authorization: `Bearer ${token}`,
-  //           },
-  //         }
-  //       );
-
-  //       // Đặt chi tiết người dùng trực tiếp từ response.data
-  //       setUserDetails(response.data);
-  //     } catch (error) {
-  //       if (error.response?.status === 401) {
-  //         Swal.fire({
-  //           icon: "error",
-  //           title: "Xác Thực Thất Bại",
-  //           text: "Vui lòng đăng nhập lại.",
-  //         }).then(() => {
-  //           navigate("/login");
-  //         });
-  //       } else {
-  //         console.error("Lỗi khi lấy thông tin người dùng:", error);
-  //       }
-  //     }
-  //   };
-  //   fetchUserDetails();
-  // }, [navigate]);
-
+    try {
+      const response = await axios.post('/auth/logout', {}, {
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('token')}`, 
+        },
+      });
+      
+      localStorage.removeItem('token');
+      localStorage.removeItem('user_name');
+      Swal.fire({
+        title: 'Đăng xuất thành công!',
+        text: response.data.message,
+        icon: 'success',
+        confirmButtonText: 'OK',
+      }).then(() => {
+        navigate('/'); 
+      });
+    } catch (error) {
+      Swal.fire({
+        title: 'Lỗi!',
+        text: 'Đã xảy ra lỗi khi đăng xuất. Vui lòng thử lại.',
+        icon: 'error',
+        confirmButtonText: 'OK',
+      });
+    }
+  };
+  
   return (
     <div className="col-xl-3 col-lg-4">
       <div className="header-info header-info-right">
         <ul>
           <li>
             <a className="language-dropdown-active" href="#">
-            Tiếng Anh <i className="fa fa-chevron-down"></i>
+            Tiếng Việt <i className="fa fa-chevron-down"></i>
             </a>
             <ul className="language-dropdown">
               <li>
-                <a href="#">Tiếng Pháp</a>
-              </li>
-              <li>
-                <a href="#">Tiếng Đức.</a>
-              </li>
-              <li>
-                <a href="#">Tiếng Việt</a>
+                <a href="#">Tiếng Anh</a>
               </li>
             </ul>
           </li>
-            <li className="nav-item lh-1 me-4 hihi">
-              <a
-                className="github-button"
-                href="/"
-                data-icon="octicon-star"
-                data-size="large"
-                data-show-count="true"
-                aria-label="Star themeselection/sneat-html-admin-template-free trên GitHub"
-              >
-                Name:{userDetails.name}
-              </a>
-            </li>
+          {isLoggin ? (
+          
             <li className="nav-item navbar-dropdown dropdown-user dropdown">
-            <Link
-                className="nav-link hide-arrow p-0"
-                to="#"
-                data-bs-toggle="dropdown"
-              >
+                <div className="name_user">
+                {name ? name : 'Chưa có tên người dùng'}    
+                </div>
                 <div className="avatar avatar-online">
                   <img
                     src="/assets/images/avatars/1.png"
@@ -92,20 +74,50 @@ export default function HeaderTopHeaderInfoRight() {
                     className="w-px-40 h-auto rounded-circle"
                   />
                 </div>
-              </Link>
-              </li>
-              <li className="nav-item lh-1 me-4 hihi">
-              <a
-                className="github-button"
-                href="/"
-                data-icon="octicon-star"
-                data-size="large"
-                data-show-count="true"
-                aria-label="Star themeselection/sneat-html-admin-template-free trên GitHub"
-              >
-                Thoát
-              </a>
-            </li>
+                <ul className="language-dropdown">
+                  <li className="nav-item lh-1 me-4 hihi">
+                    <Link
+                      className="github-button"
+                      to="/user-profile"
+                      data-icon="octicon-star"
+                      data-size="large"
+                      data-show-count="true"
+                      aria-label="Star themeselection/sneat-html-admin-template-free trên GitHub"
+                    >
+                      Quản lý tài khoản
+                    </Link>
+                  </li>
+                  <li className="nav-item lh-1 me-4 hihi">
+                    <Link
+                      className="github-button"
+                      to="/#"
+                      onClick={handleLogout} 
+                      data-icon="octicon-star"
+                      data-size="large"
+                      data-show-count="true"
+                      aria-label="Star themeselection/sneat-html-admin-template-free trên GitHub"
+                    >
+                      Thoát
+                    </Link>
+                  </li>
+                </ul>
+                  </li>
+              
+               ) : (
+              
+            <li className="nav-item lh-1 me-4 hihi">
+            <Link
+              className="github-button"
+              to="/login-register"
+              data-icon="octicon-star"
+              data-size="large"
+              data-show-count="true"
+              aria-label="Star themeselection/sneat-html-admin-template-free trên GitHub"
+            >
+              Đăng ký / Đăng nhập
+            </Link>
+          </li>
+            )}
         </ul>
         
       </div>

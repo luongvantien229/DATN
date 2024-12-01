@@ -6,9 +6,10 @@ const AddProducts = () => {
   const [product, setProduct] = useState({
     name: "",
     slug: "",
+    price_cost: "",
     price: "",
     description: "",
-    category_id: "",
+    category_id: [],
     brand_id: "",
     favorite: 0,
     view: 0,
@@ -74,7 +75,7 @@ const AddProducts = () => {
             headers: { Authorization: `Bearer ${token}` },
           }
         );
-        setCategories(categoryRes.data.data);
+        setCategories(categoryRes.data);
 
         // Fetch brands
         const brandRes = await axios.get(
@@ -101,6 +102,23 @@ const AddProducts = () => {
     fetchData();
   }, []);
 
+  // Handle changes for category selection
+  const handleCategoryChange = (event) => {
+    const options = event.target.options;
+    const selectedCategories = [];
+
+    for (let i = 0; i < options.length; i++) {
+      if (options[i].selected) {
+        selectedCategories.push(parseInt(options[i].value));
+      }
+    }
+
+    setProduct((prevProduct) => ({
+      ...prevProduct,
+      category_id: selectedCategories,
+    }));
+  };
+
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
     setProduct({
@@ -124,13 +142,24 @@ const AddProducts = () => {
     e.preventDefault();
     const token = localStorage.getItem("token");
 
+    // Kiểm tra dữ liệu trước khi gửi
+    if (!product.name || !product.slug || !product.price) {
+      setError("Vui lòng điền tất cả các trường bắt buộc!");
+      return;
+    }
+
     // Use FormData to handle both text and file data
     const formData = new FormData();
     formData.append("name", product.name);
     formData.append("slug", product.slug);
+    formData.append("price_cost", product.price_cost);
     formData.append("price", product.price);
     formData.append("description", product.description);
-    formData.append("category_id", product.category_id);
+    // Gửi category_id như một mảng
+    product.category_id.forEach((id) => {
+      formData.append("category_id[]", id); // Gửi từng ID
+    });
+
     formData.append("brand_id", product.brand_id);
     formData.append("favorite", product.favorite);
     formData.append("view", product.view);
@@ -201,6 +230,18 @@ const AddProducts = () => {
                 name="slug"
                 value={product.slug}
                 readOnly // Make slug readonly as it will be auto-generated
+              />
+            </div>
+
+            <div className="mb-3">
+              <label className="form-label">Giá gốc</label>
+              <input
+                type="number"
+                className="form-control"
+                name="price_cost"
+                value={product.price_cost}
+                onChange={handleChange}
+                required
               />
             </div>
 
@@ -292,8 +333,10 @@ const AddProducts = () => {
               <select
                 name="category_id"
                 value={product.category_id}
-                onChange={handleChange}
+                onChange={handleCategoryChange}
                 className="form-control"
+                multiple
+                required
               >
                 <option value="">Chọn một danh mục</option>
                 {categories.map((category) => (

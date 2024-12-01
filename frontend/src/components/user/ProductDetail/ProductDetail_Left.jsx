@@ -12,7 +12,7 @@ export default function ProductDetail_Left({ product }) {
         <div className="pro-dec-big-img-slider" ref={proDecBigImgSlider}>
           <div className="single-big-img-style">
             <div className="pro-details-big-img">
-              <a className="img-popup" href={product.image}>
+              <a className="img-popup" >
                 <img src={product.image} alt={product.name} />
               </a>
             </div>

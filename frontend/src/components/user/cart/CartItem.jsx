@@ -1,68 +1,75 @@
-
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import { useSelector } from "react-redux"; // Import useSelector
+import { useSelector, useDispatch } from "react-redux"; // Import useSelector
 import {
   decrementQ,
   incrementQ,
   removeFromCart,
 } from "../../../redux/slices/cartSlice";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
-export default function CartItem({ product }) {
+export default function CartItem({ item }) {
   // Nhận prop product từ CartTableContent
-  const [quantity, setQuantity] = useState(product.quantity || 1); // Giữ số lượng sản phẩm
-  // Khởi tạo trạng thái để theo dõi hover
+  // const [quantity, setQuantity] = useState(item.quantity || 1); // Giữ số lượng sản phẩm
+  // // Khởi tạo trạng thái để theo dõi hover
   const [isHovered, setIsHovered] = useState(false);
   // Xuất dữ liệu sản phẩm ra console
+  
+  const dispatch = useDispatch();
+ 
+  // console.log("Sản phẩm trong giỏ hàng:", product);
+  if (!item) {
+    return null; // or return a placeholder for an empty cart item
+  }
 
-  console.log("Sản phẩm trong giỏ hàng:", product);
+  // const handleQuantityChange = (e) => {
+  //   const value = e.target.value;
+  //   if (!isNaN(value) && value > 0) {
+  //     setQuantity(Number(value));
+  //   }
+  // };
 
-
-  const handleQuantityChange = (e) => {
-    const value = e.target.value;
-    if (!isNaN(value) && value > 0) {
-      setQuantity(Number(value));
-    }
-  };
+  if (item.quantity > item.qty) {
+    toast.error(`Vui lòng đặt ${item.name} nhỏ hơn ${item.qty}`);
+  }
+  
 
   return (
+    <>
     <tr>
       <td className="product-thumbnail">
         <Link to="/product-details">
-
           <img
-            src={product.image || "assets/images/cart/cart-1.jpg"}
+            src={item.image || "assets/images/cart/cart-1.jpg"}
             alt="Sản phẩm"
           />
-
         </Link>
       </td>
       <td className="product-name">
         <h5>
-          <Link to="/product-details">{product.name || "Găng tay y tế"}</Link>
+          <Link to="/product-details">{item.name || "Găng tay y tế"}</Link>
         </h5>
       </td>
       <td className="product-price">
         <span className="amount">
-          {product.price ? product.price.toLocaleString() + "đ" : "120.000đ"}
+          {item.price ? item.price.toLocaleString() + "đ" : "120.000đ"}
         </span>
       </td>
-      <td className="cart-quality">
-        <div className="product-quality">
-          <i
-            className="bi bi-caret-up"
-            onClick={() => dispatch(incrementQ(item))}
-          ></i>
-          <span className="mx-2">{quantity}</span>
-          <i
-            className="bi bi-caret-down"
-            onClick={() => dispatch(decrementQ(item))}
-          ></i>
-        </div>
+
+      <td className="">
+        <i
+          className="bi bi-caret-up"
+          onClick={() => dispatch(incrementQ(item))}
+        ></i>
+        <span className="mx-2">{item.quantity}</span>
+        <i
+          className="bi bi-caret-down"
+          onClick={() => dispatch(decrementQ(item))}
+        ></i>
       </td>
       <td className="product-total">
-        <span>{(product.price ? product.price : 120000) * quantity}đ</span>{" "}
-        {/* Tính toán thành tiền */}
+        <span>{(item.price * item.quantity).toLocaleString("vi-VN")}đ</span> {/* Tính toán thành tiền */}
       </td>
       <td
         className="product-remove"
@@ -83,8 +90,8 @@ export default function CartItem({ product }) {
         >
           Xóa
         </button>
-
       </td>
     </tr>
+    </>
   );
 }

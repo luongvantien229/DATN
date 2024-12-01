@@ -1,44 +1,83 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+import axios from "axios";
 
-export default function SidebarCategoriesList() {
+export default function SidebarCategoriesList({ onCategorySelect }) {
+  const [categories, setCategories] = useState([]);
+  console.log("🚀 ~ SidebarCategoriesList ~ categories:", categories[0])
+  const [selectedCategory, setSelectedCategory] = useState(
+    localStorage.getItem("selectedCategory") || null // Lấy giá trị từ localStorage
+  );
+
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const response = await axios.get("/all_categories");
+        setCategories(response.data.categories);
+      } catch (error) {
+        console.error("Error fetching categories:", error);
+      }
+    };
+
+    fetchCategories();
+  }, []);
+
+  const handleCategoryClick = (category) => {
+    setSelectedCategory(category.id);
+    localStorage.setItem("selectedCategory", category.id); // Lưu vào localStorage
+    onCategorySelect(category.id);
+  };
+
+  const handleResetClick = () => {
+    setSelectedCategory(null);
+    localStorage.removeItem("selectedCategory"); // Xóa khỏi localStorage
+    onCategorySelect(""); // Reset category filter
+  };
+
+  const renderCategories = (categories, parentId = 0) => {
+    return categories
+      .filter((category) => category.parent_id === parentId)
+      .map((category) => (
+        <li key={category.id}>
+          <a
+            onClick={() => handleCategoryClick(category.id)}
+            className={selectedCategory === category.id ? "active" : ""}
+          >
+            {category.name}<span>({category.products_count})</span>
+          </a>
+          <ul>{renderCategories(categories, category.id)} </ul>
+        </li>
+      ));
+  };
+
+
   return (
     <div className="sidebar-widget sidebar-widget-wrap sidebar-widget-padding-1 mb-20">
       <h4 className="sidebar-widget-title">Danh Mục</h4>
-      <div className="sidebar-categories-list">
-        <ul>
-          <li>
-            <a href="shop.html">Phụ Kiện</a>
-            <ul>
-              <li>
-                <a href="shop.html">Chưa Phân Loại</a>
+      <div className="sidebar-list">
+        <div className="sidebar-categories">
+          <ul>
+            <li>
+              <a
+                onClick={handleResetClick}
+                className={!selectedCategory ? "active" : ""}
+              >
+                Tất cả loại sản phẩm
+              </a>
+            </li>
+            {categories.map((category) => (
+              <li key={category.id}>
+                <a
+                  onClick={() => handleCategoryClick(category)}
+                  className={selectedCategory == category.id ? "active" : ""}
+                  style={{ cursor: "pointer" }}
+                >
+                  {category.name}
+                  {/* <span>({category.products_count})</span> */}
+                </a>
               </li>
-            </ul>
-          </li>
-          <li>
-            <a href="shop.html">Huyết Áp</a>
-          </li>
-          <li>
-            <a href="shop.html">Khẩu Trang</a>
-          </li>
-          <li>
-            <a href="shop.html">Dụng Cụ Y Tế Gia Đình</a>
-          </li>
-          <li>
-            <a href="shop.html">Thiết Bị Bệnh Viện</a>
-          </li>
-          <li>
-            <a href="shop.html">Cuộc Sống Tự Lập</a>
-          </li>
-          <li>
-            <a href="shop.html">Cá Nhân</a>
-          </li>
-          <li>
-            <a href="shop.html">Hiệu Thuốc</a>
-          </li>
-          <li>  
-            <a href="shop.html">Phẫu Thuật</a>
-          </li>
-        </ul>
+            ))}
+          </ul>
+        </div>
       </div>
     </div>
   );

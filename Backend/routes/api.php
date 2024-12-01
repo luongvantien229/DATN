@@ -1,9 +1,12 @@
 <?php
 
+use App\Http\Controllers\Auth\FacebookController;
+use App\Http\Controllers\Auth\GoogleController;
 use App\Http\Controllers\BannerController;
 use App\Http\Controllers\BrandController;
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\ContactController;
+use App\Http\Controllers\CouponController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\UserController;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
@@ -69,18 +72,20 @@ Route::group(['prefix' => 'users', 'middleware' => [AdminMiddleware::class]], fu
 });
 
 // Warehouse CRUD routes
-Route::group(['prefix' => 'Warehouses', 'middleware' => [AdminMiddleware::class]], function ($router) {
+Route::group(['prefix' => 'warehouses', 'middleware' => [AdminMiddleware::class]], function ($router) {
     Route::controller(WarehouseController::class)->group(function () {
         Route::get('/index', 'index');
         Route::get('/show/{id}', 'show');
+        Route::post('/store', 'store');
+        Route::put('/update/{id}', 'update');
+        Route::delete('/destroy/{id}', 'destroy');
     });
 });
 // Warehouse Products CRUD routes
 Route::group(['prefix' => 'warehouse_products', 'middleware' => [AdminMiddleware::class]], function ($router) {
-    Route::controller(WarehouseProductController::class)->group(function () {
-        Route::post('/store/warehouses/{warehouse_id}/products', 'store');
-        Route::post('/update/warehouses/{warehouse_id}/products/{product_id}', 'update');
-        Route::delete('/destroy/warehouses/{warehouse_id}/products/{product_id}', 'destroy');
+    Route::controller(WarehouseController::class)->group(function () {
+        Route::post('/store/warehouses/{warehouseId}/products', 'addProductToWarehouse');
+        Route::delete('/destroy/warehouses/{warehouseId}/products/{productId}', 'removeProductFromWarehouse');
     });
 });
 
@@ -92,6 +97,8 @@ Route::group(['prefix' => 'brands', 'middleware' => [AdminMiddleware::class]], f
         Route::post('/store', 'store');
         Route::post('/update/{id}', 'update');
         Route::delete('/destroy/{id}', 'destroy');
+        Route::post('/export-csv', 'export-csv');
+        Route::post('/import-csv', 'import-csv');
     });
 });
 
@@ -103,6 +110,9 @@ Route::group(['prefix' => 'categories', 'middleware' => [AdminMiddleware::class]
         Route::post('/store', 'store');
         Route::post('/update/{id}', 'update');
         Route::delete('/destroy/{id}', 'destroy');
+        Route::get('/export-csv', 'export_csv');
+        Route::post('/import-csv', 'import_csv');
+
     });
 });
 
@@ -143,14 +153,17 @@ Route::group(['prefix' => 'products', 'middleware' => [AdminMiddleware::class]],
 // Orders CRUD routes
 Route::group(['prefix' => 'orders'], function ($router) {
     Route::controller(OrderController::class)->group(function () {
-        Route::get('/index', 'index');
-        Route::get('/show/{id}', 'show');
+        Route::get('/index', 'manager_order');
+        Route::get('/view_order/{order_code}', 'view_order');
         Route::post('/store', 'store');
         Route::post('/update/{id}', 'update');
         Route::get('/get_order_items/{id}', 'get_order_items')->middleware('admin');
         Route::get('/get_user_orders/{id}', 'get_user_orders')->middleware('admin');
         Route::post('/change_order_status/{id}', 'change_order_status');
-        Route::post('/print_order/{checkout_code}', 'print_order');
+        Route::post('/update_order_qty', 'update_order_qty');
+        Route::get('/print_order/{order_code}', 'print_order');
+        Route::post('/cancel-order/{id}', [OrderController::class, 'cancel_order']);
+
     });
 });
 
@@ -187,11 +200,33 @@ Route::group(['prefix' => 'posts'], function ($router) {
     });
 });
 
+Route::group(['prefix' => 'coupons', 'middleware' => [AdminMiddleware::class]], function ($router) {
+    Route::controller(CouponController::class)->group(function () {
+        Route::get('/index', 'index');
+        Route::get('/show/{id}', 'show');
+        Route::post('/store', 'store');
+        Route::post('/update/{id}', 'update');
+        Route::delete('/destroy/{id}', 'destroy');
+        Route::post('/update-status/{id}', 'update_status');
+    });
+});
+
 // Contact routers
 Route::group(['prefix' => 'contacts', 'middleware' => [AdminMiddleware::class]], function ($router) {
     Route::controller(ContactController::class)->group(function () {
         Route::get('/index', 'index');
         Route::get('/show/{id}', 'show');
+        Route::delete('/destroy/{id}', 'destroy');
+    });
+});
+
+// Comments routers
+Route::group(['prefix' => 'comments', 'middleware' => [AdminMiddleware::class]], function ($router) {
+    Route::controller(CommentController::class)->group(function () {
+        Route::get('/index', 'index');
+        Route::post('/allow', 'allow_comment');
+        Route::post('/reply', 'reply_comment');
+        Route::delete('/destroy/{id}', 'destroy');
         Route::delete('/destroy/{id}', 'destroy');
     });
 });
@@ -203,50 +238,53 @@ Route::get('/all_products', [IndexController::class, 'all_products']);
 Route::get('/all_brands', [IndexController::class, 'all_brands']);
 Route::get('/all_categories', [IndexController::class, 'all_categories']);
 Route::get('/all_category_posts', [IndexController::class, 'all_category_posts']);
+Route::get('/all_posts', [IndexController::class, 'all_posts']);
 Route::get('/new_products', [IndexController::class, 'new_products']);
 Route::get('/favorite_products', [IndexController::class, 'favorite_products']);
 Route::get('/product_detail/{slug}/{id}', [IndexController::class, 'product_detail']);
+Route::get('/banners/size/{size}', [BannerController::class, 'getBannersBySize']); // ví dụ: GET /api/banners/size/1 để lấy các banner có kích thước 800x600;
+// GET /api/banners/size/2 để lấy các banner có kích thước 650x250.
 // Route::get('/search', [IndexController::class, 'search']);
 Route::get('/search-suggestions', [IndexController::class, 'searchSuggestions']);
 Route::post('/image-search', [ImageSearchController::class, 'searchByImage']);
-Route::post('/contacts', [ContactController::class, 'store']);  // Gửi liên hệ
-Route::post('/add_comments', [CommentController::class, 'store']);  // Gửi bình luận
-Route::post('/comments', [CommentController::class, 'index']);  // DS bình luận
-Route::post('/delete_comments', [CommentController::class, 'destroy']);  // xóa bình luận
+Route::post('/send-contacts', [ContactController::class, 'store']);  // Gửi liên hệ
+Route::get('/load_comments', [CommentController::class, 'load_comments']);  // DS bình luận
+Route::post('/send_comment', [CommentController::class, 'send_comment']);  // Gửi bình luận
 
 Route::get('/filter', [IndexController::class, 'filter']);
 Route::get('/filter_post', [IndexController::class, 'filter_post']);
+// ADMIN filter
+Route::post('/filter-by-date', [IndexController::class, 'filter_by_date']);
+Route::post('/dashboard-filter', [IndexController::class, 'dashboard_filter']);
+Route::post('/days-order', [IndexController::class, 'days_order']);
+Route::get('/show-user-visit', [IndexController::class, 'show_user_visit']);
+
 Route::get('/generate-token', [CallStringeeController::class, 'generateToken']);
 
+// Login Google Account
 
-// Route::group([
-//     'middleware' => 'api',
-//     'prefix' => 'auth'
-// ], function ($router) {
-//     Route::get('/email/verify/{id}/{hash}', function (EmailVerificationRequest $request) {
-//         // Extract the user from the token to ensure they are authenticated
-//         $user = JWTAuth::parseToken()->authenticate();
+Route::get('/login-google', [GoogleController::class, 'login_google']);
+Route::get('/login/google/callback', [GoogleController::class, 'callback_google']);
 
-//         // Check if the user is authenticated
-//         if ($user) {
-//             // Fulfill the email verification request
-//             $request->fulfill();
+Route::get('/login-customer-google', [GoogleController::class, 'login_customer_google']);
+Route::get('/login/customer/google/callback', [GoogleController::class, 'callback_customer_google']);
 
-//             // Redirect or return a JSON response after successful verification
-//             return redirect('/')->with('message', 'Email verified successfully!');
-//         }
+// Login Facebook Account
 
-//         // Return an error if the user is not authenticated
-//         return response()->json(['message' => 'Unauthorized'], 401);
-//     })->middleware(['signed'])->name('verification.verify');
-//     Route::get('/email/verify', function () {
-//         return response()->json([
-//             'message' => 'Please verify your email address.'
-//         ], 200);
-//     })->name('verification.notice');
+Route::get('/login-facebook', [FacebookController::class, 'login_facebook']);
+Route::get('/login/facebook/callback', [FacebookController::class, 'callback_facebook']);
 
+Route::get('/login-customer-facebook', [FacebookController::class, 'login_customer_facebook']);
+Route::get('/login/customer/facebook/callback', [FacebookController::class, 'callback_customer_facebook']);
 
-// });
+Route::post('/check-coupon', [CouponController::class, 'check_coupon']);
+Route::post('/coupons/send-user-vip-coupon', [CouponController::class, 'send_mail_user_vip_coupon']);
+Route::post('/coupons/send-user-coupon', [CouponController::class, 'send_mail_user_coupon']);
+
+// Wishlist
+
+Route::post('/products/{id}/increment-favorite', [ProductController::class, 'incrementFavorite']);
+Route::post('/products/{id}/decrement-favorite', [ProductController::class, 'decrementFavorite']);
 
 
 
@@ -258,3 +296,19 @@ Route::get('/generate-token', [CallStringeeController::class, 'generateToken']);
 
 Route::post('/confirm_order', [OrderController::class, 'confirm_order']);
 Route::post('/pay/order', [PaymentController::class, 'payByStripe']);
+Route::post('/pay', [PaymentController::class, 'pay']);
+
+// Order user
+
+Route::get('/get_user_orders/{id}', [OrderController::class, 'get_order_items_user']);
+
+// Change user info
+Route::put('/change_user_info/{id}', [UserController::class, 'change_user_info']);
+
+// Change user password
+Route::put('/change_user_password/{id}', [UserController::class, 'change_user_password']);
+
+// Forgot password
+Route::post('/forgot-password', [ForgotPasswordController::class, 'forgot_password']);
+Route::post('/reset-password', [ForgotPasswordController::class, 'resetPassword']);
+

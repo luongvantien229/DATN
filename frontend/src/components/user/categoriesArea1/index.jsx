@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
 import CategoriesArena1 from "./CategoriesArea1";
 import useSlick from "../../../hooks/user/slick";
-import axios from "axios"; // Đảm bảo bạn đã cài đặt axios
+import axios from "axios";
+import Style from "./style.scss";
 
 export default function Index() {
   const { categoriesArena1 } = useSlick();
@@ -11,8 +12,7 @@ export default function Index() {
     // Gọi API để lấy danh mục
     const fetchCategories = async () => {
       try {
-        const response = await axios.get("/all_categories"); // Thay đổi từ fetch sang axios
-        console.log(response.data); // Kiểm tra dữ liệu
+        const response = await axios.get("/all_categories"); 
         setCategories(response.data.categories);
 
       } catch (error) {
@@ -24,7 +24,7 @@ export default function Index() {
   }, []);
 
   return (
-    <div className="categories-area pb-70">
+    <div className="categories-area pb-70 categoriesArea1">
       <div className="custom-container">
         <div className="section-title-1 mb-40">
           <h2>Danh mục nổi bật</h2>

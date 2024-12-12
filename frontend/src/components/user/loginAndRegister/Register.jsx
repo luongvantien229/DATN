@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import Swal from "sweetalert2";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 export default function Register() {
   const navigate = useNavigate();
@@ -16,14 +16,16 @@ export default function Register() {
       if (window.grecaptcha) {
         window.grecaptcha.ready(() => {
           setCaptchaReady(true);
-          window.grecaptcha.render("recaptcha-container", {
-            sitekey: "6LdPo2oqAAAAAI3NTsOV8sCti5T2SODCiC20eZHa",
-          });
+          if (!window.grecaptcha.rendered) {
+            window.grecaptcha.render("recaptcha-container", {
+              sitekey: "6LdPo2oqAAAAAI3NTsOV8sCti5T2SODCiC20eZHa", // Thay bằng sitekey của bạn
+            });
+            window.grecaptcha.rendered = true; // Đánh dấu đã render
+          }
         });
       }
     };
 
-    // Ensure reCAPTCHA is loaded after component mounts
     if (typeof window.grecaptcha === "undefined") {
       const script = document.createElement("script");
       script.src = "https://www.google.com/recaptcha/api.js";
@@ -36,18 +38,47 @@ export default function Register() {
     }
   }, []);
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-
+  const validateForm = () => {
+    if (!name.trim()) {
+      Swal.fire({
+        icon: "error",
+        title: "Lỗi",
+        text: "Tên người dùng không được để trống.",
+      });
+      return false;
+    }
+    if (!email.trim() || !/^[^\s@]+@gmail\.com$/.test(email)) {
+      Swal.fire({
+        icon: "error",
+        title: "Lỗi",
+        text: "Vui lòng nhập email hợp lệ với miền @gmail.com.",
+      });
+      return false;
+    }
+    if (!password.trim() || password.length < 6) {
+      Swal.fire({
+        icon: "error",
+        title: "Lỗi",
+        text: "Mật khẩu phải có ít nhất 6 ký tự.",
+      });
+      return false;
+    }
+    if (password !== password2) {
+      Swal.fire({
+        icon: "error",
+        title: "Lỗi",
+        text: "Mật khẩu xác nhận không khớp.",
+      });
+      return false;
+    }
     if (!captchaReady) {
       Swal.fire({
         icon: "error",
         title: "Lỗi",
         text: "reCAPTCHA chưa sẵn sàng. Vui lòng thử lại sau.",
       });
-      return;
+      return false;
     }
-
     const recaptchaResponse = window.grecaptcha.getResponse();
     if (!recaptchaResponse) {
       Swal.fire({
@@ -55,8 +86,19 @@ export default function Register() {
         title: "Lỗi",
         text: "Vui lòng xác minh reCAPTCHA.",
       });
+      return false;
+    }
+    return true;
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    if (!validateForm()) {
       return;
     }
+
+    const recaptchaResponse = window.grecaptcha.getResponse();
 
     try {
       const response = await axios.post("/auth/register", {
@@ -79,19 +121,11 @@ export default function Register() {
       }
     } catch (error) {
       if (error.response) {
-        if (error.response.status === 401) {
-          Swal.fire({
-            icon: "error",
-            title: "Không Được Phép",
-            text: "Vui lòng thử lại.",
-          });
-        } else {
-          Swal.fire({
-            icon: "error",
-            title: "Lỗi",
-            text: `Email đã tồn tại.`,
-          });
-        }
+        Swal.fire({
+          icon: "error",
+          title: "Lỗi",
+          text: error.response.data.message || "Đã xảy ra lỗi. Vui lòng thử lại.",
+        });
       } else {
         Swal.fire({
           icon: "error",
@@ -117,6 +151,7 @@ export default function Register() {
                 name="name"
                 placeholder="Nhập Username"
                 className="form-control"
+                value={name}
                 onChange={(e) => setName(e.target.value)}
               />
             </div>
@@ -127,6 +162,7 @@ export default function Register() {
                 name="email"
                 placeholder="Nhập Email"
                 className="form-control"
+                value={email}
                 onChange={(e) => setEmail(e.target.value)}
               />
             </div>
@@ -137,6 +173,7 @@ export default function Register() {
                 name="password"
                 placeholder="Nhập Mật Khẩu"
                 className="form-control"
+                value={password}
                 onChange={(e) => setPassword(e.target.value)}
               />
             </div>
@@ -147,6 +184,7 @@ export default function Register() {
                 name="password2"
                 placeholder="Nhập Lại Mật Khẩu"
                 className="form-control"
+                value={password2}
                 onChange={(e) => setPassword2(e.target.value)}
               />
             </div>
@@ -157,7 +195,7 @@ export default function Register() {
               <p>
                 Your personal data will be used to support your experience
                 throughout this website, to manage access to your account,
-                and for other purposes described in our{" "}
+                and for other purposes described in our {" "}
                 <a href="#">privacy policy</a>.
               </p>
             </div>

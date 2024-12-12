@@ -9,7 +9,8 @@ const EditProductTypes = () => {
     slug: "",
     status: false,
   });
-  const [error, setError] = useState(null);
+  const [error, setError] = useState(null); // Error state
+  const [success, setSuccess] = useState(false); // Success state
   const navigate = useNavigate();
 
   const generateSlug = (text) => {
@@ -45,7 +46,7 @@ const EditProductTypes = () => {
         );
         setProductType(response.data);
       } catch (error) {
-        setError("Error fetching product type details.");
+        setError("Lỗi khi lấy thông tin dạng sản phẩm.");
         console.error(
           "Error:",
           error.response ? error.response.data : error.message
@@ -82,10 +83,11 @@ const EditProductTypes = () => {
           },
         }
       );
+      setSuccess(true);
       alert("Cập nhật thành công!");
-      navigate("/product-types");
+      setTimeout(() => navigate("/product-types"), 2000); // Redirect after 2 seconds
     } catch (error) {
-      setError("Error updating the product type.");
+      setError("Lỗi khi cập nhật dạng sản phẩm.");
       console.error(
         "Error:",
         error.response ? error.response.data : error.message
@@ -96,12 +98,13 @@ const EditProductTypes = () => {
   return (
     <div className="container-xxl flex-grow-1 container-p-y">
       <div className="card">
-        <h5 className="card-header">Edit Product Type</h5>
+        <h5 className="card-header">Sửa Dạng Sản Phẩm</h5>
         <div className="card-body">
           {error && <div className="alert alert-danger">{error}</div>}
+          {success && <div className="alert alert-success">Dạng sản phẩm đã được cập nhật thành công!</div>}
           <form onSubmit={handleSubmit}>
             <div className="mb-3">
-              <label className="form-label">Product Type Name</label>
+              <label className="form-label">Tên Dạng Sản Phẩm</label>
               <input
                 type="text"
                 className="form-control"
@@ -129,10 +132,10 @@ const EditProductTypes = () => {
                 checked={productType.status}
                 onChange={handleChange}
               />
-              <label className="form-check-label">Active</label>
+              <label className="form-check-label">Kích hoạt</label>
             </div>
             <button type="submit" className="btn btn-primary">
-              Update Product Type
+              Cập Nhật Dạng Sản Phẩm
             </button>
           </form>
         </div>

@@ -119,8 +119,25 @@ class OrderController extends Controller
         <div class="logo">
             <img src="./assets/images/logo/logoo.png" alt="Logo">
         </div>
-        <h1>Nhà thuốc Yên Tâm</h1>
+        <h1>Hiệu thuốc Yên Tâm</h1>
         <h4>Độc lập - Tự do - Hạnh phúc</h4>';
+
+
+        $output .= '
+
+    <p style=" margin: 0; ">
+            <strong>Ngày tạo:</strong> ' . date('d/m/Y', strtotime($order->date_deliver)) . '
+        </p>
+        <p style=" margin: 0;  ">
+            Địa chỉ: Số 123 Đường ABC, Quận XYZ, TP.HCM
+        </p>
+    <p style=" margin: 5px 0; font-size: 14px;">
+        Số điện thoại: 0123-456-789
+    </p>
+    <br>';
+
+
+
 
         // Customer details
         $output .= '
@@ -138,6 +155,27 @@ class OrderController extends Controller
                     <td>' . $user->name . '</td>
                     <td>' . $user->phone . '</td>
                     <td>' . $user->email . '</td>
+                </tr>
+            </tbody>
+        </table>';
+
+        $output .= '
+        <p><strong>Giao hàng tới:</strong></p>
+        <table class="table-styling">
+            <thead>
+                <tr>
+                    <th>Tên người nhận</th>
+                    <th>Số điện thoại</th>
+                    <th>Địa chỉ</th>
+                    <th>Ghi chú *</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>' . $order->shipname . '</td>
+                    <td>' . $order->shipphone . '</td>
+                    <td>' . $order->address . '</td>
+                    <td>' . $order->note . '</td>
                 </tr>
             </tbody>
         </table>';
@@ -196,7 +234,7 @@ class OrderController extends Controller
         // Signatures
         $output .= '
         <p class="text-end" style=" margin-top: 30px; font-weight: bold;">Ký tên</p>
-        <table style="width: 100%; margin-top: 50px; border-collapse: collapse;">
+        <table style="width: 100%; margin-top: 30px; border-collapse: collapse;">
             <thead>
                 <tr>
                     <th style="width: 50%; text-align: center; border: none;">Người lập phiếu</th>
@@ -205,8 +243,8 @@ class OrderController extends Controller
             </thead>
             <tbody>
                 <tr>
-                    <td style="text-align: center; padding-top: 50px;">______________________</td>
-                    <td style="text-align: center; padding-top: 50px;">______________________</td>
+                    <td style="text-align: center; padding-top: 30px;">______________________</td>
+                    <td style="text-align: center; padding-top: 30px;">______________________</td>
                 </tr>
             </tbody>
         </table>';
@@ -240,8 +278,9 @@ class OrderController extends Controller
 
         $order_items = OrderItem::with('product')->where('order_code', $order_code)->get();
 
+        $coupon_code = "no";
         foreach ($order_items as $item) {
-            $coupon_code = $item->coupon_code;
+            $coupon_code = $item->coupon_code ?? "no";
         }
         $condition = 2;
         $number = 0;
@@ -463,49 +502,75 @@ class OrderController extends Controller
 
     public function confirm_order(Request $request)
     {
-        // Fetch cart items from session instead of request input
+        // Fetch cart items from request input
         $cartItems = $request->input('cartItems', []);
-        // $cartItems = session('cart', []);
+        $coupon = $request->input('coupon'); // Could be null
+        $PaymentInformation = $request->input('PaymentInformation');
 
         if (empty($cartItems)) {
             return response()->json(['message' => 'Cart is empty!'], 400);
         }
 
-        $total = 0;
+        // Calculate the subtotal of the cart items
+        $sub_total = 0;
         foreach ($cartItems as $item) {
-            $total += $item['price'] * $item['quantity'];
+            $sub_total += $item['price'] * $item['quantity'];
         }
 
+        // Apply coupon if available
+        $cou = null;
+        $discount = 0;
+        if (!empty($coupon) && isset($coupon['code'])) {
+            $cou = Coupon::where('code', $coupon['code'])->first();
+            if ($cou) {
+                $cou->used .= $coupon['used'] . ',' . auth()->id();
+                $cou->time -= 1;
+                $cou->save();
+
+                if ($coupon['condition'] === 1) { // Percentage discount
+                    $discount = ($sub_total * $coupon['number']) / 100;
+                } elseif ($coupon['condition'] === 2) { // Fixed amount discount
+                    $discount = $coupon['number'];
+                }
+            }
+        }
+
+        // Add shipping fee
+        $feeShip = 50000;
+
+        // Calculate total
+        $total = $sub_total - $discount + $feeShip;
+
+        date_default_timezone_set('Asia/Ho_Chi_Minh');
+        $today = Carbon::now('Asia/Ho_Chi_Minh')->format('Y-m-d');
         try {
-            // Create the order in the database
+            // Create the order
             $order = new Order();
-            $order->user_id = Auth::id();
+            $order->user_id = auth()->id();
             $order->total_price = $total;
-            $order->date_deliver = Carbon::now('Asia/Ho_Chi_Minh')->toDateString();
-            ;
-            $order->payment_method = '1';  // Thanh toán bằng tiền mặt
+            $order->date_deliver = $today;
+            $order->order_code = 'ORD-' . time() . '-' . rand(1000, 9999);
+            $order->payment_method = $PaymentInformation['paymentMethod']; // Thanh toán bằng tiền mặt
             $order->status = 'Pending'; // Initial status
+            $order->shipname = $PaymentInformation['shipName']; //
+            $order->shipphone = $PaymentInformation['shipPhone'];
+            $order->address = $PaymentInformation['address'];
+            $order->note = $PaymentInformation['note'];
             $order->save();
 
-            // Save order items and reduce stock
             foreach ($cartItems as $item) {
-                // Find the product
-                $product = Product::find($item['product_id']);
+                $product = Product::find($item['id']);
                 if (!$product || $product->qty < $item['quantity']) {
                     return response()->json(['message' => 'Product stock is insufficient!'], 400);
                 }
-
-                // Create order item
                 $orderItem = new OrderItem();
                 $orderItem->order_id = $order->id;
-                $orderItem->product_id = $item['product_id'];
+                $orderItem->product_id = $item['id'];
+                $orderItem->order_code = $order->order_code;
+                $orderItem->coupon_code = $coupon['code'] ?? "no"; // Có thể null
                 $orderItem->price = $item['price'];
                 $orderItem->quantity = $item['quantity'];
                 $orderItem->save();
-
-                // Reduce product stock
-                $product->qty -= $item['quantity'];
-                $product->save();
             }
 
             // Update user's reward points
@@ -528,6 +593,7 @@ class OrderController extends Controller
             return response()->json(['message' => 'An error occurred! ' . $e->getMessage()], 500);
         }
     }
+
 
 
     // public function placeOrder(Request $request)
@@ -613,12 +679,15 @@ class OrderController extends Controller
     // }
 
 
-    public function get_order_items_user($id){
+    public function get_order_items_user($id)
+    {
         $orders = Order::where('user_id', $id)
-        ->with(['items' => function ($query) {
-            $query->orderBy('created_at', 'desc');
-        }])
-        ->get();
+            ->with([
+                'items' => function ($query) {
+                    $query->orderBy('created_at', 'desc');
+                }
+            ])
+            ->get();
 
         if ($orders) {
             foreach ($orders as $order) {

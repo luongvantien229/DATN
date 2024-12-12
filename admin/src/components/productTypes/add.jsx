@@ -4,14 +4,15 @@ import axios from "axios";
 
 const AddProductTypes = () => {
   const [productType, setProductType] = useState({ name: "", slug: "", status: false });
-  const [error, setError] = useState(null);
+  const [success, setSuccess] = useState(false); // Success state
+  const [error, setError] = useState(null); // Error state
   const navigate = useNavigate();
 
   const generateSlug = (text) => {
     // Convert to lowercase
     text = text.toLowerCase();
   
-    // Replace accented characters with non-accented equivalents (similar to your PHP function)
+    // Replace accented characters with non-accented equivalents
     text = text
       .replace(/á|à|ả|ã|ạ|ă|ắ|ằ|ẳ|ẵ|ặ|â|ấ|ầ|ẩ|ẫ|ậ/g, 'a')
       .replace(/é|è|ẻ|ẽ|ẹ|ê|ế|ề|ể|ễ|ệ/g, 'e')
@@ -54,10 +55,13 @@ const AddProductTypes = () => {
           Authorization: `Bearer ${token}`,
         },
       });
-      alert("Dạng sản phẩm được thêm thành công!");
-      navigate("/product-types"); // Redirect to product type list after successful creation
+      setSuccess(true); // Set success state to true
+      setTimeout(() => {
+        alert("Dạng sản phẩm đã được thêm thành công!");
+        navigate("/product-types"); // Redirect to product type list after 2 seconds
+      }, 2000);
     } catch (error) {
-      setError("Error occurred while adding the product type!");
+      setError("Có lỗi xảy ra khi thêm dạng sản phẩm!");
       console.error("Error:", error.response ? error.response.data : error.message);
     }
   };
@@ -65,12 +69,13 @@ const AddProductTypes = () => {
   return (
     <div className="container-xxl flex-grow-1 container-p-y">
       <div className="card">
-        <h5 className="card-header">Add Product Type</h5>
+        <h5 className="card-header">Thêm Dạng Sản Phẩm</h5>
         <div className="card-body">
           {error && <div className="alert alert-danger">{error}</div>}
+          {success && <div className="alert alert-success">Dạng sản phẩm được thêm thành công!</div>}
           <form onSubmit={handleSubmit}>
             <div className="mb-3">
-              <label className="form-label">Product Type Name</label>
+              <label className="form-label">Tên Dạng Sản Phẩm</label>
               <input
                 type="text"
                 className="form-control"
@@ -87,7 +92,6 @@ const AddProductTypes = () => {
                 className="form-control"
                 name="slug"
                 value={productType.slug}
-                
                 readOnly // Make slug readonly as it will be auto-generated
               />
             </div>
@@ -99,10 +103,10 @@ const AddProductTypes = () => {
                 checked={productType.status}
                 onChange={handleChange}
               />
-              <label className="form-check-label">Active</label>
+              <label className="form-check-label">Kích hoạt</label>
             </div>
             <button type="submit" className="btn btn-primary">
-              Add Product Type
+              Thêm Dạng Sản Phẩm
             </button>
           </form>
         </div>

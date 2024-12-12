@@ -26,7 +26,7 @@ const ProductArena1 = forwardRef(({ product }, ref) => {
     try {
       
       const response = await axios.post(
-        `/api/products/${product.id}/increment-favorite`
+        `/products/${product.id}/increment-favorite`
       );
       console.log(response.data.message); 
     } catch (error) {

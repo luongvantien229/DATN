@@ -4,7 +4,8 @@ import axios from "axios";
 
 const AddCategoryPost = () => {
   const [categoryPost, setCategoryPost] = useState({ name: "", slug: "", status: false });
-  const [error, setError] = useState(null);
+  const [error, setError] = useState(null); // Trạng thái lỗi
+  const [success, setSuccess] = useState(false); // Trạng thái thành công
   const navigate = useNavigate();
 
   // Slug generation function
@@ -18,7 +19,7 @@ const AddCategoryPost = () => {
       .replace(/ú|ù|ủ|ũ|ụ|ư|ứ|ừ|ử|ữ|ự/g, "u")
       .replace(/ý|ỳ|ỷ|ỹ|ỵ/g, "y")
       .replace(/đ/g, "d");
-      
+
     text = text.replace(
       /[\'\"\`\~\!\@\#\$\%\^\&\*\(\)\+\=\[\]\{\}\|\\\;\:\,\.\/\?\>\<\-\_]/g,
       ""
@@ -46,10 +47,12 @@ const AddCategoryPost = () => {
           Authorization: `Bearer ${token}`,
         },
       });
-      alert("Danh mục bài viết được thêm thành công!");
-      navigate("/category_posts"); // Redirect to category posts list after successful creation
+      setSuccess(true); // Cập nhật trạng thái thành công
+      setTimeout(() => {
+        navigate("/category_posts"); // Navigate to the categories list after success
+      }, 2000);
     } catch (error) {
-      setError("Đã có lỗi xảy ra khi thêm danh mục bài viết!");
+      setError("Đã có lỗi xảy ra khi thêm danh mục bài viết!"); // Hiển thị thông báo lỗi
       console.error("Lỗi:", error.response ? error.response.data : error.message);
     }
   };
@@ -59,7 +62,8 @@ const AddCategoryPost = () => {
       <div className="card">
         <h5 className="card-header">Thêm danh mục bài viết</h5>
         <div className="card-body">
-          {error && <div className="alert alert-danger">{error}</div>}
+          {success && <div className="alert alert-success">Danh mục bài viết đã được thêm thành công!</div>} {/* Hiển thị thông báo thành công */}
+          {error && <div className="alert alert-danger">{error}</div>} {/* Hiển thị thông báo lỗi */}
           <form onSubmit={handleSubmit}>
             <div className="mb-3">
               <label className="form-label">Tên danh mục</label>
@@ -83,7 +87,7 @@ const AddCategoryPost = () => {
                 readOnly
               />
             </div>
-           
+
             <div className="mb-3 form-check">
               <input
                 type="checkbox"

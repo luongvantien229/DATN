@@ -15,6 +15,7 @@ const AddCategories = () => {
   });
   const [image, setImage] = useState(null); // For storing selected image
   const [error, setError] = useState(null);
+  const [success, setSuccess] = useState(false); // Success state for successful submission
   const navigate = useNavigate(); // For navigation
 
   // Slug generation function
@@ -107,13 +108,17 @@ const AddCategories = () => {
         image: null,
       });
       setImage(null);
-      alert("Danh mục được thêm thành công!");
-      navigate("/categories"); // Navigate to the categories list after success
+      setSuccess(true); // Set success state to true after submission
+      setError(null); // Clear any previous errors
+      setTimeout(() => {
+        navigate("/categories"); // Navigate to the categories list after success
+      }, 2000); // Wait for 2 seconds before redirect
     } catch (error) {
       // Error handling
       setError(
         error.response?.data?.message || "Đã có lỗi xảy ra khi thêm danh mục!"
       );
+      setSuccess(false); // Set success state to false if there's an error
       console.error(
         "Lỗi thêm danh mục:",
         error.response ? error.response.data : error.message
@@ -126,6 +131,7 @@ const AddCategories = () => {
       <div className="card">
         <h5 className="card-header">Thêm danh mục mới</h5>
         <div className="card-body">
+          {success && <div className="alert alert-success">Danh mục đã được thêm thành công!</div>}
           {error && <div className="alert alert-danger">{error}</div>}
           <form onSubmit={handleSubmit}>
             <div className="mb-3">

@@ -61,6 +61,7 @@ const AddProducts = () => {
   const [mainImage, setMainImage] = useState(null); // Main product image
   const [relatedImages, setRelatedImages] = useState([]); // Related product images
   const [error, setError] = useState(null);
+  const [success, setSuccess] = useState(false);
   const navigate = useNavigate(); // For navigation
 
   useEffect(() => {
@@ -159,7 +160,14 @@ const AddProducts = () => {
     product.category_id.forEach((id) => {
       formData.append("category_id[]", id); // Gửi từng ID
     });
-
+    if (Array.isArray(product.category_id)) {
+      product.category_id.forEach((id) => {
+        formData.append("category_id[]", id); // Gửi từng ID
+      });
+    } else {
+      formData.append("category_id[]");
+      console.log("category_id is not an array:", product.category_id);
+    }
     formData.append("brand_id", product.brand_id);
     formData.append("favorite", product.favorite);
     formData.append("view", product.view);
@@ -192,8 +200,8 @@ const AddProducts = () => {
           "Content-Type": "multipart/form-data", // Ensure correct content type for file upload
         },
       });
-      alert("Sản phẩm được thêm thành công!");
-      navigate("/products"); // Redirect to product list after successful add
+      setSuccess(true);
+      setTimeout(() => navigate("/products"), 2000); 
     } catch (error) {
       setError("Đã có lỗi xảy ra khi thêm sản phẩm!");
       console.error(
@@ -208,7 +216,8 @@ const AddProducts = () => {
       <div className="card">
         <h5 className="card-header">Thêm sản phẩm</h5>
         <div className="card-body">
-          {error && <div className="alert alert-danger">{error}</div>}
+        {error && <div className="alert alert-danger">{error}</div>}
+        {success && <div className="alert alert-success">Sản phẩm đã được thêm thành công!</div>}
           <form onSubmit={handleSubmit}>
             <div className="mb-3">
               <label className="form-label">Tên sản phẩm</label>

@@ -71,7 +71,8 @@ class PaymentController extends Controller
     public function pay(Request $request)
     {
         $cartItems = $request->input('cartItems', []);
-        $coupon = $request->input('coupon');
+        $coupon = $request->input('coupon'); // Có thể null
+        $PaymentInformation = $request->input('PaymentInformation');
         if (empty($cartItems)) {
             return response()->json(['message' => 'Cart is empty!'], 400);
         }
@@ -82,7 +83,6 @@ class PaymentController extends Controller
         ]);
 
         try {
-
             $lineItems = [];
             foreach ($cartItems as $item) {
                 $lineItems[] = [
@@ -90,19 +90,22 @@ class PaymentController extends Controller
                         'currency' => 'USD',
                         'unit_amount' => $item['price'] * 100,
                         'product_data' => [
-                            'name' => $item['name'], // assuming name is in $cartItems
-                            // 'description' => $item['description'] ?? '', // optional description
+                            'name' => $item['name'],
                         ],
                     ],
                     'quantity' => $item['quantity'],
                 ];
             }
 
-            $cou = Coupon::where('code', $coupon['code'])->first();
-            if ($cou) {
-                $cou->used .= $coupon['used'] . ',' . auth()->id();
-                $cou->time -= 1;
-                $cou->save();
+            // Xử lý coupon nếu tồn tại
+            $cou = null;
+            if (!empty($coupon) && isset($coupon['code'])) {
+                $cou = Coupon::where('code', $coupon['code'])->first();
+                if ($cou) {
+                    $cou->used .= $coupon['used'] . ',' . auth()->id();
+                    $cou->time -= 1;
+                    $cou->save();
+                }
             }
 
             $sub_total = 0;
@@ -110,7 +113,7 @@ class PaymentController extends Controller
                 $sub_total += $item['price'] * $item['quantity'];
             }
             $discount = 0;
-            if (!empty($coupon)) {
+            if (!empty($coupon) && $cou) {
                 if (isset($coupon['condition']) && $coupon['condition'] === 1) {
                     $discount = ($sub_total * $coupon['number']) / 100;
                 } elseif (isset($coupon['condition']) && $coupon['condition'] === 2) {
@@ -124,17 +127,20 @@ class PaymentController extends Controller
 
             date_default_timezone_set('Asia/Ho_Chi_Minh');
             $today = Carbon::now('Asia/Ho_Chi_Minh')->format('Y-m-d');
-            // Create the order in the database
+
             $order = new Order();
             $order->user_id = auth()->id();
             $order->total_price = $total;
             $order->date_deliver = $today;
             $order->order_code = 'ORD-' . time() . '-' . rand(1000, 9999);
-            $order->payment_method = 'Chuyển khoản';
-            $order->status = 'Pending';
+            $order->payment_method = $PaymentInformation['paymentMethod']; // Thanh toán bằng tiền mặt
+            $order->status = 'Pending'; // Initial status
+            $order->shipname = $PaymentInformation['shipName']; //
+            $order->shipphone = $PaymentInformation['shipPhone'];
+            $order->address = $PaymentInformation['address'];
+            $order->note = $PaymentInformation['note'];
             $order->save();
 
-            // Save order items
             foreach ($cartItems as $item) {
                 $product = Product::find($item['id']);
                 if (!$product || $product->qty < $item['quantity']) {
@@ -144,31 +150,29 @@ class PaymentController extends Controller
                 $orderItem->order_id = $order->id;
                 $orderItem->product_id = $item['id'];
                 $orderItem->order_code = $order->order_code;
-                $orderItem->coupon_code = $coupon['code'];
+                $orderItem->coupon_code = $coupon['code'] ?? "no"; // Có thể null
                 $orderItem->price = $item['price'];
                 $orderItem->quantity = $item['quantity'];
                 $orderItem->save();
             }
 
-            // Clear the cart (if stored in session or user)
             session()->forget('cart');
 
-            // Set Stripe API key
             Stripe::setApiKey(env('STRIPE_KEY'));
 
-            // Create a Stripe checkout session
             $checkout_session = Session::create([
                 'payment_method_types' => ['card'],
                 'line_items' => $lineItems,
                 'mode' => 'payment',
                 'success_url' => $request->success_url,
-                'cancel_url' => $request->input('cancel_url', url('/cancel')), // Optional cancel URL
+                'cancel_url' => $request->input('cancel_url', url('/cancel')),
             ]);
 
-            // Phát sự kiện đơn hàng hoàn thành (realtime cho admin)
+            $user = Auth::user();
+            $user->points += floor($total / 1000); // Tiêu 1000 được 1 điểm
+            $user->save();
             broadcast(new OrderCompletedEvent($order))->toOthers();
 
-            // Gửi email hóa đơn sau khi đặt hàng
             Mail::to(auth()->user()->email)->send(new OrderInvoiceMail($order));
 
             return response()->json([

@@ -21,6 +21,10 @@ return new class extends Migration
             $table->foreignId('user_id')->references('id')->on('users')->onDelete('cascade');
             // $table->foreignId('location_id')->references('id')->on('locations')->onDelete('cascade');
             $table->string('payment_method');
+            $table->string('shipname')->default(null);
+            $table->string('shipphone')->default(null);
+            $table->string('address')->default(null);
+            $table->string('note')->default(null);
             $table->timestamps();
 
 

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef  } from "react";
 import { Link } from "react-router-dom";
 import axios from "axios";
 import 'datatables.net-dt/css/dataTables.dataTables.css';
@@ -10,14 +10,40 @@ const Users = () => {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const tableInitialized = useRef(false);
 
-  const handleLockChange = (e, id) => {
+  const handleLockChange = async (e, id) => {
     const { value } = e.target;
-    setUsers((prevUsers) =>
-      prevUsers.map((user) =>
-        user.id === id ? { ...user, lock: value } : user
-      )
-    );
+    try {
+      const token = localStorage.getItem("token");
+
+      // Send the updated lock status to the backend
+      await axios.post(
+        `http://localhost:8000/api/users/change_user_lock/${id}`,
+        { lock: value },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      // Update the lock status in the local state
+      setUsers((prevUsers) =>
+        prevUsers.map((user) =>
+          user.id === id ? { ...user, lock: parseInt(value) } : user
+        )
+      );
+
+      alert("Cập nhật trạng thái người dùng thành công!");
+    } catch (error) {
+      setError("Đã có lỗi xảy ra khi thay đổi trạng thái khóa người dùng!");
+      console.error(
+        "Lỗi khi thay đổi trạng thái khóa:",
+        error.response ? error.response.data : error.message
+      );
+    }
   };
 
   useEffect(() => {
@@ -57,7 +83,7 @@ const Users = () => {
   }, []);
 
   useEffect(() => {
-    if (!loading && users.length > 0) {
+    if (!loading && users.length > 0 && !tableInitialized.current) {
       // Kiểm tra nếu DataTable đã được khởi tạo trước đó
       if ($.fn.DataTable.isDataTable("#myTable")) {
         $('#myTable').DataTable().clear().destroy(); // Phá hủy DataTable trước khi khởi tạo lại
@@ -68,6 +94,7 @@ const Users = () => {
         paging: true,
         searching: true,
       });
+      tableInitialized.current = true;
     }
   }, [loading, users]);
 
@@ -94,35 +121,6 @@ const Users = () => {
     }
   };
 
-  const ChangeLockUser = async (id) => {
-    const confirmChange = window.confirm(
-      "Bạn có chắc chắn muốn thay đổi trạng thái khóa của người dùng này không?"
-    );
-    if (!confirmChange) return;
-
-    try {
-      const token = localStorage.getItem("token");
-      const selectedUser = users.find((user) => user.id === id);
-      await axios.post(
-        `http://localhost:8000/api/users/change_user_lock/${id}`,
-        { lock: selectedUser.lock },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "multipart/form-data",
-          },
-        }
-      );
-      alert("Cập nhật thành công!");
-    } catch (error) {
-      setError("Đã có lỗi xảy ra khi thay đổi trạng thái khóa người dùng!");
-      console.error(
-        "Lỗi khi thay đổi trạng thái khóa:",
-        error.response ? error.response.data : error.message
-      );
-    }
-  };
-
   if (loading) {
     return <div>Đang tải người dùng...</div>;
   }
@@ -142,7 +140,7 @@ const Users = () => {
           }}
         >
           <h5 className="card-header">Danh sách người dùng</h5>
-          <Link to="/add-users">
+          <Link to="/add-user">
             <button type="button" className="btn rounded-pill btn-primary m-6">
               Thêm người dùng
             </button>
@@ -211,23 +209,15 @@ const Users = () => {
                       onChange={(e) => handleLockChange(e, user.id)}
                       className="form-control"
                     >
-                      <option value={0} className="bg-primary">
-                        Không khóa
-                      </option>
-                      <option value={1} className="bg-danger">
-                        Khóa
-                      </option>
+                      <option value={0}>Không khóa</option>
+                      <option value={1}>Khóa</option>
                     </select>
                   </td>
                   <td>
                     <div>
-                      <button
-                        className="btn btn-sm btn-outline-primary"
-                        onClick={() => ChangeLockUser(user.id)}
-                      >
-                        <i className="bx bx-key me-1" style={{ color: "blue" }}></i>{" "}
-                        Cập nhật
-                      </button>
+                    <Link className="btn btn-sm btn-outline-primary me-2" to={`/edit-user/${user.id}`}>
+                        <i className="bx bx-edit-alt me-1" style={{ color: "blue" }}></i> Sửa 
+                      </Link>
                       <button
                         className="btn btn-sm btn-outline-danger"
                         onClick={() => deleteUser(user.id)}

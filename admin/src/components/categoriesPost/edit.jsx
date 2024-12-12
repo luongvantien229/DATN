@@ -3,17 +3,18 @@ import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 
 const EditCategoryPost = () => {
-  const { id } = useParams(); // Get category_post ID from URL
+  const { id } = useParams(); // Lấy ID danh mục bài viết từ URL
   const [categoryPost, setCategoryPost] = useState({
     name: "",
     slug: "",
     status: false,
   });
   const [error, setError] = useState(null);
-  const [loading, setLoading] = useState(false); // Loading state
+  const [success, setSuccess] = useState(false); // Trạng thái thành công
+  const [loading, setLoading] = useState(false); // Trạng thái loading
   const navigate = useNavigate();
 
-  // Slug generation function
+  // Hàm tạo slug
   const generateSlug = (text) => {
     text = text.toLowerCase();
     text = text
@@ -24,7 +25,7 @@ const EditCategoryPost = () => {
       .replace(/ú|ù|ủ|ũ|ụ|ư|ứ|ừ|ử|ữ|ự/g, "u")
       .replace(/ý|ỳ|ỷ|ỹ|ỵ/g, "y")
       .replace(/đ/g, "d");
-      
+
     text = text.replace(
       /[\'\"\`\~\!\@\#\$\%\^\&\*\(\)\+\=\[\]\{\}\|\\\;\:\,\.\/\?\>\<\-\_]/g,
       ""
@@ -36,7 +37,7 @@ const EditCategoryPost = () => {
   useEffect(() => {
     const fetchCategoryPost = async () => {
       const token = localStorage.getItem("token");
-      setLoading(true); // Start loading
+      setLoading(true); // Bắt đầu loading
       try {
         const response = await axios.get(
           `http://localhost:8000/api/category_posts/show/${id}`,
@@ -48,13 +49,13 @@ const EditCategoryPost = () => {
         );
         setCategoryPost(response.data);
       } catch (error) {
-        setError("Error fetching category post details.");
+        setError("Lỗi khi lấy thông tin danh mục bài viết.");
         console.error(
-          "Error:",
+          "Lỗi:",
           error.response ? error.response.data : error.message
         );
       } finally {
-        setLoading(false); // End loading
+        setLoading(false); // Kết thúc loading
       }
     };
 
@@ -66,7 +67,7 @@ const EditCategoryPost = () => {
     setCategoryPost({
       ...categoryPost,
       [name]: type === "checkbox" ? checked : value,
-      ...(name === "name" && { slug: generateSlug(value) }), // Update slug when name changes
+      ...(name === "name" && { slug: generateSlug(value) }), // Cập nhật slug khi tên thay đổi
     });
   };
 
@@ -77,7 +78,7 @@ const EditCategoryPost = () => {
     formData.append("name", categoryPost.name);
     formData.append("slug", categoryPost.slug);
     formData.append("status", categoryPost.status ? 1 : 0);
-    setLoading(true); // Start loading
+    setLoading(true); // Bắt đầu loading
 
     try {
       await axios.post(
@@ -92,16 +93,18 @@ const EditCategoryPost = () => {
           },
         }
       );
-      alert("Cập nhật thành công!");
-      navigate("/category_posts");
+      setSuccess(true); // Đặt trạng thái thành công
+      setTimeout(() => {
+        navigate("/category_posts"); // Navigate to the categories list after success
+      }, 2000);
     } catch (error) {
-      setError("Error updating the category post.");
+      setError("Lỗi khi cập nhật danh mục bài viết.");
       console.error(
-        "Error:",
+        "Lỗi:",
         error.response ? error.response.data : error.message
       );
     } finally {
-      setLoading(false); // End loading
+      setLoading(false); // Kết thúc loading
     }
   };
 
@@ -110,8 +113,9 @@ const EditCategoryPost = () => {
       <div className="card">
         <h5 className="card-header">Chỉnh sửa danh mục bài viết</h5>
         <div className="card-body">
-          {loading && <div>Loading...</div>}
+          {loading && <div>Đang tải...</div>}
           {error && <div className="alert alert-danger">{error}</div>}
+          {success && <div className="alert alert-success">Cập nhật thành công!</div>}
           <form onSubmit={handleSubmit}>
             <div className="mb-3">
               <label className="form-label">Tên danh mục</label>
@@ -135,7 +139,7 @@ const EditCategoryPost = () => {
                 readOnly
               />
             </div>
-           
+
             <div className="mb-3 form-check">
               <input
                 type="checkbox"

@@ -196,19 +196,25 @@ function ViewOrder() {
                   <td>
                     <strong>Tên người vận chuyển</strong>
                   </td>
-                  <td>{order_items[0]?.shipper_name || "N/A"}</td>
+                  <td>{orders[0]?.shipname || "N/A"}</td>
+                </tr>
+                <tr>
+                  <td>
+                    <strong>Số điện thoại</strong>
+                  </td>
+                  <td>{orders[0]?.shipphone || "N/A"}</td>
                 </tr>
                 <tr>
                   <td>
                     <strong>Địa chỉ</strong>
                   </td>
-                  <td>{user?.address || "N/A"}</td>
+                  <td>{orders[0]?.address || "N/A"}</td>
                 </tr>
                 <tr>
                   <td>
                     <strong>Ghi chú</strong>
                   </td>
-                  <td>{order_items[0]?.note || "N/A"}</td>
+                  <td>{orders[0]?.note || "N/A"}</td>
                 </tr>
                 <tr>
                   <td>

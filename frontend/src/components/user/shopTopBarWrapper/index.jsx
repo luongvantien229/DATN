@@ -15,7 +15,7 @@ export default function Index() {
     brand_id: "",
     category_id: "",
     price: "",
-    sort_by: "default",
+    sort_by: "",
   });
   const [currentPage, setCurrentPage] = useState(1); 
   const [totalPages, setTotalPages] = useState(0); 
@@ -61,6 +61,12 @@ export default function Index() {
     setCurrentPage(page); // Update the current page
   };
 
+  const handleSortChange = (event) => {
+    const value = event.target.value;
+    setSelectedValue(value); // Update the selected value in state
+    handleFilterChange(value); // Call the parent's filter change function
+  };
+
   if (loading) return <p>Loading products...</p>;
   if (error) return <p>Error fetching products: {error}</p>;
 
@@ -82,7 +88,7 @@ export default function Index() {
                 </span>
               </div>
               <div className="sort-by-dropdown-wrap">
-                <select name="sort_by" onChange={handleFilterChange}>
+                <select name="sort_by" onChange={handleFilterChange} value={filters.sort_by}>
                   <option value="default">Mặc định</option>
                   <option value="Sort_A_Z">Sắp xếp A-Z</option>
                   <option value="Sort_Z_A">Sắp xếp Z-A</option>

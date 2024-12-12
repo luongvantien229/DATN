@@ -51,7 +51,7 @@ class IndexController extends Controller
     }
     public function all_categories()
     {
-        $categories = Category::where('status', 1)
+        $categories = Category::withCount('products')->where('status', 1)
             ->orderBy('created_at', 'desc')->get();
 
         $listCategory = [];
@@ -86,9 +86,9 @@ class IndexController extends Controller
         ], 200);
     }
 
-    public function post_detail($id, Request $request)
+    public function post_detail($slug,$id, Request $request)
     {
-        $post = Post::find($id);
+        $post = Post::with('users','category_posts')->find($id);
         if ($post === null) {
             return response()->json('Post not found', 404);
         }
@@ -352,7 +352,7 @@ class IndexController extends Controller
         // }
 
         // Paginate the results
-        $products = $query->paginate(8);
+        $products = $query->paginate(20);
 
         // // Min and Max price for filters
         // $min_price = Product::min('price');

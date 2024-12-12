@@ -14,7 +14,11 @@ class Order extends Model
         'total_price',
         'payment_method',
         'date_deliver',
-        'status'
+        'status',
+        'shipname',
+        'shipphone',
+        'address',
+        'note',
     ];
 
     public function user()

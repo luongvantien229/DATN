@@ -26,7 +26,7 @@ class Category extends Model
 
     public function products()
     {
-        return $this->belongsToMany(Product::class);
+        return $this->hasMany(Product::class);
     }
 
     public static function recursive($categories, $parent = 0, $level = 1, &$listCategory)

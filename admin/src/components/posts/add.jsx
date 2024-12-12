@@ -4,10 +4,7 @@ import axios from "axios";
 import { CKEditor } from "@ckeditor/ckeditor5-react";
 import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
 
-
-
-
-import { jwtDecode } from 'jwt-decode'; // Updated import
+import { jwtDecode } from 'jwt-decode'; // Cập nhật import
 
 const AddPosts = () => {
   const [categories, setCategories] = useState([]);
@@ -20,7 +17,8 @@ const AddPosts = () => {
     status: false,
   });
   const [image, setImage] = useState(null);
-  const [error, setError] = useState(null);
+  const [error, setError] = useState(null); // Trạng thái lỗi
+  const [success, setSuccess] = useState(false); // Trạng thái thành công
   const navigate = useNavigate();
 
   const editorConfiguration = {
@@ -97,7 +95,7 @@ const AddPosts = () => {
         );
         setCategories(categoryRes.data.data);
       } catch (error) {
-        console.error("Error fetching data: ", error);
+        console.error("Lỗi khi lấy dữ liệu: ", error); // Vietnamese error message
       }
     };
 
@@ -122,7 +120,7 @@ const AddPosts = () => {
     const token = localStorage.getItem("token");
 
     const decodedToken = jwtDecode(token);
-    const userId = decodedToken?.sub; // Assuming 'sub' contains the user ID
+    const userId = decodedToken?.sub; // Giả sử 'sub' chứa ID người dùng
 
     const formData = new FormData();
     formData.append("title", post.title);
@@ -131,9 +129,9 @@ const AddPosts = () => {
     formData.append("content", post.content);
     formData.append("category_posts_id", post.category_posts_id);
     formData.append("status", post.status ? 1 : 0);
-    formData.append("user_id", userId); // Add user ID here
+    formData.append("user_id", userId); // Thêm ID người dùng vào đây
     if (image) {
-      formData.append("image", image); // Add image to form data if selected
+      formData.append("image", image); // Thêm ảnh vào form data nếu đã chọn
     }
 
     try {
@@ -153,14 +151,14 @@ const AddPosts = () => {
         status: false,
       });
       setImage(null);
-      alert("Bài viết được thêm thành công!");
-      navigate("/posts");
+      setSuccess(true); // Cập nhật trạng thái thành công
+      setTimeout(() => navigate("/posts"), 2000);
     } catch (error) {
       setError(
-        error.response?.data?.message || "Đã có lỗi xảy ra khi thêm bài viết!"
+        error.response?.data?.message || "Đã có lỗi xảy ra khi thêm bài viết!" // Thông báo lỗi
       );
       console.error(
-        "Lỗi thêm bài viết:",
+        "Lỗi khi thêm bài viết:",
         error.response ? error.response.data : error.message
       );
     }
@@ -171,7 +169,8 @@ const AddPosts = () => {
       <div className="card">
         <h5 className="card-header">Thêm bài viết mới</h5>
         <div className="card-body">
-          {error && <div className="alert alert-danger">{error}</div>}
+          {error && <div className="alert alert-danger">{error}</div>} {/* Hiển thị lỗi */}
+          {success && <div className="alert alert-success">Bài viết đã được thêm thành công!</div>} {/* Hiển thị thông báo thành công */}
           <form onSubmit={handleSubmit}>
             <div className="mb-3">
               <label className="form-label">Tiêu đề bài viết</label>
@@ -223,8 +222,6 @@ const AddPosts = () => {
                   const data = editor.getData();
                   setPost({ ...post, content: data });
                 }}
-                
-                
               />
             </div>
             <div className="mb-3">

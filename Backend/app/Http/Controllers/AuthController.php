@@ -23,7 +23,7 @@ class AuthController extends Controller
      */
     public function register()
     {
-        $validator = Validator::make(request()->all(), [
+        $validator = RegisterValid::make(request()->all(), [
             'name' => 'required',
             'email' => 'required|email|unique:users',
             // 'password' => 'required|min:8',
@@ -58,7 +58,7 @@ class AuthController extends Controller
             'message' => 'Đăng ký hoàn tất!',
             'user' => $user,
             'token' => $token
-        ],201);
+        ], 201);
     }
 
 
@@ -80,21 +80,21 @@ class AuthController extends Controller
             // Redirect to admin
             return response()->json([
                 'message' => 'Welcome Admin',
-
+                'user' => $user,
                 'token' => $token
             ]);
         } else if ($user->id_role == 2) {
             // Redirect to website
             return response()->json([
                 'message' => 'Welcome to the website',
-
+                'user' => $user,
                 'token' => $token
             ]);
         } else if ($user->id_role == 3) {
             // Redirect to admin
             return response()->json([
                 'message' => 'Welcome Admin',
-
+                'user' => $user,
                 'token' => $token
             ]);
         }

@@ -19,6 +19,7 @@ const EditPosts = () => {
   const [image, setImage] = useState(null);
   const [existingImage, setExistingImage] = useState(null);
   const [error, setError] = useState(null);
+  const [success, setSuccess] = useState(false); // Trạng thái thành công
   const navigate = useNavigate();
 
   const editorConfiguration = {
@@ -97,7 +98,7 @@ const EditPosts = () => {
         setExistingImage(response.data.image);
       } catch (error) {
         console.error(error); // Log the error for debugging
-        setError("Failed to fetch post data.");
+        setError("Lấy dữ liệu bài viết thất bại.");
       }
     };
 
@@ -141,26 +142,29 @@ const EditPosts = () => {
           Authorization: `Bearer ${token}`,
           "Content-Type": "multipart/form-data",
         },
-          data: {
-            _method: "put",
-          },
+        data: {
+          _method: "put",
+        },
       });
-      alert("Post updated successfully!");
-      navigate("/posts");
+      setSuccess(true); // Đánh dấu thành công
+      setError(null); // Xóa lỗi nếu có
+      setTimeout(() => navigate("/posts"), 2000);
     } catch (error) {
-      setError("Failed to update post.");
+      setSuccess(false); // Đánh dấu thất bại
+      setError("Cập nhật bài viết thất bại.");
     }
   };
 
   return (
     <div className="container-xxl flex-grow-1 container-p-y">
       <div className="card">
-        <h5 className="card-header">Edit Post</h5>
+        <h5 className="card-header">Chỉnh sửa bài viết</h5>
         <div className="card-body">
           {error && <div className="alert alert-danger">{error}</div>}
+          {success && <div className="alert alert-success">Cập nhật bài viết thành công!</div>}
           <form onSubmit={handleSubmit}>
             <div className="mb-3">
-              <label className="form-label">Post Title</label>
+              <label className="form-label">Tiêu đề bài viết</label>
               <input
                 type="text"
                 className="form-control"
@@ -181,7 +185,7 @@ const EditPosts = () => {
               />
             </div>
             <div className="mb-3">
-              <label className="form-label">Description</label>
+              <label className="form-label">Mô tả</label>
               <textarea
                 className="form-control"
                 name="description"
@@ -190,7 +194,7 @@ const EditPosts = () => {
               />
             </div>
             <div className="mb-3">
-              <label className="form-label">Content</label>
+              <label className="form-label">Nội dung</label>
               <CKEditor
                 editor={ClassicEditor}
                 data={post.content}
@@ -199,7 +203,7 @@ const EditPosts = () => {
               />
             </div>
             <div className="mb-3">
-              <label className="form-label">Post Image</label>
+              <label className="form-label">Hình ảnh bài viết</label>
               {existingImage && (
                 <div className="mb-3">
                   <img src={`${existingImage}`} alt="Post" width="100" />
@@ -213,14 +217,14 @@ const EditPosts = () => {
               />
             </div>
             <div className="mb-3">
-              <label className="form-label">Category</label>
+              <label className="form-label">Danh mục</label>
               <select
                 name="category_posts_id"
                 className="form-control"
                 value={post.category_posts_id}
                 onChange={handleChange}
               >
-                <option value="0">Select a category</option>
+                <option value="0">Chọn danh mục</option>
                 {postCategories.map((cat) => (
                   <option key={cat.id} value={cat.id}>
                     {cat.name}
@@ -236,10 +240,10 @@ const EditPosts = () => {
                 checked={post.status}
                 onChange={handleChange}
               />
-              <label className="form-check-label">Active</label>
+              <label className="form-check-label">Kích hoạt</label>
             </div>
             <button type="submit" className="btn btn-primary">
-              Update Post
+              Cập nhật bài viết
             </button>
           </form>
         </div>

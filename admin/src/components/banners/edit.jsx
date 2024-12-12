@@ -7,16 +7,16 @@ const EditBanners = () => {
   const [banner, setBanner] = useState({
     name: "",
     description: "",
-    size: "", // Ensure size is properly set
+    size: "",
     status: false,
     image_path: null,
   });
 
-  const [existingImage, setExistingImage] = useState(null); // To store the current image
-  const [error, setError] = useState(null); // To handle errors
+  const [existingImage, setExistingImage] = useState(null);
+  const [success, setSuccess] = useState(false); // Trạng thái thành công
+  const [error, setError] = useState(null); // Trạng thái lỗi
   const navigate = useNavigate();
 
-  // Fetch banner data when the component mounts
   useEffect(() => {
     const fetchBanner = async () => {
       try {
@@ -29,8 +29,8 @@ const EditBanners = () => {
             },
           }
         );
-        setBanner(response.data); // Set the fetched banner data
-        setExistingImage(response.data.image_path); // Store the existing image path
+        setBanner(response.data);
+        setExistingImage(response.data.image_path);
       } catch (error) {
         setError("Đã có lỗi xảy ra khi lấy quảng cáo!");
       }
@@ -44,7 +44,7 @@ const EditBanners = () => {
     if (name === "image_path") {
       const file = files[0];
       if (file && file.size > 2 * 1024 * 1024) {
-        setError("File size exceeds 2MB");
+        setError("Dung lượng ảnh vượt quá 2MB");
         return;
       }
       setBanner({ ...banner, image_path: file });
@@ -53,19 +53,18 @@ const EditBanners = () => {
     }
   };
 
-  // Handle form submission to update the banner
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setSuccess(false); // Đặt lại trạng thái thành công trước khi gửi
+    setError(null); // Đặt lại trạng thái lỗi trước khi gửi
     const token = localStorage.getItem("token");
 
-    // Create FormData to handle file upload and banner details
     const formData = new FormData();
     formData.append("name", banner.name);
     formData.append("description", banner.description);
-    formData.append("size", banner.size); // Ensure size is correctly passed
+    formData.append("size", banner.size);
     formData.append("status", banner.status ? 1 : 0);
 
-    // Only append the new image if it's different from the existing one
     if (banner.image_path && banner.image_path !== existingImage) {
       formData.append("image_path", banner.image_path);
     }
@@ -84,8 +83,8 @@ const EditBanners = () => {
           },
         }
       );
-      alert("Cập nhật thành công!");
-      navigate("/banners");
+      setSuccess(true); // Cập nhật trạng thái thành công
+      setTimeout(() => navigate("/banners"), 2000); // Điều hướng sau 2 giây
     } catch (error) {
       const errMsg =
         error.response?.data?.message ||
@@ -100,6 +99,9 @@ const EditBanners = () => {
         <h5 className="card-header">Chỉnh sửa quảng cáo</h5>
         <div className="card-body">
           {error && <div className="alert alert-danger">{error}</div>}
+          {success && (
+            <div className="alert alert-success">Cập nhật thành công!</div>
+          )}
           <form onSubmit={handleSubmit}>
             <div className="mb-3">
               <label className="form-label">Tên Banner</label>
@@ -140,46 +142,27 @@ const EditBanners = () => {
             </div>
             <div className="mb-3">
               <label className="form-label">Ảnh Banner</label>
-              {/* {existingImage ? (
-                <div className="mb-3">
-                  <img
-                    src={`http://localhost:8000/assets/uploads/banner/${existingImage}`}
-                    alt={banner.name}
-                    style={{ width: "100px" }}
-                  />
-                </div>
-              ) : (
-                <p>Không có ảnh</p>
-              )} */}
-
               {existingImage ? (
-                // Nếu có ảnh, kiểm tra loại URL
                 existingImage.includes("http") ? (
                   <div className="mb-3">
                     <img
-                      src={existingImage} // Trường hợp URL đầy đủ
+                      src={existingImage}
                       alt={banner.name}
-                      style={{
-                        width: "100px",
-                      }}
+                      style={{ width: "100px" }}
                     />
                   </div>
                 ) : (
                   <div className="mb-3">
                     <img
-                     src={`http://localhost:8000/assets/uploads/banner/${existingImage}`} // Trường hợp đường dẫn tương đối
+                      src={`http://localhost:8000/assets/uploads/banner/${existingImage}`}
                       alt={banner.name}
-                      style={{
-                        width: "100px",
-                      }}
+                      style={{ width: "100px" }}
                     />
                   </div>
                 )
               ) : (
-                // Nếu không có ảnh
                 <p>Không có ảnh</p>
               )}
-
               <input
                 type="file"
                 name="image_path"

@@ -239,6 +239,7 @@ Route::get('/all_brands', [IndexController::class, 'all_brands']);
 Route::get('/all_categories', [IndexController::class, 'all_categories']);
 Route::get('/all_category_posts', [IndexController::class, 'all_category_posts']);
 Route::get('/all_posts', [IndexController::class, 'all_posts']);
+Route::get('/post-detail/{slug}/{id}', [IndexController::class, 'post_detail']);
 Route::get('/new_products', [IndexController::class, 'new_products']);
 Route::get('/favorite_products', [IndexController::class, 'favorite_products']);
 Route::get('/product_detail/{slug}/{id}', [IndexController::class, 'product_detail']);

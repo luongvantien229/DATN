@@ -59,6 +59,7 @@ export default function HeaderTopHeaderInfoRight() {
     try {
       await axios.post("http://127.0.0.1:8000/api/auth/logout");
       localStorage.removeItem("token");
+      localStorage.removeItem("User");
       setIsLoggedIn(false);
       Swal.fire({
         title: "Bạn đã đăng xuất thành công!",

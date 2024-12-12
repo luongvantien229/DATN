@@ -117,14 +117,14 @@ export default function Index() {
             </div>
           </Link>
         </li>
-        <li className={`menu-item ${activeMenu === "/warehouses" ? "active open" : ""}`}>
+        {/* <li className={`menu-item ${activeMenu === "/warehouses" ? "active open" : ""}`}>
           <Link to="/warehouses" className="menu-link" onClick={() => handleMenuClick("/warehouses")}>
             <i className="menu-icon tf-icons bx bx-layout"></i>
             <div className="text-truncate" data-i18n="Nhà kho">
               Nhà kho
             </div>
           </Link>
-        </li>
+        </li> */}
         <li className={`menu-item ${activeMenu === "/coupons" ? "active open" : ""}`}>
           <Link to="/coupons" className="menu-link" onClick={() => handleMenuClick("/coupons")}>
             <i className="menu-icon tf-icons bx bx-layout"></i>
@@ -141,13 +141,13 @@ export default function Index() {
             </div>
           </Link>
         </li>
-        <li className="menu-item">
+        {/* <li className="menu-item">
           <Link to="/login">
             <button type="button" className="btn btn-primary">
               Đăng Nhập
             </button>
           </Link>
-        </li>
+        </li> */}
       </ul>
     </aside>
   );

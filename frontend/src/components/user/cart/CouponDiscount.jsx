@@ -53,7 +53,7 @@ export default function CartItem() {
           );
         }
       } else {
-        setMessage(response.data.message || "Invalid coupon code.");
+        toast.error(response.data.message || "Invalid coupon code.");
       }
     } catch (error) {
       if (used===true) {

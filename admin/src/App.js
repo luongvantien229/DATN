@@ -36,6 +36,8 @@ import ViewWarehouse from "./components/warehouses/view.jsx";
 import AddProductsWarehouse from "./components/warehouses/add_products_warehouse.jsx";
 import AdminLogin from "./components/login/AdminLogin";
 import Users from "./components/users/index.jsx";
+import AddUser from "./components/users/add.jsx";
+import EditUser from "./components/users/edit.jsx";
 import Coupons from "./components/coupons/index.jsx";
 import AddCoupon from "./components/coupons/add.jsx";
 import EditCoupon from "./components/coupons/edit.jsx";
@@ -201,6 +203,22 @@ function App() {
           element={
             <MainLayout>
               <Users />
+            </MainLayout>
+          }
+        />
+        <Route
+          path="/add-user"
+          element={
+            <MainLayout>
+              <AddUser />
+            </MainLayout>
+          }
+        />
+        <Route
+          path="/edit-user/:id"
+          element={
+            <MainLayout>
+              <EditUser />
             </MainLayout>
           }
         />

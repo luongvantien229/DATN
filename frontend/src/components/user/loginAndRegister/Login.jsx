@@ -72,8 +72,11 @@
             'Authorization': `Bearer ${localStorage.getItem('token')}`, 
           },
         });
-        localStorage.setItem('user_name', user.data.name)
-        localStorage.setItem('user_id', user.data.id)
+
+
+        localStorage.setItem("User", JSON.stringify(user.data));
+        // localStorage.setItem('user_name', user.data.name)
+        // localStorage.setItem('user_id', user.data.id)
 
         
       } catch (error) {

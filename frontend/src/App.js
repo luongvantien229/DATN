@@ -38,6 +38,7 @@ import './assets/css/style.css';
 import './assets/css/button.css';
 import './assets/css/index.css';
 import Wishlist from "./components/user/wishlist";
+import BlogDetail from "./components/user/blogDetail";
 
 
 const backendUrl = process.env.REACT_APP_BACKEND_URL;
@@ -98,6 +99,14 @@ function App() {
           element={
             <MainLayout>
               <Blog />
+            </MainLayout>
+          }
+        />
+        <Route
+          path="/blog-detail/:slug/:id"
+          element={
+            <MainLayout>
+              <BlogDetail />
             </MainLayout>
           }
         />

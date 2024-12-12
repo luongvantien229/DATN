@@ -14,6 +14,7 @@ const EditBrands = () => {
   const [image, setImage] = useState(null); // To store new image
   const [existingImage, setExistingImage] = useState(null); // To store the current image
   const [error, setError] = useState(null); // To handle errors
+  const [success, setSuccess] = useState(false); // To handle success messages
   const navigate = useNavigate();
 
   // Slug generation function
@@ -97,13 +98,15 @@ const EditBrands = () => {
           _method: 'PUT',
         },
       });
+      setSuccess(true); // Set success to true on successful update
+      setError(null); // Clear any error messages
       alert("Cập nhật thành công!"); // Alert on success
       navigate("/brands"); // Redirect to the brands page
     } catch (error) {
       const errMsg = error.response?.data?.message || "Đã có lỗi xảy ra khi cập nhật thương hiệu!";
       setError(errMsg);
+      setSuccess(false); // Clear success if there's an error
     }
-    
   };
 
   return (
@@ -112,6 +115,7 @@ const EditBrands = () => {
         <h5 className="card-header">Chỉnh sửa thương hiệu</h5>
         <div className="card-body">
           {error && <div className="alert alert-danger">{error}</div>}
+          {success && <div className="alert alert-success">Cập nhật thành công!</div>}
           <form onSubmit={handleSubmit}>
             <div className="mb-3">
               <label className="form-label">Tên thương hiệu</label>

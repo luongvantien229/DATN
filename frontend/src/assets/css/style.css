@@ -10086,7 +10086,7 @@ body:not(.elementor-editor-active) .modern-grid .grid-item.animate {
   margin-bottom: 0px;
 }
 
-.sidebar-widget .sidebar-categories-list ul li::before {
+/* .sidebar-widget .sidebar-categories-list ul li::before {
   content: '\f111';
   font-size: 4px;
   position: absolute;
@@ -10097,7 +10097,7 @@ body:not(.elementor-editor-active) .modern-grid .grid-item.animate {
   font-family: 'Font Awesome 5 Pro';
   position: absolute;
   color: #696969;
-}
+} */
 
 .sidebar-widget .sidebar-categories-list ul li a {
   color: #444;

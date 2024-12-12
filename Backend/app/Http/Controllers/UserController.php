@@ -6,6 +6,7 @@ use App\Models\Brand;
 use App\Models\Category;
 use App\Models\User;
 use Exception;
+use Hash;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
@@ -74,7 +75,7 @@ class UserController extends Controller
             $user->lock = $request->lock;
             $user->points = $request->points;
             $user->role_id = $request->role_id;
-            $user->password = $request->password;
+            $user->password = Hash::make($request->password);
 
 
             $user->save();
@@ -202,7 +203,7 @@ class UserController extends Controller
                 $filename = time() . '.' . $file->getClientOriginalExtension();
                 $file->move('assets/uploads/user/', $filename);
                 $user->image = $filename; // Update image field in the brand
-            } 
+            }
 
             $user->update([
                 'name' => $request->name,
@@ -215,7 +216,7 @@ class UserController extends Controller
         } catch (Exception $e) {
             return response()->json($e, 500);
         }
-    } 
+    }
 
     public function change_user_password(Request $request){
         try {
@@ -225,29 +226,29 @@ class UserController extends Controller
                 'newPassword' => 'required|min:8',    // New password
                 'confirmPassword' => 'required|min:8' // Confirm new password
             ]);
-    
+
             $user = User::find($request->id);
-    
+
             if (!$user) {
                 return response()->json('User not found', 404);
             }
-    
+
             // Check if the current password is correct
             if (!app('hash')->check($request->input('password'), $user->password)) {
                 return response()->json('Current password is incorrect', 400);
             }
-    
+
             // Check if new password matches confirm password
             if ($request->newPassword !== $request->confirmPassword) {
                 return response()->json('New password and confirm password do not match', 400);
             }
-    
+
             // Hash the new password and save it
             $user->password = app('hash')->make($request->input('newPassword'));
             $user->save();
-    
+
             return response()->json('Password updated successfully', 200);
-    
+
         } catch (Exception $e) {
             return response()->json($e->getMessage(), 500);
         }

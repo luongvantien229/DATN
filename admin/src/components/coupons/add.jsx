@@ -17,7 +17,8 @@ const AddCoupon = () => {
     user_id: "",
   });
 
-  const [error, setError] = useState(null);
+  const [error, setError] = useState(null); // Trạng thái lỗi
+  const [success, setSuccess] = useState(false); // Trạng thái thành công
   const navigate = useNavigate();
 
   const handleDateChange = (name, date) => {
@@ -60,10 +61,14 @@ const AddCoupon = () => {
           Authorization: `Bearer ${token}`,
         },
       });
-      alert("Coupon added successfully!");
-      navigate("/coupons");
+      setSuccess(true); // Đánh dấu thành công
+      setError(null); // Reset lỗi
+      setTimeout(() => {
+        navigate("/coupons"); // Navigate to the categories list after success
+      }, 2000);
     } catch (error) {
-      setError("Error occurred while adding the coupon!");
+      setError("Có lỗi xảy ra khi thêm mã giảm giá!"); // Cập nhật thông báo lỗi
+      setSuccess(false); // Đánh dấu thất bại
       console.error(
         "Error:",
         error.response ? error.response.data : error.message
@@ -74,12 +79,13 @@ const AddCoupon = () => {
   return (
     <div className="container-xxl flex-grow-1 container-p-y">
       <div className="card">
-        <h5 className="card-header">Add Coupon</h5>
+        <h5 className="card-header">Thêm Mã Giảm Giá</h5>
         <div className="card-body">
+          {success && <div className="alert alert-success">Mã giảm giá đã được thêm thành công!</div>}
           {error && <div className="alert alert-danger">{error}</div>}
           <form onSubmit={handleSubmit}>
             <div className="mb-3">
-              <label className="form-label">Coupon Name</label>
+              <label className="form-label">Tên Mã Giảm Giá</label>
               <input
                 type="text"
                 className="form-control"
@@ -90,7 +96,7 @@ const AddCoupon = () => {
               />
             </div>
             <div className="mb-3">
-              <label className="form-label">User ID</label>
+              <label className="form-label">Mã Người Dùng</label>
               <input
                 type="number"
                 className="form-control"
@@ -101,7 +107,7 @@ const AddCoupon = () => {
               />
             </div>
             <div className="mb-3">
-              <label className="form-label">Time</label>
+              <label className="form-label">Thời Gian</label>
               <input
                 type="text"
                 className="form-control"
@@ -112,20 +118,20 @@ const AddCoupon = () => {
               />
             </div>
             <div className="mb-3">
-              <label className="form-label">Condition</label>
+              <label className="form-label">Điều Kiện</label>
               <select
                 name="condition"
                 value={coupon.condition}
                 onChange={handleChange}
                 className="form-control"
               >
-                <option value="">Select Condition</option>
+                <option value="">Chọn Điều Kiện</option>
                 <option value={1}>%</option>
                 <option value={2}>Đ</option>
               </select>
             </div>
             <div className="mb-3">
-              <label className="form-label">Number</label>
+              <label className="form-label">Số Lượng</label>
               <input
                 type="number"
                 className="form-control"
@@ -136,7 +142,7 @@ const AddCoupon = () => {
               />
             </div>
             <div className="mb-3">
-              <label className="form-label">Code</label>
+              <label className="form-label">Mã Giảm Giá</label>
               <input
                 type="text"
                 className="form-control"
@@ -147,7 +153,7 @@ const AddCoupon = () => {
               />
             </div>
             <div className="mb-3">
-              <label className="form-label">Start Date</label>
+              <label className="form-label">Ngày Bắt Đầu</label>
               <DatePicker
                 selected={coupon.date_start}
                 onChange={(date) => handleDateChange("date_start", date)}
@@ -157,7 +163,7 @@ const AddCoupon = () => {
               />
             </div>
             <div className="mb-3">
-              <label className="form-label">End Date</label>
+              <label className="form-label">Ngày Kết Thúc</label>
               <DatePicker
                 selected={coupon.date_end}
                 onChange={(date) => handleDateChange("date_end", date)}
@@ -174,10 +180,10 @@ const AddCoupon = () => {
                 checked={coupon.status}
                 onChange={handleChange}
               />
-              <label className="form-check-label">Active</label>
+              <label className="form-check-label">Hoạt Động</label>
             </div>
             <button type="submit" className="btn btn-primary">
-              Add Coupon
+              Thêm Mã Giảm Giá
             </button>
           </form>
         </div>

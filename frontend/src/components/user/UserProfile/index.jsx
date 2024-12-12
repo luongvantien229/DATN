@@ -26,6 +26,8 @@ const UserProfile = () => {
   const [success, setSuccess] = useState("");
   const [orderDetail, setOrderDetail] = useState(false);
   const [orderDetailId, setOrderDetailId] = useState(null);
+  const User =
+    JSON.parse(localStorage.getItem("User")) || {};
   //user orders
 
   const handleTabChange = (tab) => {
@@ -57,7 +59,7 @@ const UserProfile = () => {
   const fetchOrders = async () => {
     try {
       const response = await axios.get(
-        `/get_user_orders/${localStorage.getItem("user_id")}`,
+        `/get_user_orders/${User.id}`,
         {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,

@@ -16,7 +16,8 @@ const EditCategories = () => {
   });
   const [image, setImage] = useState(null); // Để lưu trữ hình ảnh đã chọn
   const [existingImage, setExistingImage] = useState(null); // Để hiển thị hình ảnh hiện có
-  const [error, setError] = useState(null);
+  const [error, setError] = useState(null); // Trạng thái lỗi
+  const [success, setSuccess] = useState(false); // Trạng thái thành công
   const navigate = useNavigate(); // Để điều hướng
 
   const generateSlug = (text) => {
@@ -71,11 +72,8 @@ const EditCategories = () => {
         setCategory(response.data);
         setExistingImage(response.data.image); // Đặt hình ảnh hiện có (nếu có)
       } catch (error) {
-        setError("Đã có lỗi xảy ra khi lấy danh mục!");
-        console.error(
-          "Lỗi lấy:",
-          error.response ? error.response.data : error.message
-        );
+        setError("Có lỗi xảy ra khi tải danh mục!");
+        console.error("Lỗi tải: ", error.response ? error.response.data : error.message);
       }
     };
 
@@ -121,19 +119,16 @@ const EditCategories = () => {
             Authorization: `Bearer ${token}`,
             "Content-Type": "multipart/form-data",
           },
-          data: {
-            _method: "PUT",
-          },
         }
       );
-      alert("Cập nhật thành công!");
-      navigate("/categories"); // Chuyển hướng đến danh sách danh mục sau khi cập nhật thành công
+      setSuccess(true); // Đặt trạng thái thành công
+      setTimeout(() => {
+        navigate("/categories"); // Navigate to the categories list after success
+      }, 2000); // Wait for 2 seconds before redirect
+      // Chuyển hướng đến danh sách danh mục sau khi cập nhật thành công
     } catch (error) {
-      setError("Đã có lỗi xảy ra khi cập nhật danh mục!");
-      console.error(
-        "Lỗi cập nhật:",
-        error.response ? error.response.data : error.message
-      );
+      setError("Có lỗi xảy ra khi cập nhật danh mục!");
+      console.error("Lỗi cập nhật: ", error.response ? error.response.data : error.message);
     }
   };
 
@@ -143,6 +138,7 @@ const EditCategories = () => {
         <h5 className="card-header">Chỉnh sửa danh mục</h5>
         <div className="card-body">
           {error && <div className="alert alert-danger">{error}</div>}
+          {success && <div className="alert alert-success">Cập nhật thành công!</div>}
           <form onSubmit={handleSubmit}>
             <div className="mb-3">
               <label className="form-label">Tên danh mục</label>
@@ -191,32 +187,28 @@ const EditCategories = () => {
               />
             </div>
             <div className="mb-3">
-  <label className="form-label">Thuộc Danh mục</label>
-  <select
-    name="parent_id"
-    className="form-control input-sm m-bot15"
-    value={category.parent_id || "0"}
-    onChange={handleChange}
-  >
-    <option value="0">-------Danh mục cha-------</option>
+              <label className="form-label">Thuộc Danh mục</label>
+              <select
+                name="parent_id"
+                className="form-control input-sm m-bot15"
+                value={category.parent_id || "0"}
+                onChange={handleChange}
+              >
+                <option value="0">-------Danh mục cha-------</option>
+                {categories.map((val) => {
+                  let indent = "";
+                  for (let i = 1; i < val.level; i++) {
+                    indent += "--- ";
+                  }
 
-    {categories.map((val) => {
-      // Add indentation based on the category level
-      let indent = "";
-      for (let i = 1; i < val.level; i++) {
-        indent += "--- ";
-      }
-
-      return (
-        <option key={val.id} value={val.id}>
-          {indent} {val.name}
-        </option>
-      );
-    })}
-  </select>
-</div>
-
-
+                  return (
+                    <option key={val.id} value={val.id}>
+                      {indent} {val.name}
+                    </option>
+                  );
+                })}
+              </select>
+            </div>
             <div className="mb-3 form-check">
               <input
                 type="checkbox"

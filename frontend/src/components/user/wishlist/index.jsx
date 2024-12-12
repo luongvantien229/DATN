@@ -21,7 +21,7 @@ const Wishlist = () => {
     try {
       // Make an API call to decrement the favorite count for the product
       const response = await axios.post(
-        `/api/products/${item.id}/decrement-favorite`
+        `/products/${item.id}/decrement-favorite`
       );
       console.log(response.data.message); // Log the response message
     } catch (error) {

@@ -63,6 +63,7 @@ const EditProducts = () => {
   const [existingMainImage, setExistingMainImage] = useState(null);
   const [existingRelatedImages, setExistingRelatedImages] = useState([]); // Initialized as an array
   const [error, setError] = useState(null);
+  const [success, setSuccess] = useState(false); // Thành công
   const navigate = useNavigate(); // For navigation
 
   useEffect(() => {
@@ -140,23 +141,22 @@ const EditProducts = () => {
     fetchProduct();
   }, [id]);
 
-   // Handle changes for category selection
-   const handleCategoryChange = (event) => {
+  // Handle changes for category selection
+  const handleCategoryChange = (event) => {
     const options = event.target.options;
     const selectedCategories = [];
-    
+
     for (let i = 0; i < options.length; i++) {
-        if (options[i].selected) {
-            selectedCategories.push(parseInt(options[i].value));
-        }
+      if (options[i].selected) {
+        selectedCategories.push(parseInt(options[i].value));
+      }
     }
 
     setProduct((prevProduct) => ({
-        ...prevProduct,
-        category_id: selectedCategories,
+      ...prevProduct,
+      category_id: selectedCategories,
     }));
-};
-
+  };
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -188,10 +188,19 @@ const EditProducts = () => {
     formData.append("price_cost", product.price_cost);
     formData.append("price", product.price);
     formData.append("description", product.description);
-     // Gửi category_id như một mảng
-     product.category_id.forEach((id) => {
-      formData.append("category_id[]", id); // Gửi từng ID
-    });
+    // Gửi category_id như một mảng
+    //  product.category_id.forEach((id) => {
+    //   formData.append("category_id[]", id); // Gửi từng ID
+    // });
+    if (Array.isArray(product.category_id)) {
+      product.category_id.forEach((id) => {
+        formData.append("category_id[]", id); // Gửi từng ID
+      });
+    } else {
+      formData.append("category_id[]", id);
+      console.log("category_id is not an array:", product.category_id);
+    }
+
     formData.append("brand_id", product.brand_id);
     formData.append("favorite", product.favorite);
     formData.append("view", product.view);
@@ -231,8 +240,8 @@ const EditProducts = () => {
           },
         }
       );
-      alert("Cập nhật thành công!");
-      navigate("/products"); // Navigate to product list after successful update
+      setSuccess(true);
+      setTimeout(() => navigate("/products"), 2000);
     } catch (error) {
       setError("Đã có lỗi xảy ra khi cập nhật sản phẩm!");
       console.error(
@@ -247,7 +256,8 @@ const EditProducts = () => {
       <div className="card">
         <h5 className="card-header">Thêm sản phẩm</h5>
         <div className="card-body">
-          {error && <div className="alert alert-danger">{error}</div>}
+        {error && <div className="alert alert-danger">{error}</div>}
+        {success && <div className="alert alert-success">Cập nhật thành công!</div>}
           <form onSubmit={handleSubmit}>
             <div className="mb-3">
               <label className="form-label">Tên sản phẩm</label>

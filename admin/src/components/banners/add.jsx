@@ -6,19 +6,20 @@ const AddBanners = () => {
   const [banner, setBanner] = useState({
     name: "",
     description: "",
-    size: "1", // Default to the first size
+    size: "1", // Kích thước mặc định
     status: false,
-    image_path: null, 
+    image_path: null,
   });
-  const [error, setError] = useState(null);
-  const navigate = useNavigate(); 
+  const [success, setSuccess] = useState(false); // Trạng thái thành công
+  const [error, setError] = useState(null); // Trạng thái lỗi
+  const navigate = useNavigate();
 
   const handleChange = (e) => {
     const { name, value, type, checked, files } = e.target;
     if (name === "image_path") {
       const file = files[0];
       if (file && file.size > 2 * 1024 * 1024) {
-        setError("File size exceeds 2MB");
+        setError("Kích thước tệp vượt quá 2MB");
         return;
       }
       setBanner({ ...banner, image_path: file });
@@ -30,14 +31,14 @@ const AddBanners = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     const token = localStorage.getItem("token");
-  
+
     const formData = new FormData();
     formData.append("name", banner.name);
     formData.append("description", banner.description);
-    formData.append("size", banner.size); 
+    formData.append("size", banner.size);
     formData.append("status", banner.status ? 1 : 0);
-    formData.append("image_path", banner.image_path); 
-  
+    formData.append("image_path", banner.image_path);
+
     try {
       await axios.post("http://localhost:8000/api/banners/store", formData, {
         headers: {
@@ -45,29 +46,35 @@ const AddBanners = () => {
           "Content-Type": "multipart/form-data",
         },
       });
-      alert("Banner added successfully!");
-      navigate("/banners");
+      setSuccess(true); // Hiển thị thông báo thành công
+      setError(null); // Xóa thông báo lỗi
+      setTimeout(() => {
+        navigate("/banners"); // Chuyển hướng sau 2 giây
+      }, 2000);
     } catch (error) {
-      const errMsg = error.response?.data?.message || "An error occurred!";
+      const errMsg = error.response?.data?.message || "Đã xảy ra lỗi!";
       const validationErrors = error.response?.data?.errors;
       if (validationErrors) {
         setError(Object.values(validationErrors).flat().join("\n"));
       } else {
         setError(errMsg);
       }
+      setSuccess(false); // Xóa thông báo thành công nếu có lỗi
     }
   };
-  
 
   return (
     <div className="container-xxl flex-grow-1 container-p-y">
       <div className="card">
-        <h5 className="card-header">Add New Banner</h5>
+        <h5 className="card-header">Thêm Banner Mới</h5>
         <div className="card-body">
+          {success && (
+            <div className="alert alert-success">Thêm banner thành công!</div>
+          )}
           {error && <div className="alert alert-danger">{error}</div>}
           <form onSubmit={handleSubmit}>
             <div className="mb-3">
-              <label className="form-label">Banner Name</label>
+              <label className="form-label">Tên Banner</label>
               <input
                 type="text"
                 className="form-control"
@@ -78,7 +85,7 @@ const AddBanners = () => {
               />
             </div>
             <div className="mb-3">
-              <label className="form-label">Description</label>
+              <label className="form-label">Mô Tả</label>
               <input
                 type="text"
                 className="form-control"
@@ -89,7 +96,7 @@ const AddBanners = () => {
               />
             </div>
             <div className="mb-3">
-              <label className="form-label">Size</label>
+              <label className="form-label">Kích Thước</label>
               <select
                 name="size"
                 value={banner.size}
@@ -104,7 +111,7 @@ const AddBanners = () => {
               </select>
             </div>
             <div className="mb-3">
-              <label className="form-label">Upload Image</label>
+              <label className="form-label">Tải Ảnh</label>
               <input
                 type="file"
                 className="form-control"
@@ -121,10 +128,10 @@ const AddBanners = () => {
                 checked={banner.status}
                 onChange={handleChange}
               />
-              <label className="form-check-label">Activate</label>
+              <label className="form-check-label">Kích Hoạt</label>
             </div>
             <button type="submit" className="btn btn-primary">
-              Add Banner
+              Thêm Banner
             </button>
           </form>
         </div>

@@ -9,6 +9,7 @@ const EditRoles = () => {
     status: false,
   });
   const [error, setError] = useState(null);
+  const [success, setSuccess] = useState(false); // Trạng thái thành công
   const [loading, setLoading] = useState(false); // Loading state
   const navigate = useNavigate();
 
@@ -27,7 +28,7 @@ const EditRoles = () => {
         );
         setRole(response.data);
       } catch (error) {
-        setError("Error fetching role details.");
+        setError("Lỗi khi tải chi tiết vai trò.");
         console.error(
           "Error:",
           error.response ? error.response.data : error.message
@@ -66,10 +67,12 @@ const EditRoles = () => {
           },
         }
       );
-      alert("Cập nhật thành công!");
-      navigate("/roles");
+      setSuccess(true); // Set success to true on successful update
+      setTimeout(() => {
+        navigate("/roles"); // Redirect after 2 seconds
+      }, 2000);
     } catch (error) {
-      setError("Error updating the role.");
+      setError("Lỗi khi cập nhật vai trò.");
       console.error(
         "Error:",
         error.response ? error.response.data : error.message
@@ -84,8 +87,9 @@ const EditRoles = () => {
       <div className="card">
         <h5 className="card-header">Chỉnh sửa vai trò</h5>
         <div className="card-body">
-          {loading && <div>Loading...</div>}
+          {loading && <div>Đang tải...</div>}
           {error && <div className="alert alert-danger">{error}</div>}
+          {success && <div className="alert alert-success">Vai trò đã được cập nhật thành công!</div>} {/* Success message */}
           <form onSubmit={handleSubmit}>
             <div className="mb-3">
               <label className="form-label">Tên vai trò</label>

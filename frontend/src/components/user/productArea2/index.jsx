@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import ProductArena2 from "./productArea2";
 import useSlick from "../../../hooks/user/slick";
 import axios from "axios"; // Đảm bảo bạn đã cài đặt axios
+import './style.scss';
 
 export default function Index() {
   const { productArena1 } = useSlick(); // Lấy các ref từ hook

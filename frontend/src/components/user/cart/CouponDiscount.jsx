@@ -95,10 +95,10 @@ export default function CartItem() {
           <div className="common-btn-style">
             <button
               type="button"
-              className="common-btn-padding-2"
+              className="button-del-coupon"
               onClick={clearCouponCode} // Clear coupon handler
             >
-              Xóa mã giảm giá
+                           <i className="fal fa-times"></i>  Xóa mã giảm giá
             </button>
           </div>
           {message && <p className="message">{message}</p>}

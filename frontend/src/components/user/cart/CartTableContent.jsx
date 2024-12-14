@@ -61,9 +61,9 @@ export default function CartTableContent() {
                   </a>
                 </div>
               </div>
-              <div className="update-btn">
+              {/* <div className="update-btn">
                 <a href="cart.html">Cập nhật giỏ hàng</a>
-              </div>
+              </div> */}
             </div>
           </div>
         </form>

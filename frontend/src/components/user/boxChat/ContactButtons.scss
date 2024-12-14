@@ -60,7 +60,7 @@
 }
 
 #phone-vr .phone-vr-img-circle {
-    background: linear-gradient(145deg, #34b7f1, #128c7e); /* Phone gradient */
+    background: linear-gradient(145deg, #27C77C, #128c7e); /* Phone gradient */
 }
 
 /* Hover effect on buttons */
@@ -80,7 +80,7 @@
     right: 20px;
     width: 50px;
     height: 50px;
-    background-color: #007bff; /* Màu nền của nút */
+    background-color: #27C77C; /* Màu nền của nút */
     color: white;
     font-size: 30px;
     display: flex;
@@ -103,6 +103,6 @@
   
   /* Hiệu ứng hover */
   .scroll-to-top:hover {
-    background-color: #0056b3;
+    background-color: #219653;
     transform: scale(1.1);
   }

@@ -4,23 +4,23 @@ export default function FooterCustomerService() {
   return (
     <div className="col-width-22 custom-common-column">
       <div className="footer-widget mb-40">
-        <h3 className="footer-title">Dịch Vụ Khách Hàng</h3>
+      <h3 className="footer-title">Về chúng tôi</h3>
         <div className="footer-info-list">
           <ul>
             <li>
-              <a href="#"> Các Tùy Chọn Vận Chuyển</a>
+            <Link to="/about"> Giới thiệu</Link>
             </li>
             <li>
-              <a href="wishlist.html"> Danh Sách Yêu Thích </a>
+            <Link to="/shop"> Sản phẩm </Link>
             </li>
             <li>
-              <a href="my-account.html"> Tài Khoản Của Tôi </a>
+            <Link to="/blog"> Bài viết </Link>
             </li>
-            <li>
+            {/* <li>
               <a href="return-policy.html"> Chính Sách Đổi Trả </a>
-            </li>
+            </li> */}
             <li>
-              <a href="#"> Câu Hỏi Thường Gặp Về Mua Sắm </a>
+            <Link to="#"> Câu Hỏi Thường Gặp Về Mua Sắm </Link>
             </li>
           </ul>
         </div>

@@ -6,10 +6,10 @@ export default function HeaderTopHeaderInfo() {
       <div className="header-info">
         <ul>
           <li>
-            <Link to="#">(+88) - 1990 - 6886</Link>
+          <Link to="tel:0394444686">(+84) 394 444 686</Link>
           </li>
           <li>
-            <Link target="_blank" to="https://www.google.com/maps">
+          <Link target="_blank" to="https://maps.app.goo.gl/nbBtL3mQ56jH5g1y5">
               Vị trí cửa hàng
             </Link>
 

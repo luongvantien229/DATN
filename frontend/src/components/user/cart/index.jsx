@@ -1,6 +1,7 @@
 import React from "react";
 import CartTableContent from "./CartTableContent";
 import CouponWrap from "./CouponWrap";
+import './style.scss';
 
 export default function Index() {
   return (

@@ -1,7 +1,9 @@
 import React, { useEffect, useState, useRef } from 'react';
 import SliderArena from "./SliderArea";
 import axios from 'axios';
-import Slider from 'react-slick';  // Import react-slick
+import Slider from 'react-slick'; 
+import { Link } from 'react-router-dom';
+
 
 const SliderComponent = () => {
   const [sliderImg, setSliderImg] = useState([]);

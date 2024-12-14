@@ -41,6 +41,7 @@ export default function Product({ product }) {
           <div className="product-price">
           <span className="new-price">{Number(product.price).toLocaleString()}đ</span> {/* Giá sản phẩm */}
             {/* <span className="old-price">500.400đ</span> */}
+            <span className="old-price">{Number(product.price_cost).toLocaleString()} đ</span> {/* Giá sản phẩm */}
           </div>
         </div>
       </div>

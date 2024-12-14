@@ -309,3 +309,7 @@ Route::put('/change_user_info/{id}', [UserController::class, 'change_user_info']
 // Change user password
 Route::put('/change_user_password/{id}', [UserController::class, 'change_user_password']);
 
+// Forgot password
+Route::post('/forgot-password', [ForgotPasswordController::class, 'forgot_password']);
+Route::post('/reset-password', [ForgotPasswordController::class, 'resetPassword']);
+

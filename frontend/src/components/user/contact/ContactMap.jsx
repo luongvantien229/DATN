@@ -8,25 +8,23 @@ import 'leaflet/dist/leaflet.css';
 const customIcon = new L.Icon({
   iconUrl: 'assets/images/icon-img/icon.png', 
   iconSize: [32, 32], // Kích thước của icon
-  iconAnchor: [16, 32], // Điểm neo của icon
-  popupAnchor: [0, -32] // Điểm popup của icon
+  iconAnchor: [16, 32], // Điểm neo của icon (tâm nằm ở đáy)
+  popupAnchor: [0, -32] // Điểm popup xuất hiện phía trên icon
 });
 
 export default function ContactMap() {
   const coordinates = [
-    { lat: 51.505, lng: -0.09, label: 'Location 1' },
-    { lat: 51.515, lng: -0.1, label: 'Location 2' },
-    { lat: 51.525, lng: -0.11, label: 'Location 3' }
+    { lat: 10.853726, lng: 106.628350, label: 'Our Office' }
   ];
 
   return (
     <Card title="Contact Map" className="contact-map pb-70">
       <div style={{ height: '400px', width: '100%' }}>
         <MapContainer 
-          center={[51.515, -0.1]} 
+           center={[coordinates[0].lat, coordinates[0].lng]} 
           zoom={13} 
           style={{ height: '100%', width: '100%' }} 
-          zoomControl={false}
+          zoomControl={true} // Hiển thị điều khiển zoom
         >
           <TileLayer
             url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
@@ -35,7 +33,8 @@ export default function ContactMap() {
           {coordinates.map((coord, index) => (
             <Marker key={index} position={[coord.lat, coord.lng]} icon={customIcon}>
               <Popup>
-                {coord.label} <br /> Latitude: {coord.lat}, Longitude: {coord.lng}
+              <strong>{coord.label}</strong> <br />
+              Latitude: {coord.lat}, Longitude: {coord.lng}
               </Popup>
             </Marker>
           ))}

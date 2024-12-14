@@ -3,7 +3,10 @@ import axios from "axios";
 
 export default function SidebarCategoriesList({ onCategorySelect }) {
   const [categories, setCategories] = useState([]);
-  const [selectedCategory, setSelectedCategory] = useState(null);
+  console.log("🚀 ~ SidebarCategoriesList ~ categories:", categories[0])
+  const [selectedCategory, setSelectedCategory] = useState(
+    localStorage.getItem("selectedCategory") || null // Lấy giá trị từ localStorage
+  );
   const [expandedCategories, setExpandedCategories] = useState({}); // To track expanded state of categories
 
   useEffect(() => {
@@ -21,11 +24,13 @@ export default function SidebarCategoriesList({ onCategorySelect }) {
 
   const handleCategoryClick = (categoryId) => {
     setSelectedCategory(categoryId);
+    localStorage.setItem("selectedCategory", categoryId); // Lưu vào localStorage
     onCategorySelect(categoryId);
   };
 
   const handleResetClick = () => {
     setSelectedCategory(null);
+    localStorage.removeItem("selectedCategory"); // Xóa khỏi localStorage
     onCategorySelect(""); // Reset category filter
   };
 

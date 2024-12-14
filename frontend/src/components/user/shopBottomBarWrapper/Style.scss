@@ -30,14 +30,18 @@
   
   .sidebar-categories a:hover,
   .sidebar-brand-list a:hover {
-    background-color: #d1e9f5; /* Màu nền cho hover */
-    color: #3498db; /* Màu chữ cho hover */
+    background-color: #27C77C; /* Màu nền cho hover */
+    color: #fff; /* Màu chữ cho hover */
   }
   
+  sidebar-widget .sidebar-brand-list ul li:hover > a, .sidebar-widget .sidebar-sort-list ul li:hover > a, .sidebar-widget .sidebar-price-filter-list ul li:hover > a {
+    color: #fff !important;
+}
+
   .sidebar-categories a.active,
   .sidebar-brand-list a.active {
-    background-color: #3498db; /* Màu nền cho item active */
-    color: #fff; /* Màu chữ cho item active */
+    background-color: #27C77C; /* Màu nền cho item active */
+    color: #fff !important; /* Màu chữ cho item active */
   }
 
   

@@ -11,12 +11,44 @@ export default function CartCollaterals() {
     paymentMethod: "",
   });
 
+  const [addressSuggestions, setAddressSuggestions] = useState([]);
+  const [showSuggestions, setShowSuggestions] = useState(false);
+
+  const goongApiKey = "YOUR_GOONG_API_KEY"; // Replace with your Goong API key
+
   useEffect(() => {
     const savedData = localStorage.getItem("PaymentInformation");
     if (savedData) {
       setFormData(JSON.parse(savedData));
     }
   }, []);
+
+  const handleAddressChange = async (e) => {
+    const address = e.target.value;
+    setFormData((prev) => ({ ...prev, address }));
+
+    if (address.length > 2) {
+      try {
+        const response = await fetch(
+          `https://rsapi.goong.io/Place/AutoComplete?api_key=${goongApiKey}&input=${address}`
+        );
+        const data = await response.json();
+        setAddressSuggestions(data.predictions || []);
+        setShowSuggestions(true);
+      } catch (error) {
+        console.error("Error fetching address suggestions:", error);
+      }
+    } else {
+      setAddressSuggestions([]);
+      setShowSuggestions(false);
+    }
+  };
+
+  const handleSuggestionClick = (selectedAddress) => {
+    setFormData((prev) => ({ ...prev, address: selectedAddress }));
+    setAddressSuggestions([]);
+    setShowSuggestions(false);
+  };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -67,8 +99,38 @@ export default function CartCollaterals() {
               placeholder="Địa chỉ giao hàng"
               name="address"
               value={formData.address}
-              onChange={handleChange}
+              onChange={handleAddressChange}
+              autoComplete="off"
             />
+            {showSuggestions && addressSuggestions.length > 0 && (
+              <ul
+                className="suggestions-list"
+                style={{
+                  border: "1px solid #ddd",
+                  maxHeight: "200px",
+                  overflowY: "auto",
+                  position: "absolute",
+                  background: "white",
+                  zIndex: 1000,
+                  listStyle: "none",
+                  padding: 0,
+                  margin: 0,
+                }}
+              >
+                {addressSuggestions.map((suggestion, index) => (
+                  <li
+                    key={index}
+                    onClick={() => handleSuggestionClick(suggestion.description)}
+                    style={{
+                      padding: "8px 12px",
+                      cursor: "pointer",
+                    }}
+                  >
+                    {suggestion.description}
+                  </li>
+                ))}
+              </ul>
+            )}
           </div>
           <div className="input-style input-style-mb">
             <textarea

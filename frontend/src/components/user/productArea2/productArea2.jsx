@@ -31,7 +31,9 @@ export default function ProductArena2({ product }) {
             <Link to={`/product-detail/${product.slug}/${product.id}`}>{product.name}</Link>
           </h2>
           <div className="product-price">
-            <span>{new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(product.price)}</span>
+          <span className="new-price">{Number(product.price).toLocaleString()} đ</span> {/* Giá sản phẩm */}
+          {/* Nếu có giá cũ, hiển thị tại đây */}
+            <span className="old-price">{Number(product.price_cost).toLocaleString()}đ</span> {/* Giá sản phẩm */}
           </div>
         </div>
       </div>

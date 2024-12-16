@@ -19,6 +19,7 @@ class Order extends Model
         'shipphone',
         'address',
         'note',
+        'reason_cancel',
     ];
 
     public function user()

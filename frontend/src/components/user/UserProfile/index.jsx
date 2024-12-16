@@ -6,39 +6,138 @@ import "./style.scss";
 
 const UserProfile = () => {
   const [activeTab, setActiveTab] = useState("dashboard");
-  // user information
+
+  // User information
   const [user, setUser] = useState({
     name: "",
     email: "",
     phone: "",
     image: null,
   });
-  const [name, setName] = useState(user.name);
-  const [email, setEmail] = useState(user.email);
-  const [phone, setPhone] = useState(user.phone);
-  const [image, setImage] = useState(null); // To store new image
-  const [existingImage, setExistingImage] = useState(null); // To store the current image
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState("");
+  const [image, setImage] = useState(null);
+  const [existingImage, setExistingImage] = useState(null);
+
   const [statusMessage, setStatusMessage] = useState("");
-  // orders
+
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
+
+  // Orders
   const [orders, setOrders] = useState([]);
+  const [orderData, setOrderData] = useState({});
+  const [orderDetail, setOrderDetail] = useState(false);
+  const [orderDetailId, setOrderDetailId] = useState(null);
+
+  const [subTotal, setSubTotal] = useState(0);
+  const [total, setTotal] = useState(0);
+  const [discount, setDiscount] = useState(0);
+
+  const feeShip = 50000;
 
   // Password reset
   const [password, setPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
 
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
-  const [success, setSuccess] = useState("");
-  const [orderDetail, setOrderDetail] = useState(false);
-  const [orderDetailId, setOrderDetailId] = useState(null);
-  const User =
-    JSON.parse(localStorage.getItem("User")) || {};
-  //user orders
+  const User = JSON.parse(localStorage.getItem("User")) || {};
 
+  // Handle cancel order
+  const handleCancelOrder = (order_code) => {
+    Swal.fire({
+      title: "Bạn có chắc chắn muốn hủy đơn hàng?",
+      input: "textarea",
+      inputPlaceholder: "Nhập lý do hủy đơn hàng...",
+      showCancelButton: true,
+      confirmButtonText: "Xác nhận",
+      cancelButtonText: "Hủy",
+      preConfirm: (reason) => {
+        if (!reason || reason.trim() === "") {
+          Swal.showValidationMessage("Lý do hủy đơn hàng là bắt buộc.");
+        }
+        return reason;
+      },
+    }).then((result) => {
+      if (result.isConfirmed) {
+        cancelOrder(order_code, result.value.trim());
+      }
+    });
+  };
+
+  const cancelOrder = async (order_code, reason) => {
+    try {
+      const response = await axios.post(
+        `/orders/cancel-order/${order_code}`,
+        { reason },
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
+      );
+      if (response.status === 200) {
+        setOrderData((prevData) => ({
+          ...prevData,
+          orders: prevData.orders.map((order) =>
+            order.code === order_code
+              ? { ...order, status: "Cancelled" }
+              : order
+          ),
+        }));
+        Swal.fire("Thành công", "Đơn hàng đã được hủy.", "success");
+      }
+    } catch (error) {
+      console.error("Error cancelling order:", error);
+      Swal.fire("Lỗi", "Không thể hủy đơn hàng, vui lòng thử lại.", "error");
+    }
+  };
+
+  // Fetch order data
+  useEffect(() => {
+    const fetchOrderData = async () => {
+      try {
+        const response = await axios.get(`/orders/view_order/${orderDetailId}`);
+        if (response.data.success) {
+          setOrderData(response.data);
+          calculateTotals(response.data);
+        }
+      } catch (error) {
+        console.error("Error fetching order data:", error);
+      }
+    };
+    if (orderDetailId) fetchOrderData();
+  }, [orderDetailId]);
+
+  const calculateTotals = (data) => {
+    const { order_items = [], condition, number } = data;
+
+    let sub_total = order_items.reduce(
+      (sum, item) => sum + item.price * item.quantity,
+      0
+    );
+    setSubTotal(sub_total);
+
+    let discountAmount = 0;
+    if (condition === 1) {
+      discountAmount = (sub_total * number) / 100;
+    } else if (condition === 2) {
+      discountAmount = number;
+    }
+    setDiscount(discountAmount);
+    setTotal(sub_total - discountAmount + feeShip);
+  };
+
+  const order_items = orderData.order_items || [];
+
+  // Handle tab change
   const handleTabChange = (tab) => {
     setActiveTab(tab);
   };
+
+  //user orders
 
   // Fetch the user data from the API when the component mounts
   useEffect(() => {
@@ -64,14 +163,11 @@ const UserProfile = () => {
   // get user orders
   const fetchOrders = async () => {
     try {
-      const response = await axios.get(
-        `/get_user_orders/${User.id}`,
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        }
-      );
+      const response = await axios.get(`/get_user_orders/${User.id}`, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      });
       setOrders(response.data);
     } catch (error) {
       console.error(error);
@@ -300,7 +396,7 @@ const UserProfile = () => {
                     >
                       <div className="myaccount-content">
                         <div className="myaccount-table table-responsive text-center">
-                          {orderDetail ? (
+                          {orderDetail && orders && orders.length > 0 ? (
                             <table className="table table-bordered">
                               <thead className="thead-light">
                                 <tr>
@@ -324,7 +420,32 @@ const UserProfile = () => {
                                           ).toLocaleDateString()}
                                         </td>{" "}
                                         {/* Format date */}
-                                        <td>{order.status}</td>{" "}
+                                        <td>
+                                          {(() => {
+                                            if (order.status === "Pending") {
+                                              return "Đơn hàng mới - chờ xử lý";
+                                            } else if (
+                                              order.status === "Delivered"
+                                            ) {
+                                              return "Đã xử lí đơn hàng";
+                                            } else if (
+                                              order.status === "Cancelled"
+                                            ) {
+                                              return "Đơn hàng bị hủy";
+                                            } else if (
+                                              order.status === "Accepted"
+                                            ) {
+                                              return "Đơn hàng đã được giao";
+                                            } else if (
+                                              order.status ===
+                                              "Out for Delivery"
+                                            ) {
+                                              return "Đơn hàng đang được giao";
+                                            } else {
+                                              return "Trạng thái không xác định";
+                                            }
+                                          })()}
+                                        </td>{" "}
                                         {/* Display status */}
                                         <td>
                                           {order.total_price.toLocaleString()}{" "}
@@ -332,15 +453,31 @@ const UserProfile = () => {
                                         </td>{" "}
                                         {/* Format total price */}
                                         <td>
+                                          {order.status === "Pending" && (
+                                            <button
+                                              className="btn btn-danger"
+                                              onClick={() =>
+                                                handleCancelOrder(
+                                                  order.order_code
+                                                )
+                                              }
+                                            >
+                                              Hủy đơn
+                                            </button>
+                                          )}
+
                                           <button
                                             type="button"
                                             className="btn btn-link"
                                             onClick={() => {
-                                              setOrderDetailId(order.id);
+                                              setOrderDetailId(
+                                                order.order_code
+                                              );
                                               setOrderDetail(false);
                                             }}
                                           >
-                                            Xem chi tiết
+                                            <i className="bi bi-eye"></i> Xem
+                                            chi tiết
                                           </button>
                                         </td>
                                       </tr>
@@ -348,16 +485,16 @@ const UserProfile = () => {
                                   })
                                 ) : (
                                   <tr>
-                                    <td colSpan="5">No orders found.</td>
+                                    <td colSpan="5">Không có đơn hàng nào.</td>
                                   </tr>
                                 )}
                               </tbody>
                             </table>
                           ) : (
                             <div>
-                              <h3>Order Detail</h3>
+                              <h3>Chi tiết đơn hàng</h3>
                               {/* table show chi tiet san pham */}
-                              <table className="table table-bordered">
+                              {/* <table className="table table-bordered">
                                 <thead className="thead-light">
                                   <tr>
                                     <th>Tên sản phẩm</th>
@@ -390,7 +527,265 @@ const UserProfile = () => {
                                     </button>
                                   </td>
                                 </tbody>
-                              </table>
+                              </table> */}
+                              {/* Customer Information */}
+                              <div className="d-flex justify-content-between align-items-center p-3">
+                                {orders.length > 0 ? (
+                                  <div className="card md-6">
+                                    <a
+                                      href={`http://localhost:8000/api/orders/print_order/${orders[0]?.order_code}`}
+                                      target="_blank"
+                                      rel="noopener noreferrer"
+                                    >
+                                      <button
+                                        type="button"
+                                        className="btn rounded-pill btn-success m-6"
+                                      >
+                                        In PDF chi tiết
+                                      </button>
+                                    </a>
+                                  </div>
+                                ) : (
+                                  <p>Chưa có đơn hàng</p>
+                                )}
+                              </div>
+                              <div className="card mb-4">
+                                <div className="card-header bg-success text-white text-center">
+                                  THÔNG TIN NGƯỜI MUA
+                                </div>
+                                <div className="card-body">
+                                  <table className="table table-bordered">
+                                    <thead className="table-light">
+                                      <tr>
+                                        <th>Thông Tin</th>
+                                        <th>Chi Tiết</th>
+                                      </tr>
+                                    </thead>
+                                    <tbody>
+                                      <tr>
+                                        <td>
+                                          <strong>Tên khách hàng</strong>
+                                        </td>
+                                        <td>{user?.name || "N/A"}</td>
+                                      </tr>
+                                      <tr>
+                                        <td>
+                                          <strong>Số điện thoại</strong>
+                                        </td>
+                                        <td>{user?.phone || "N/A"}</td>
+                                      </tr>
+                                      <tr>
+                                        <td>
+                                          <strong>Email</strong>
+                                        </td>
+                                        <td>{user?.email || "N/A"}</td>
+                                      </tr>
+                                    </tbody>
+                                  </table>
+                                </div>
+                              </div>
+
+                              {/* Shipping Information */}
+                              <div className="card mb-4">
+                                <div className="card-header bg-success text-white text-center">
+                                  THÔNG TIN VẬN CHUYỂN HÀNG
+                                </div>
+                                <div className="card-body">
+                                  <table className="table table-bordered">
+                                    <thead className="table-light">
+                                      <tr>
+                                        <th>Thông Tin</th>
+                                        <th>Chi Tiết</th>
+                                      </tr>
+                                    </thead>
+                                    <tbody>
+                                      <tr>
+                                        <td>
+                                          <strong>Tên người người nhận</strong>
+                                        </td>
+                                        <td>{orders[0]?.shipname || "N/A"}</td>
+                                      </tr>
+                                      <tr>
+                                        <td>
+                                          <strong>Số điện thoại</strong>
+                                        </td>
+                                        <td>{orders[0]?.shipphone || "N/A"}</td>
+                                      </tr>
+                                      <tr>
+                                        <td>
+                                          <strong>Địa chỉ</strong>
+                                        </td>
+                                        <td>{orders[0]?.address || "N/A"}</td>
+                                      </tr>
+                                      <tr>
+                                        <td>
+                                          <strong>Ghi chú</strong>
+                                        </td>
+                                        <td>{orders[0]?.note || "N/A"}</td>
+                                      </tr>
+                                      <tr>
+                                        <td>
+                                          <strong>Hình thức thanh toán</strong>
+                                        </td>
+                                        <td>
+                                          {orders[0]?.payment_method || "N/A"}
+                                        </td>
+                                      </tr>
+                                    </tbody>
+                                  </table>
+                                </div>
+                              </div>
+
+                              {/* Order Details */}
+                              <div className="card mb-4">
+                                <div className="card-header bg-success text-white text-center">
+                                  LIỆT KÊ CHI TIẾT ĐƠN HÀNG
+                                </div>
+                                <div className="card-body">
+                                  <table className="table table-bordered ">
+                                    <thead className="table-light">
+                                      <tr>
+                                        <th>Tên sản phẩm</th>
+                                        {/* <th>Số lượng trong kho còn</th> */}
+                                        <th>Mã giảm giá</th>
+                                        <th>Phí ship hàng</th>
+                                        <th>Số lượng</th>
+                                        <th>Giá sản phẩm</th>
+                                        <th>Tổng tiền</th>
+                                      </tr>
+                                    </thead>
+                                    <tbody className="">
+                                      {order_items.map((item) => (
+                                        <tr key={item.id}>
+                                          <td>
+                                            {item.product?.name.length > 20
+                                              ? item.product.name.substring(
+                                                  0,
+                                                  20
+                                                ) + "..."
+                                              : item.product?.name || "N/A"}
+                                          </td>
+                                          {/* <td>
+                                            {item.product?.qty !== undefined
+                                              ? item.product.qty
+                                              : "N/A"}
+                                          </td> */}
+                                          <td>
+                                            {item.coupon_code &&
+                                            item.coupon_code !== "no"
+                                              ? item.coupon_code
+                                              : "Không mã"}
+                                          </td>
+                                          <td>
+                                            {(
+                                              item.shipping_fee || 50000
+                                            ).toLocaleString()}{" "}
+                                            đ
+                                          </td>
+                                          <td>
+                                            <div
+                                              style={{
+                                                display: "flex",
+                                                alignItems: "center",
+                                              }}
+                                            >
+                                              <input
+                                                type="number"
+                                                min={1}
+                                                value={item.quantity}
+                                                style={{
+                                                  width: "60px",
+                                                  marginRight: "10px",
+                                                  textAlign: "center",
+                                                }}
+                                                disabled
+                                              />
+                                            </div>
+                                          </td>
+
+                                          <td>
+                                            {item.price.toLocaleString()} đ
+                                          </td>
+                                          <td>
+                                            {(
+                                              item.price * item.quantity
+                                            ).toLocaleString()}{" "}
+                                            đ
+                                          </td>
+                                        </tr>
+                                      ))}
+                                      <tr>
+                                        <td
+                                          colSpan={5}
+                                          style={{ textAlign: "right" }}
+                                        >
+                                          <strong>Tổng giảm:</strong>
+                                        </td>
+                                        <td>
+                                          {discount.toLocaleString()} đ <br />
+                                        </td>
+                                      </tr>
+                                      <tr>
+                                        <td
+                                          colSpan={5}
+                                          style={{ textAlign: "right" }}
+                                        >
+                                          <strong>Phí ship:</strong>
+                                        </td>
+                                        <td>
+                                          {feeShip.toLocaleString()} đ<br />
+                                        </td>
+                                      </tr>
+                                      <tr>
+                                        <td
+                                          colSpan={5}
+                                          style={{ textAlign: "right" }}
+                                        >
+                                          <strong>Thanh toán:</strong>
+                                        </td>
+                                        <td> {total.toLocaleString()} đ</td>
+                                      </tr>
+                                    </tbody>
+                                  </table>
+                                </div>
+                              </div>
+                              <div className="card-footer">
+                                {(() => {
+                                  if (!orders || orders.length === 0) {
+                                    return "Không có đơn hàng";
+                                  }
+
+                                  if (orders[0].status === "Pending") {
+                                    return "Đơn hàng mới - chờ xử lý";
+                                  } else if (orders[0].status === "Delivered") {
+                                    return "Đã xử lí đơn hàng";
+                                  } else if (orders[0].status === "Cancelled") {
+                                    return "Đơn hàng bị hủy";
+                                  } else if (orders[0].status === "Accepted") {
+                                    return (
+                                      <p style={{ color: "green" }}>
+                                        Đơn hàng đã được giao
+                                      </p>
+                                    );
+                                  } else if (
+                                    orders[0].status === "Out for Delivery"
+                                  ) {
+                                    return "Đơn hàng đang được giao";
+                                  } else {
+                                    return "Trạng thái không xác định";
+                                  }
+                                })()}
+                              </div>
+
+                              <p>
+                                <button
+                                  type="button"
+                                  className="btn btn-link"
+                                  onClick={() => setOrderDetail(true)}
+                                >
+                                  Back
+                                </button>
+                              </p>
                             </div>
                           )}
                         </div>

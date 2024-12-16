@@ -17,7 +17,7 @@ class ProductController extends Controller
     //
     public function index()
     {
-        $products = Product::with('category_product')->orderBy('id', 'desc')->paginate(20);
+        $products = Product::with('category_product')->orderBy('id', 'desc')->paginate(100);
         if ($products) {
             return response()->json($products, 200);
         } else
@@ -283,7 +283,7 @@ class ProductController extends Controller
             return response()->json(['message' => 'Sản phẩm không tồn tại'], 404);
         }
 
-        $product->increment('favorite'); 
+        $product->increment('favorite');
         return response()->json(['message' => 'Đã tăng số lần yêu thích', 'favorite' => $product->favorite], 200);
     }
 

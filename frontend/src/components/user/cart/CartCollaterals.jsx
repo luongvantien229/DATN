@@ -14,7 +14,7 @@ export default function CartCollaterals() {
   const [addressSuggestions, setAddressSuggestions] = useState([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
 
-  const goongApiKey = "YOUR_GOONG_API_KEY"; // Replace with your Goong API key
+  const goongApiKey = "HdONT25R4wLZqYiL7mDG3k9VbpNMPHpqjKei3Dqi"; // Replace with your Goong API key
 
   useEffect(() => {
     const savedData = localStorage.getItem("PaymentInformation");

@@ -129,10 +129,10 @@ class OrderController extends Controller
             <strong>Ngày tạo:</strong> ' . date('d/m/Y', strtotime($order->date_deliver)) . '
         </p>
         <p style=" margin: 0;  ">
-            Địa chỉ: Số 123 Đường ABC, Quận XYZ, TP.HCM
+            Địa chỉ:  Công viên phần mềm Quang Trung, Phường Tân Chánh Hiệp, Quận 12
         </p>
     <p style=" margin: 5px 0; font-size: 14px;">
-        Số điện thoại: 0123-456-789
+        Số điện thoại: (+84) 394 444 686
     </p>
     <br>';
 
@@ -168,14 +168,16 @@ class OrderController extends Controller
                     <th>Số điện thoại</th>
                     <th>Địa chỉ</th>
                     <th>Ghi chú *</th>
+                    <th>Hình thức thanh toán</th>
                 </tr>
             </thead>
             <tbody>
                 <tr>
-                    <td>' . $order->shipname . '</td>
-                    <td>' . $order->shipphone . '</td>
-                    <td>' . $order->address . '</td>
-                    <td>' . $order->note . '</td>
+                   <td>' . ($order->shipname ?? 'N/A') . '</td>
+                    <td>' . ($order->shipphone ?? 'N/A') . '</td>
+                    <td>' . ($order->address ?? 'N/A') . '</td>
+                    <td>' . ($order->note ?? 'N/A') . '</td>
+                    <td>' . ($order->payment_method ?? 'N/A') . '</td>
                 </tr>
             </tbody>
         </table>';
@@ -485,19 +487,29 @@ class OrderController extends Controller
 
     }
 
-    public function cancel_order($id)
+    public function cancel_order(Request $request, $order_code)
     {
-        $order = Order::findOrFail($id);
+        $data = $request->all();
+
+        // Tìm đơn hàng theo mã
+        $order = Order::where('order_code', $order_code)->first();
+
+        if (!$order) {
+            return response()->json(['message' => 'Không tìm thấy đơn hàng.'], 404);
+        }
 
         if ($order->status === 'Cancelled') {
             return response()->json(['message' => 'Đơn hàng đã bị hủy trước đó.'], 400);
         }
 
+        // Cập nhật lý do và trạng thái
+        $order->reason_cancel = $data['reason'];
         $order->status = 'Cancelled';
         $order->save();
 
         return response()->json(['message' => 'Đơn hàng đã bị hủy thành công.']);
     }
+
 
 
     public function confirm_order(Request $request)

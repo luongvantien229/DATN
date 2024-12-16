@@ -607,4 +607,12 @@ class IndexController extends Controller
             $post_views
         ], 200);
     }
+    public function get_products_by_category($id)
+    {
+        $products = Product::where('category_id', $id)->get();
+        if ($products) {
+            return response()->json($products, 200);
+        } else
+            return response()->json('No products');
+    }
 }

@@ -25,6 +25,7 @@ return new class extends Migration
             $table->string('shipphone')->default(null);
             $table->string('address')->default(null);
             $table->string('note')->default(null);
+            $table->string('reason_cancel')->default(null);
             $table->timestamps();
 
 

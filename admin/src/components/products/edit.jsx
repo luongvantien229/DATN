@@ -366,7 +366,7 @@ const EditProducts = () => {
               <input
                 type="text"
                 className="form-control"
-                name="category_id"
+                name="ingredient"
                 value={product.ingredient}
                 onChange={handleChange}
                 required

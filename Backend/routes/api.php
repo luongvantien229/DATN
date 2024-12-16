@@ -162,7 +162,7 @@ Route::group(['prefix' => 'orders'], function ($router) {
         Route::post('/change_order_status/{id}', 'change_order_status');
         Route::post('/update_order_qty', 'update_order_qty');
         Route::get('/print_order/{order_code}', 'print_order');
-        Route::post('/cancel-order/{id}', [OrderController::class, 'cancel_order']);
+        Route::post('/cancel-order/{order_code}', [OrderController::class, 'cancel_order']);
 
     });
 });
@@ -313,3 +313,5 @@ Route::put('/change_user_password/{id}', [UserController::class, 'change_user_pa
 Route::post('/forgot-password', [ForgotPasswordController::class, 'forgot_password']);
 Route::post('/reset-password', [ForgotPasswordController::class, 'resetPassword']);
 
+// Get product by category id
+Route::get('/get_products_by_category/{id}', [IndexController::class, 'get_products_by_category']);

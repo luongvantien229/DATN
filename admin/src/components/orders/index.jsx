@@ -4,6 +4,7 @@ import axios from "axios";
 import "datatables.net-dt/css/dataTables.dataTables.css";
 import $ from "jquery";
 import "datatables.net";
+import Swal from "sweetalert2";
 
 const Orders = () => {
   const [orders, setOrders] = useState([]);
@@ -79,25 +80,68 @@ const Orders = () => {
     }
   };
 
-  const CancelOrder = async (id) => {
-    const confirmCancel = window.confirm(
-      "Bạn có chắc chắn muốn hủy đơn hàng này không?"
-    );
-    if (!confirmCancel) return;
+  const handleCancelOrder = (order_code) => {
+    console.log("Order Code:", order_code);
 
+    Swal.fire({
+      title: "Bạn có chắc chắn muốn hủy đơn hàng?",
+      input: "textarea",
+      inputPlaceholder: "Nhập lý do hủy đơn hàng...",
+      inputAttributes: {
+        "aria-label": "Nhập lý do hủy đơn hàng",
+      },
+      showCancelButton: true,
+      confirmButtonText: "Xác nhận",
+      cancelButtonText: "Hủy",
+      preConfirm: (reason) => {
+        if (!reason || reason.trim() === "") {
+          Swal.showValidationMessage("Lý do hủy đơn hàng là bắt buộc.");
+        }
+        return reason;
+      },
+    }).then((result) => {
+      if (result.isConfirmed) {
+        cancelOrder(order_code, result.value.trim()); // Gửi API với lý do hủy
+        Swal.fire(
+          "Đã hủy",
+          "Đơn hàng của bạn đã được hủy thành công.",
+          "success"
+        );
+      } else if (result.isDismissed) {
+        Swal.fire("Đã hủy", "Không có thay đổi nào được thực hiện.", "info");
+      }
+    });
+  };
+
+  const cancelOrder = async (order_code, reason) => {
     try {
-      const token = localStorage.getItem("token");
-      await axios.post(`http://localhost:8000/api/orders//cancel-order/${id}`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      setOrders(orders.filter((order) => order.id !== id));
-    } catch (error) {
-      setError("Lỗi khi xóa đơn hàng!");
-      console.error(
-        "Delete error:",
-        error.response ? error.response.data : error.message
+      const response = await axios.post(
+        `http://localhost:8000/api/orders/cancel-order/${order_code}`,
+        { reason },
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+          data: {
+            _method: "put",
+          },
+        }
       );
+      if (response.status === 200) {
+        setOrders((prevOrders) =>
+          prevOrders.map((order) =>
+            order.code === order_code
+              ? { ...order, status: "Cancelled" }
+              : order
+          )
+        );
+        Swal.fire("Thành công", "Đơn hàng đã được hủy.", "success");
+      }
+    } catch (error) {
+      console.error("Error cancelling order:", error);
+      Swal.fire("Lỗi", "Không thể hủy đơn hàng, vui lòng thử lại.", "error");
     }
+    window.location.reload(); 
   };
 
   if (loading) {
@@ -123,6 +167,7 @@ const Orders = () => {
                 <th>Phương Thức Thanh Toán</th>
                 <th>Ngày Giao Hàng</th>
                 <th>Trạng Thái</th>
+                <th>Lý do hủy đơn</th>
                 <th>Hành Động</th>
               </tr>
             </thead>
@@ -138,47 +183,64 @@ const Orders = () => {
                     <select
                       className="form-select form-select-sm"
                       value={order.status || ""}
-                      onChange={(e) => updateOrderStatus(order.id, e.target.value)}
+                      onChange={(e) =>
+                        updateOrderStatus(order.id, e.target.value)
+                      }
                     >
-                      <option value="">--------Chọn trạng thái đơn hàng--------</option>
-
+                      <option value="">
+                        --------Chọn trạng thái đơn hàng--------
+                      </option>
 
                       {order.status === "Pending" && (
                         <>
-                          <option value="Pending" disabled>Đơn hàng mới - chờ xử lý</option>
+                          <option value="Pending" disabled>
+                            Đơn hàng mới - chờ xử lý
+                          </option>
                           <option value="Delivered">Đã xử lí đơn hàng</option>
                         </>
                       )}
 
                       {order.status === "Delivered" && (
                         <>
-                          <option disabled value="Delivered">Đã xử lí đơn hàng</option>
-                          <option value="Out for Delivery">Đơn hàng đang được giao</option>
-                          <option value="Cancelled">Đơn hàng bị hủy</option>
+                          <option disabled value="Delivered">
+                            Đã xử lí đơn hàng
+                          </option>
+                          <option value="Out for Delivery">
+                            Đơn hàng đang được giao
+                          </option>
                         </>
                       )}
 
                       {order.status === "Out for Delivery" && (
                         <>
-                          <option value="Out for Delivery" disabled>Đơn hàng đang được giao</option>
-                          <option value="Accepted">Đơn hàng đã được giao</option>
-                          <option value="Cancelled">Đơn hàng bị hủy</option>
+                          <option value="Out for Delivery" disabled>
+                            Đơn hàng đang được giao
+                          </option>
+                          <option value="Accepted">
+                            Đơn hàng đã được giao
+                          </option>
                         </>
                       )}
 
                       {order.status === "Cancelled" && (
                         <>
-                          <option value="Cancelled" disabled>Đơn hàng bị hủy</option>
+                          <option value="Cancelled" disabled>
+                            Đơn hàng bị hủy
+                          </option>
                         </>
                       )}
 
                       {order.status === "Accepted" && (
                         <>
-                          <option value="Accepted" disabled>Đơn hàng đã được giao</option>
+                          <option value="Accepted" disabled>
+                            Đơn hàng đã được giao
+                          </option>
                         </>
                       )}
                     </select>
                   </td>
+
+                  <td>{order.reason_cancel}</td>
 
                   <td>
                     <Link
@@ -187,12 +249,15 @@ const Orders = () => {
                     >
                       Xem Đơn Hàng
                     </Link>
-                    <button
-                      className="btn btn-sm btn-outline-danger"
-                      onClick={() => CancelOrder(order.id)}
-                    >
-                      Hủy
-                    </button>
+
+                    {order.status === "Pending" && (
+                      <button
+                        className="btn btn-sm btn-outline-danger"
+                        onClick={() => handleCancelOrder(order.order_code)}
+                      >
+                        Hủy
+                      </button>
+                    )}
                   </td>
                 </tr>
               ))}

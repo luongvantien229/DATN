@@ -45,7 +45,7 @@ export default function SidebarCategoriesList({ onCategorySelect }) {
     return categories
       .filter((category) => category.parent_id === parentId)
       .map((category) => (
-        <li key={category.id}>
+        <li key={category.id} className="subcat">
           <div
             style={{
               display: "flex",
@@ -87,7 +87,7 @@ export default function SidebarCategoriesList({ onCategorySelect }) {
       <div className="sidebar-categories-list">
         <div className="sidebar-categories">
           <ul style={{ listStyle: "none"}}>
-            <li>
+          <li className="shop-parent-cat">
               <a
                 onClick={handleResetClick}
                 className={!selectedCategory ? "active" : ""}

@@ -22,12 +22,12 @@ return new class extends Migration
             $table->foreignId('brand_id')->constrained()->onDelete('cascade'); // Khóa ngoại đến bảng brands
             $table->integer('favorite');
             $table->integer('view');
-            $table->string('ingredient'); // thành phần
+            $table->text('ingredient'); // thành phần
             $table->foreignId('product_type_id')->constrained()->onDelete('cascade'); // Khóa ngoại đến bảng product_type
             $table->string('image');
             $table->integer('status');
-            $table->string('uses');// Sử dụng
-            $table->string('user_manual'); // hướng dẫn sử dụng
+            $table->text('uses');// Sử dụng
+            $table->text('user_manual'); // hướng dẫn sử dụng
             $table->string('sku'); // mã sản phẩm tồn kho
             $table->string('barcode')->nullable(); // mã vạch sản phẩm
             $table->integer('track_qty')

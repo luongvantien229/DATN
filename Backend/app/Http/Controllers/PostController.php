@@ -42,18 +42,15 @@ class PostController extends Controller
             ]);
 
             $post = new Post();
+
+            $post->fill($validated);
             // Handle image upload
             if ($request->hasFile('image')) {
                 $file = $request->file('image');
-                $ext = $file->getClientOriginalExtension();
-                $filename = time() . '.' . $ext;
-
-                // Use public_path to ensure the file is saved in the correct directory
-                $file->move(public_path('assets/uploads/post/'), $filename);
+                $filename = time() . '.' . $file->getClientOriginalExtension();
+                $file->move('assets/uploads/post/', $filename);
                 $post->image = $filename;
             }
-
-            $post->fill($validated);
             $post->save();
 
             return response()->json(['message' => 'Post created successfully', 'data' => $post], 201);
@@ -78,21 +75,22 @@ class PostController extends Controller
 
             $post = Post::findOrFail($id);
 
-            if ($request->hasFile('image')) {
-                $path = public_path('assets/uploads/post/' . $post->image);
-                if (File::exists($path)) {
-                    File::delete($path); // Delete the old image if it exists
-                }
-                $file = $request->file('image');
-                $ext = $file->getClientOriginalExtension();
-                $filename = time() . '.' . $ext;
 
-                // Move the new image to the designated directory
-                $file->move(public_path('assets/uploads/post/'), $filename);
-                $post->image = $filename;
-            }
 
             $post->fill($validated);
+            if ($request->hasFile('image')) {
+                // Delete the existing image if it exists
+                $path = 'assets/uploads/post/' . $post->image;
+                if (File::exists($path)) {
+                    File::delete($path); // Delete the old image
+                }
+
+                // Save the new image
+                $file = $request->file('image');
+                $filename = time() . '.' . $file->getClientOriginalExtension();
+                $file->move(public_path('assets/uploads/post/'), $filename);
+                $post->image = $filename; // Update image field in the brand
+            }
             $post->save();
 
             return response()->json(['message' => 'Post updated successfully', 'data' => $post], 200);

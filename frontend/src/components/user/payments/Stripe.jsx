@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Modal from "react-modal";
-import './style.scss'
+import "./style.scss";
 
 Modal.setAppElement("#root");
 
@@ -22,7 +22,15 @@ export default function Stripe() {
   const User = JSON.parse(localStorage.getItem("User")) || {};
 
   const fetchPaymentUrl = async () => {
-    const token = localStorage.getItem("token");
+    // Get the token from localStorage
+const localStorageToken = localStorage.getItem("token");
+
+// Get the token from the URL query parameters
+const urlParams = new URLSearchParams(window.location.search);
+const urlToken = urlParams.get("token");
+
+// You can now choose which token to use, for example:
+const token = urlToken || localStorageToken; // If URL token exists, use it; otherwise, use the localStorage token.
 
     // Check if PaymentInformation is complete
     if (
@@ -65,7 +73,16 @@ export default function Stripe() {
   };
 
   const handleConfirmPayment = async () => {
-    const token = localStorage.getItem("token");
+    // Get the token from localStorage
+const localStorageToken = localStorage.getItem("token");
+
+// Get the token from the URL query parameters
+const urlParams = new URLSearchParams(window.location.search);
+const urlToken = urlParams.get("token");
+
+// You can now choose which token to use, for example:
+const token = urlToken || localStorageToken; // If URL token exists, use it; otherwise, use the localStorage token.
+
 
     if (paymentMethod === "Thanh toán khi nhận hàng") {
       // Handle cash on delivery order
@@ -80,13 +97,14 @@ export default function Stripe() {
           }
         );
         alert("Đơn hàng của bạn đã được xác nhận!");
-        localStorage.removeItem("cart");
-        localStorage.removeItem("coupon");
         navigate("/payment/success");
       } catch (error) {
         console.error("Error confirming order:", error);
         alert("Đã xảy ra lỗi khi xác nhận đơn hàng.");
       }
+      localStorage.removeItem("cartItems");
+      localStorage.removeItem("coupon");
+      localStorage.removeItem("PaymentInformation");
     } else {
       // Handle Stripe payment
       try {
@@ -104,6 +122,9 @@ export default function Stripe() {
         console.error("Error fetching payment URL:", error);
         alert("Đã xảy ra lỗi khi thanh toán.");
       }
+      localStorage.removeItem("cart");
+      localStorage.removeItem("coupon");
+      localStorage.removeItem("PaymentInformation");
     }
     setIsModalOpen(false); // Close the modal after confirming payment
   };
@@ -159,22 +180,23 @@ export default function Stripe() {
               Độc lập - Tự do - Hạnh phúc
             </h4>
           </div>
-         
-          <p style={{  margin: 0 }}>
-              <strong>Ngày tạo:</strong>{" "}
-              {new Date().toLocaleDateString("vi-VN", {
-                day: "2-digit",
-                month: "2-digit",
-                year: "numeric",
-              })}
-            </p>
-            <p style={{  margin: 0 }}>
-              Địa chỉ: Số 123 Đường ABC, Quận XYZ, TP.HCM
-            </p>
-          <p style={{  margin: "5px 0", fontSize: "14px" }}>
-            Số điện thoại: 0123-456-789
+
+          <p style={{ margin: 0 }}>
+            <strong>Ngày tạo:</strong>{" "}
+            {new Date().toLocaleDateString("vi-VN", {
+              day: "2-digit",
+              month: "2-digit",
+              year: "numeric",
+            })}
           </p>
-            <br />
+          <p style={{ margin: 0 }}>
+            Địa chỉ: Công viên phần mềm Quang Trung, Phường Tân Chánh Hiệp, Quận
+            12
+          </p>
+          <p style={{ margin: "5px 0", fontSize: "14px" }}>
+            Số điện thoại: (+84) 394 444 686
+          </p>
+          <br />
           {/* Customer Information */}
           <p>
             <strong>Thông tin đăng nhập:</strong>

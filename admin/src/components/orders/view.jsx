@@ -277,7 +277,12 @@ function ViewOrder() {
                             marginRight: "10px",
                             textAlign: "center",
                           }}
-                          disabled={orders[0]?.status === "Delivered" || orders[0]?.status === "Out for Delivery"|| orders[0]?.status === "Cancelled" || orders[0]?.status === "Accepted"} // Disable input if order is delivered
+                          disabled={
+                            orders[0]?.status === "Delivered" ||
+                            orders[0]?.status === "Out for Delivery" ||
+                            orders[0]?.status === "Cancelled" ||
+                            orders[0]?.status === "Accepted"
+                          } // Disable input if order is delivered
                         />
                         <button
                           className="btn btn-default"
@@ -289,7 +294,12 @@ function ViewOrder() {
                               item.quantity
                             )
                           }
-                          disabled={orders[0]?.status === "Delivered" || orders[0]?.status === "Out for Delivery"|| orders[0]?.status === "Cancelled" || orders[0]?.status === "Accepted"} // Disable button if order is delivered
+                          disabled={
+                            orders[0]?.status === "Delivered" ||
+                            orders[0]?.status === "Out for Delivery" ||
+                            orders[0]?.status === "Cancelled" ||
+                            orders[0]?.status === "Accepted"
+                          } // Disable button if order is delivered
                         >
                           Cập nhật
                         </button>
@@ -300,17 +310,27 @@ function ViewOrder() {
                     <td>{(item.price * item.quantity).toLocaleString()} đ</td>
                   </tr>
                 ))}
-              </tbody>
-              <tr>
-                <td colSpan={2}>
-                  <strong>Tổng giảm:</strong>
-                  {discount.toLocaleString()} đ <br />
-                  <strong>Phí ship:</strong>
+                <tr>
+                  <td colSpan={6} style={{ textAlign: "right" }}>
+                    <strong>Tổng giảm:</strong>
+                  </td>
+                  <td>{discount.toLocaleString()} đ <br /></td>
+                </tr>
+                <tr >
+                  <td colSpan={6} style={{ textAlign: "right" }} >
+                    <strong>Phí ship:</strong>
+                  </td>
+                  <td>
                   {feeShip.toLocaleString()} đ<br />
-                  <strong>Thanh toán:</strong>
-                  {total.toLocaleString()} đ
-                </td>
-              </tr>
+                  </td>
+                </tr>
+                <tr >
+                  <td colSpan={6} style={{ textAlign: "right" }}>
+                    <strong>Thanh toán:</strong>
+                  </td>
+                  <td> {total.toLocaleString()} đ</td>
+                </tr>
+              </tbody>
             </table>
           </div>
         </div>
@@ -322,39 +342,48 @@ function ViewOrder() {
           >
             <option value="">--------Chọn trạng thái đơn hàng--------</option>
 
-           
             {orders[0]?.status === "Pending" && (
               <>
-                <option value="Pending" disabled>Đơn hàng mới - chờ xử lý</option>
-                <option value="Delivered">Đã xử lí đơn hàng</option>
+                <option value="Pending" disabled>
+                  Đơn hàng mới - chờ xử lý
+                </option>
+                <option value="Cancelled">Đơn hàng bị hủy</option>
               </>
             )}
 
             {orders[0]?.status === "Delivered" && (
               <>
-                <option disabled value="Delivered">Đã xử lí đơn hàng</option>
-                <option value="Out for Delivery">Đơn hàng đang được giao</option>
-                <option value="Cancelled">Đơn hàng bị hủy</option>
+                <option disabled value="Delivered">
+                  Đã xử lí đơn hàng
+                </option>
+                <option value="Out for Delivery">
+                  Đơn hàng đang được giao
+                </option>
               </>
             )}
 
             {orders[0]?.status === "Out for Delivery" && (
               <>
-                <option value="Out for Delivery" disabled>Đơn hàng đang được giao</option>
+                <option value="Out for Delivery" disabled>
+                  Đơn hàng đang được giao
+                </option>
                 <option value="Accepted">Đơn hàng đã được giao</option>
-                <option value="Cancelled">Đơn hàng bị hủy</option>
               </>
             )}
 
             {orders[0]?.status === "Cancelled" && (
               <>
-                <option value="Cancelled" disabled>Đơn hàng bị hủy</option>
+                <option value="Cancelled" disabled>
+                  Đơn hàng bị hủy
+                </option>
               </>
             )}
 
             {orders[0]?.status === "Accepted" && (
               <>
-                <option value="Accepted" disabled>Đơn hàng đã được giao</option>
+                <option value="Accepted" disabled>
+                  Đơn hàng đã được giao
+                </option>
               </>
             )}
           </select>

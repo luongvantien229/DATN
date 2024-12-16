@@ -15,6 +15,7 @@ const AddPosts = () => {
     content: "",
     category_posts_id: 0,
     status: false,
+    image: null,
   });
   const [image, setImage] = useState(null);
   const [error, setError] = useState(null); // Trạng thái lỗi
@@ -149,6 +150,7 @@ const AddPosts = () => {
         content: "",
         category_posts_id: 0,
         status: false,
+        image: null,
       });
       setImage(null);
       setSuccess(true); // Cập nhật trạng thái thành công

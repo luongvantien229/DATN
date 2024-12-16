@@ -175,7 +175,40 @@ const Categories = () => {
                 categories.map((category) => (
                   <tr key={category.id}>
                     <td>{category.id}</td>
-                    <td>{category.name}</td>
+                    <td>
+                    {category.image ? (
+                      // Nếu có ảnh, kiểm tra loại URL
+                      category.image.includes("http") ? (
+                        <img
+                          src={category.image} // Trường hợp URL đầy đủ
+                          alt={category.name}
+                          style={{
+                            width: "50px",
+                            height: "50px",
+                            objectFit: "cover",
+                            marginRight: "10px",
+                          }}
+                        />
+                      ) : (
+                        <img
+                          src={`http://localhost:8000/assets/uploads/category/${category.image}`} // Trường hợp đường dẫn tương đối
+                          alt={category.name}
+                          style={{
+                            width: "50px",
+                            height: "50px",
+                            objectFit: "cover",
+                            marginRight: "10px",
+                          }}
+                        />
+                      )
+                    ) : (
+                      // Nếu không có ảnh
+                      <p>Image not found</p>
+                    )}
+
+                    {/* Hiển thị tên thương hiệu */}
+                    {category.name}
+                  </td>
                     <td>{category.slug}</td>
                     <td>
                       {category.parent_id === 0

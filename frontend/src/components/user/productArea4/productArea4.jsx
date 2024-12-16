@@ -32,7 +32,7 @@ export default function ProductArena4({ product }) {
           <div className="product-price">
             <span className="new-price">{Number(product.price).toLocaleString()} đ</span> {/* Giá sản phẩm */}
             {/* Nếu có giá cũ, hiển thị tại đây */}
-            <span className="old-price">{Number(product.price * 1.1).toLocaleString()} đ</span> {/* Giá sản phẩm */}
+            <span className="old-price">{Number(product.price_cost).toLocaleString()} đ</span> {/* Giá sản phẩm */}
           </div>
         </div>
       </div>

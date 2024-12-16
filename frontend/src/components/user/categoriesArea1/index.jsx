@@ -12,7 +12,7 @@ export default function Index() {
     // Gọi API để lấy danh mục
     const fetchCategories = async () => {
       try {
-        const response = await axios.get("/all_categories"); // Thay đổi từ fetch sang axios
+        const response = await axios.get("/get_categories_home"); // Thay đổi từ fetch sang axios
         console.log(response.data); // Kiểm tra dữ liệu
         setCategories(response.data.categories);
 

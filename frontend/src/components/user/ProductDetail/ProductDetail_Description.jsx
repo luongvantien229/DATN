@@ -43,7 +43,7 @@ export default function ProductDetail_Description() {
             aria-controls="navs-top-home"
             aria-selected={activeTab === 'navs-top-home'}
           >
-            Home
+            Miêu tả
           </button>
         </li>
         <li className="nav-item">
@@ -55,7 +55,7 @@ export default function ProductDetail_Description() {
             aria-controls="navs-top-profile"
             aria-selected={activeTab === 'navs-top-profile'}
           >
-            Profile
+            Cách dùng
           </button>
         </li>
         <li className="nav-item">
@@ -67,7 +67,7 @@ export default function ProductDetail_Description() {
             aria-controls="navs-top-messages"
             aria-selected={activeTab === 'navs-top-messages'}
           >
-            Messages
+            Công dụng
           </button>
         </li>
       </ul>

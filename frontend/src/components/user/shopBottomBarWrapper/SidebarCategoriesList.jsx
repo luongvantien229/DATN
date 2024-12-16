@@ -3,7 +3,6 @@ import axios from "axios";
 
 export default function SidebarCategoriesList({ onCategorySelect }) {
   const [categories, setCategories] = useState([]);
-  console.log("🚀 ~ SidebarCategoriesList ~ categories:", categories[0])
   const [selectedCategory, setSelectedCategory] = useState(
     localStorage.getItem("selectedCategory") || null // Lấy giá trị từ localStorage
   );
@@ -55,7 +54,7 @@ export default function SidebarCategoriesList({ onCategorySelect }) {
           >
             <a
               onClick={() => handleCategoryClick(category.id)}
-              className={selectedCategory === category.id ? "active" : ""}
+              className={selectedCategory == category.id ? "active" : ""}
               style={{ cursor: "pointer" }}
             >
               {category.name}
@@ -87,7 +86,7 @@ export default function SidebarCategoriesList({ onCategorySelect }) {
       <div className="sidebar-categories-list">
         <div className="sidebar-categories">
           <ul style={{ listStyle: "none"}}>
-          <li className="shop-parent-cat">
+            <li className="shop-parent-cat">
               <a
                 onClick={handleResetClick}
                 className={!selectedCategory ? "active" : ""}

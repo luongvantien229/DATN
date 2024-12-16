@@ -23,10 +23,10 @@ export default function Index() {
   // Hàm để lấy sản phẩm mới từ API
   const fetchNewProducts = async () => {
     try {
-      const response = await axios.get('/new_products');
+      const response = await axios.get('/get_products_sold_most');
 
       console.log(response.data); // In ra để kiểm tra dữ liệu
-      setNewProducts(response.data.new_products || []); // Đảm bảo new_products là một mảng
+      setNewProducts(response.data || []); // Đảm bảo new_products là một mảng
     } catch (error) {
       console.error('Error fetching new products:', error);
     }
@@ -44,10 +44,10 @@ export default function Index() {
           <div className="section-title-timer-wrap">
             <div className="section-title-1">
 
-            <h2>Săn Deal giảm sốc</h2>
+            <h2>Sản phẩm bán chạy</h2>
 
             </div>
-            <div id="timer-1-active" className="timer-style-1">
+            {/* <div id="timer-1-active" className="timer-style-1">
               <span>Kết thúc:</span>
               <Countdown
                 date={midnight}
@@ -65,10 +65,11 @@ export default function Index() {
                   }
                 }}
               />
-            </div>
+            </div> */}
           </div>
           <div className="product-slider-active-1 nav-style-2 product-hm1-mrg d-flex" ref={productArena1}>
-            {newProducts.slice(0, 5).map((product) => (
+            {/* Render các sản phẩm mới */}
+            {newProducts.map((product) => (
               <ProductArena1 key={product.id} product={product} /> // Pass product to the component
             ))}
           </div>

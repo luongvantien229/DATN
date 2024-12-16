@@ -615,4 +615,19 @@ class IndexController extends Controller
         } else
             return response()->json('No products');
     }
+    public function get_categories_home()
+    {
+        $categories = Category::where('showHome', 'Yes')->get();
+        $listCategory = [];
+        Category::recursive($categories, 0, 1, $listCategory);
+        return response()->json([
+            'categories' => $listCategory,
+        ], 200);
+            
+    }
+    public function get_products_sold_most()
+    {
+        $products = Product::orderBy('sold', 'DESC')->take(5)->get();
+        return response()->json($products, 200);
+    }
 }

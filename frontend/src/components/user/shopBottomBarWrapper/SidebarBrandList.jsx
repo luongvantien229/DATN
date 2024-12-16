@@ -21,20 +21,20 @@ export default function SidebarBrandList({ onBrandSelect }) {
   }, []);
 
   const handleBrandClick = (brand) => {
-    setSelectedBrand(brand.id); // Lưu thương hiệu được chọn vào state
-    localStorage.setItem("selectedBrand", brand.id); // Lưu vào localStorage
-    onBrandSelect(brand.id); // Truyền giá trị lên component cha
+    setSelectedBrand(brand.id); // Set selected brand ID
+    localStorage.setItem("selectedBrand", brand.id);
+    onBrandSelect(brand.id); // Pass the selected brand ID to the parent component
   };
 
   const handleResetClick = () => {
-    setSelectedBrand(null); // Reset state về null
-    localStorage.removeItem("selectedBrand"); // Xóa thương hiệu khỏi localStorage
-    onBrandSelect(""); // Reset bộ lọc
+    setSelectedBrand(null); // Reset selected brand
+    localStorage.removeItem("selectedBrand");
+    onBrandSelect(""); // Pass an empty string to reset the filter
   };
 
   return (
     <div className="sidebar-widget sidebar-widget-wrap sidebar-widget-padding-1 mb-20">
-      <h4 className="sidebar-widget-title">Thương hiệu</h4>
+      <h4 className="sidebar-widget-title">Brands</h4>
       <div className="sidebar-brand-list">
         <ul>
           <li>
@@ -50,7 +50,7 @@ export default function SidebarBrandList({ onBrandSelect }) {
             <li key={brand.id}>
               <a 
                 onClick={() => handleBrandClick(brand)} 
-                className={selectedBrand === brand.id ? "active" : ""} 
+                className={selectedBrand == brand.id ? "active" : ""} 
                 style={{ cursor: "pointer" }}
               >
                 {brand.name} <span>({brand.products_count})</span>

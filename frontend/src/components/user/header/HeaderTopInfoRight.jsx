@@ -146,7 +146,7 @@ export default function HeaderTopHeaderInfoRight() {
     <div className="col-xl-3 col-lg-4">
       <div className="header-info header-info-right">
         <ul>
-          <li>
+          {/* <li>
             <a className="language-dropdown-active" href="#">
               Tiếng Việt <i className="fa fa-chevron-down"></i>
             </a>
@@ -155,7 +155,7 @@ export default function HeaderTopHeaderInfoRight() {
                 <a href="#">Tiếng Anh</a>
               </li>
             </ul>
-          </li>
+          </li> */}
           {isLoggin ? (
             <li className="nav-item navbar-dropdown dropdown-user dropdown">
               <div className="name_user">
@@ -181,9 +181,33 @@ export default function HeaderTopHeaderInfoRight() {
                     data-show-count="true"
                     aria-label="Star themeselection/sneat-html-admin-template-free trên GitHub"
                   >
-                    Quản lý tài khoản
+                    Thông tin tài khoản
                   </Link>
                 </li>
+                {/* <li className="nav-item lh-1 me-4 hihi">
+                  <Link
+                    className="github-button"
+                    to="/user-profile#orders"
+                    data-icon="octicon-star"
+                    data-size="large"
+                    data-show-count="true"
+                    aria-label="Star themeselection/sneat-html-admin-template-free trên GitHub"
+                  >
+                    Đơn hàng
+                  </Link>
+                </li>
+                <li className="nav-item lh-1 me-4 hihi">
+                  <Link
+                    className="github-button"
+                    to="/user-profile#account-info"
+                    data-icon="octicon-star"
+                    data-size="large"
+                    data-show-count="true"
+                    aria-label="Star themeselection/sneat-html-admin-template-free trên GitHub"
+                  >
+                    Đổi mật khẩu
+                  </Link>
+                </li> */}
                 <li className="nav-item lh-1 me-4 hihi">
                   <Link
                     className="github-button"
@@ -194,7 +218,7 @@ export default function HeaderTopHeaderInfoRight() {
                     data-show-count="true"
                     aria-label="Star themeselection/sneat-html-admin-template-free trên GitHub"
                   >
-                    Thoát
+                    Đăng xuất
                   </Link>
                 </li>
               </ul>

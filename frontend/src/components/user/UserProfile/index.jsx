@@ -28,7 +28,7 @@ const UserProfile = () => {
 
   // Orders
   const [orders, setOrders] = useState([]);
-  const [orderData, setOrderData] = useState({});
+  const [orderData, setOrderData] = useState({ orders: [] });
   const [orderDetail, setOrderDetail] = useState(false);
   const [orderDetailId, setOrderDetailId] = useState(null);
 
@@ -87,7 +87,11 @@ const UserProfile = () => {
               : order
           ),
         }));
-        Swal.fire("Thành công", "Đơn hàng đã được hủy.", "success");
+        Swal.fire("Thành công", "Đơn hàng đã được hủy.", "success")
+        .then(() => {            
+            // Làm mới trang sau khi người dùng nhấn OK
+            window.location.reload();
+          });;
       }
     } catch (error) {
       console.error("Error cancelling order:", error);

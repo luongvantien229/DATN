@@ -54,3 +54,14 @@
     padding: 10px 30px;
     border-radius: 26px;
 }
+.table-content-cart{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.img-no-cart {
+    width: 50%;
+    height: 100%;
+    object-fit: cover;
+    align-items: center !important;
+}

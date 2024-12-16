@@ -315,3 +315,9 @@ Route::post('/reset-password', [ForgotPasswordController::class, 'resetPassword'
 
 // Get product by category id
 Route::get('/get_products_by_category/{id}', [IndexController::class, 'get_products_by_category']);
+
+// Fetch category with showHome = "YES"
+Route::get('/get_categories_home', [IndexController::class, 'get_categories_home']);
+
+// Fetch 5 products with sold the most
+Route::get('/get_products_sold_most', [IndexController::class, 'get_products_sold_most']);

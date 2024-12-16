@@ -18,7 +18,7 @@ export default function HeaderBottomMenu() {
           <li>
             <Link className={location.pathname === '/shop' ? 'active' : ''} to="/shop">Sản Phẩm</Link>
           </li>
-          <li className="position-static">
+          {/* <li className="position-static">
             <Link to="#">
               Danh mục <i className="fa fa-chevron-down"></i>
             </Link>
@@ -103,7 +103,7 @@ export default function HeaderBottomMenu() {
                 </div>
               </li>
             </ul>
-          </li>
+          </li> */}
           <li>
             <Link className={location.pathname === '/blog' ? 'active' : ''} to="/blog">Bài viết</Link>
           </li>

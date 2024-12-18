@@ -188,13 +188,13 @@ const UserProfile = () => {
 
     // Check if new passwords match
     if (newPassword !== confirmPassword) {
-      setError("New password and confirm password do not match");
+      setError("Mật khẩu mới và xác nhận mật khẩu không khớp");
       return;
     }
 
     // Validate that the new password is at least 8 characters long
     if (newPassword.length < 8) {
-      setError("Password must be at least 8 characters long");
+      setError("Mật khẩu mới phải có ít nhất 8 ký tự");
       return;
     }
 
@@ -210,8 +210,8 @@ const UserProfile = () => {
       );
 
       if (response.status === 200) {
-        setSuccess("Password updated successfully");
-        Swal.fire("Success", "Password updated successfully", "success").then(
+        setSuccess("Cập nhật mật khẩu thành công");
+        Swal.fire("Thành công", "Cập nhật mật khẩu thành công", "success").then(
           () => {
             window.location.reload();
           }
@@ -238,15 +238,15 @@ const UserProfile = () => {
       );
 
       if (response.status === 200) {
-        setSuccess("User information updated successfully");
+        setSuccess("Thông tin người dùng đã được cập nhật thành công");
         Swal.fire(
-          "Success",
-          "User information updated successfully",
+          "Thành công",
+          "Thông tin người dùng đã được cập nhật thành công",
           "success"
         );
       }
     } catch (error) {
-      setError("Failed to update user information");
+      setError("Có lỗi xảy ra khi cập nhật thông tin người dùng");
       console.error("Update error:", error);
     }
   };
@@ -318,7 +318,7 @@ const UserProfile = () => {
                             <fieldset>
                               <legend>Thông tin tài khoản</legend>
                               <div className="row">
-                                <div className="mb-3">
+                                {/* <div className="mb-3">
                                   <label className="form-label">
                                     Ảnh thương hiệu
                                   </label>
@@ -338,7 +338,7 @@ const UserProfile = () => {
                                     accept="image/*"
                                     onChange={handleImageChange}
                                   />
-                                </div>
+                                </div> */}
                                 <div className="col-lg-12">
                                   <div className="account-info input-style mb-30">
                                     <label>Name *</label>

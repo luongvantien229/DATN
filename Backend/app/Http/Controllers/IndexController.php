@@ -86,9 +86,9 @@ class IndexController extends Controller
         ], 200);
     }
 
-    public function post_detail($slug,$id, Request $request)
+    public function post_detail($slug, $id, Request $request)
     {
-        $post = Post::with('users','category_posts')->find($id);
+        $post = Post::with('users', 'category_posts')->find($id);
         if ($post === null) {
             return response()->json('Post not found', 404);
         }
@@ -283,7 +283,15 @@ class IndexController extends Controller
             $query->where('category_id', $request->category_id);
         }
 
+        // Filtering by sold desc
+        if ($request->has('sold') && !empty($request->sold)) {
+            $query->orderBy('sold', 'DESC');
+        }
 
+        // Filtering by favorite desc
+        if ($request->has('favorite') && !empty($request->favorite)) {
+            $query->orderBy('favorite', 'DESC');
+        }
 
         // Sorting products
         if ($request->has('sort_by')) {
@@ -297,6 +305,9 @@ class IndexController extends Controller
                     break;
                 case 'Sort_A_Z':
                     $query->orderBy('name', 'ASC');
+                    break;
+                case 'sold':
+                    $query->orderBy('sold', 'Desc');
                     break;
                 case 'Sort_Z_A':
                     $query->orderBy('name', 'DESC');
@@ -617,17 +628,32 @@ class IndexController extends Controller
     }
     public function get_categories_home()
     {
-        $categories = Category::where('showHome', 'Yes')->get();
-        $listCategory = [];
-        Category::recursive($categories, 0, 1, $listCategory);
-        return response()->json([
-            'categories' => $listCategory,
-        ], 200);
-            
+        $categories = Category::where('showHome', 'Yes')->orderBy('sort_order', 'desc')->get();
+        return response()->json($categories, 200);
     }
     public function get_products_sold_most()
     {
         $products = Product::orderBy('sold', 'DESC')->take(5)->get();
+        return response()->json($products, 200);
+    }
+    public function get_products_favorite_most()
+    {
+        $products = Product::orderBy('favorite', 'DESC')->get();
+        return response()->json($products, 200);
+    }
+    public function get_products_sold_most_all()
+    {
+        $products = Product::orderBy('sold', 'DESC')->get();
+        return response()->json($products, 200);
+    }
+    public function get_products_view_most()
+    {
+        $products = Product::orderBy('view', 'DESC')->take(4)->get();
+        return response()->json($products, 200);
+    }
+    public function get_products_view_most_all()
+    {
+        $products = Product::orderBy('view', 'DESC')->get();
         return response()->json($products, 200);
     }
 }

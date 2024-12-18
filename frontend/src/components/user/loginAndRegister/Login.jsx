@@ -82,7 +82,7 @@
       } catch (error) {
         if (error.response) {
           if (error.response.status === 401) {
-            setErrorMessage("Email hoặc mật khẩu không hợp lệ. Vui lòng thử lại.");
+            setErrorMessage("Email hoặc mật khẩu không khớp. Vui lòng thử lại.");
           } else {
             setErrorMessage(`Lỗi: ${error.response.status}. Vui lòng thử lại sau.`);
           }
@@ -204,8 +204,8 @@
               </div>
               <div className="lost-remember-wrap">
                 <div className="remember-wrap">
-                  <input type="checkbox" />
-                  <span>Lưu mật khẩu</span>
+                  {/* <input type="checkbox" />
+                  <span>Lưu mật khẩu</span> */}
                 </div>
                 <div className="lost-wrap">
                   <button

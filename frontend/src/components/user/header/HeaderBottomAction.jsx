@@ -167,8 +167,8 @@ export default function HeaderBottomAction() {
                 </h4>
               </div>
               <div className="shopping-cart-button">
-                <Link to="/cart">View cart</Link>
-                <Link to="/checkout">Checkout</Link>
+                <Link to="/cart">Giỏ hàng</Link>
+                <Link to="/cart">Thanh toán</Link>
               </div>
             </div>
           </div>

@@ -204,7 +204,7 @@ const Comments = () => {
                     <div>
                     <Link
                         className="btn btn-sm btn-outline-primary me-2"
-                        to={"http://localhost:3000/"}
+                        to={"http://localhost:3000/product-detail/" + comment.product.slug + "/" + comment.product.id}
                       >
                         <i
                           className="bx bx-show-alt me-1"

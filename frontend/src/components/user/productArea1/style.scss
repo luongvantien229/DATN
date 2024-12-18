@@ -1,34 +1,63 @@
 .product-area-border {
-    border: 2px solid #6cd3a1 !important;
-  }
-  .single-product-wrap .product-img-action-wrap .product-img-zoom a img {
-    width: 280px;
-    height: 280px;
-    object-fit: cover;
-  }
-  .single-product-wrap .product-content-wrap h2 {
-      display: -webkit-box;          
-      -webkit-box-orient: vertical;  
-      overflow: hidden;              
-      text-overflow: ellipsis;       
-      -webkit-line-clamp: 3;        
-  }
-  .new-price{
-      display: block;
-  }
-  .old-price{
-      display: block;
-      margin-left: 0px !important;
-      font-size: 14px;
-      color: #999 !important;
-  }
-  .single-product-wrap .product-content-wrap h2 a:hover {
-    color: #27C77C !important;
-  }
-  // .productArea1{
-  //   background-color: #FFC371;
-  // }
-  .product-slider-active-1 .product-plr-1, .categories-slider-1 .product-plr-1 {
-    width: 20%;
-  }
-  
+  border: 2px solid #6cd3a1 !important;
+}
+.single-product-wrap .product-img-action-wrap .product-img-zoom a img {
+  width: 280px;
+  height: 280px;
+  object-fit: cover;
+}
+.single-product-wrap .product-content-wrap h2 {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  -webkit-line-clamp: 3;
+}
+.new-price {
+  display: block;
+}
+.old-price {
+  display: block;
+  margin-left: 0px !important;
+  font-size: 14px;
+  color: #999 !important;
+}
+.single-product-wrap .product-content-wrap h2 a:hover {
+  color: #27c77c !important;
+}
+// .productArea1{
+//   background-color: #FFC371;
+// }
+.product-slider-active-1 .product-plr-1,
+.categories-slider-1 .product-plr-1 {
+  width: 20%;
+}
+.section-title-timer-wrap {
+  width: 50%;
+  background-color: transparent !important;
+}
+.section-title-timer-wrap2 {
+  text-align: right;
+}
+.section-title-timer-wrap2 .section-title-1{
+  margin-left: auto;
+}
+.section-title-timer-wrap2 .section-title-1 a{
+  font-size: 18px;
+  color: #27c77c;
+  background-color: #ffff;
+  padding: 10px 20px;
+}
+.section-title-timer-wrap1 h2 {
+  background-color: #fff;
+  padding: 0px 20px;
+}
+.single-product-wrap .product-img-action-wrap .product-action-1 button:hover {
+  background-color: #27c77c !important;
+}
+.single-product-wrap .product-img-action-wrap .product-action-1 button:hover:after {
+  background-color: #27c77c !important;
+}
+.single-product-wrap .product-img-action-wrap .product-action-1 button:hover:before {
+  border-top-color: #27c77c !important;
+}

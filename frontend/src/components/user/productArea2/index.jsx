@@ -3,6 +3,7 @@ import ProductArena2 from "./productArea2";
 import useSlick from "../../../hooks/user/slick";
 import axios from "axios"; // Đảm bảo bạn đã cài đặt axios
 import './style.scss';
+import { Link } from "react-router-dom";
 
 export default function Index() {
   const { productArena1 } = useSlick(); // Lấy các ref từ hook
@@ -33,9 +34,9 @@ export default function Index() {
 
           </div>
           <div className="btn-style-2">
-            <a href="#">
-            Xem tất cả sản phẩm <i className="far fa-long-arrow-right"></i>
-            </a>
+            <Link to="/shop?favorite=favorite">
+              Xem tất cả sản phẩm <i className="far fa-long-arrow-right"></i>
+            </Link>
           </div>
         </div>
         <div ref={productArena1} className="product-slider-active-1 nav-style-2 nav-style-2-modify-2 d-flex">

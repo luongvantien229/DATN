@@ -75,3 +75,25 @@
 .btn-style-2 a i {
   color: #27c77c !important;
 }
+.product-details-content .pro-details-brand-review .pro-details-brand span a {
+  color: #27c77c !important;
+  font-size: 16px;
+}
+.product-details-content .pro-details-brand-review .pro-details-brand span a:hover {
+  color: #188653 !important;
+}
+
+.product-details-content .pro-details-price-short-description .pro-details-price span.old-price-detail{
+  font-size: 18px !important;
+  margin-left: 10px !important;
+}
+
+.product-details-content .pro-details-action-wrap .pro-details-action button:hover {
+  background-color: #27c77c !important;
+}
+.product-details-content .pro-details-action-wrap .pro-details-action button:hover:after {
+  background-color: #27c77c !important;
+}
+.product-details-content .pro-details-action-wrap .pro-details-action button:hover:before {
+  border-top-color: #27c77c !important;
+}

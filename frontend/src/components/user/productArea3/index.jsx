@@ -3,18 +3,34 @@ import ProductArena3 from "./productArea3";
 import useSlick from "../../../hooks/user/slick";
 import axios from "axios";
 import "./style.scss";
+import { Link } from "react-router-dom";
 export default function Index() {
   const { productArena1 } = useSlick();
-  const categories = [
-    { id: 1, name: "Sản phẩm mới" },
-    { id: 2, name: "Thuốc thông thường cảm sốt" },
-    { id: 3, name: "Chăm sóc sức khỏe" },
-    { id: 4, name: "Thiết bị y tế" },
-    { id: 5, name: "Chăm sóc sắc đẹp" },
-    { id: 6, name: "Sữa cho cả nhà" },
-    { id: 7, name: "Vitamin tổng hợp" },
-  ];
-  const [currentCategory, setCurrentCategory] = useState(1); // ID mặc định
+  const [newproducts, setNewProducts] = useState([]);
+  const fetchNewProducts = async () => {
+    try {
+      const response = await axios.get("/new_products");
+      setNewProducts(response.data.new_products || []);
+    } catch (error) {
+      console.error("Error fetching new products:", error);
+    }
+  };
+  useEffect(() => {
+    fetchNewProducts();
+  }, []);
+  const [categories, setCategories] = useState([]);
+  const fetchCategories = async () => {
+    try {
+      const response = await axios.get("/get_categories_home");
+      setCategories(response.data || []);
+    } catch (error) {
+      console.error("Error fetching categories:", error);
+    }
+  };
+  useEffect(() => {
+    fetchCategories();
+  }, []);
+  const [currentCategory, setCurrentCategory] = useState(0); // ID mặc định
   const [filteredProducts, setFilteredProducts] = useState([]);
   const fetchProductsByCategory = async (categoryId) => {
     try {
@@ -26,6 +42,19 @@ export default function Index() {
       console.error("Error fetching products by category:", error);
     }
   };
+  const [bannerImg1, setBannerImg1] = useState([]);
+
+  const fetchBannerImg1 = async () => {
+    try {
+      const response = await axios.get("/banners/size/5");
+      setBannerImg1(response.data || []);
+    } catch (error) {
+      console.error("Error fetching slider images:", error);
+    }
+  };
+  useEffect(() => {
+    fetchBannerImg1();
+  }, []);
   useEffect(() => {
     fetchProductsByCategory(currentCategory);
   }, [currentCategory]);
@@ -38,6 +67,14 @@ export default function Index() {
           </div>
         </div>
         <div className="d-flex align-items-center mb-5">
+          <button
+            className={`btn me-2 ${
+              currentCategory === 0 ? "btn-primary" : "btn-outline-secondary"
+            }`}
+            onClick={() => setCurrentCategory(0)}
+          >
+            Sản phẩm mới
+          </button>
           {categories.map((category) => (
             <button
               key={category.id}
@@ -56,31 +93,33 @@ export default function Index() {
           ref={productArena1}
           className="product-slider-active-1 nav-style-2 nav-style-2-modify-2 d-flex"
         >
-          {filteredProducts.slice(0, 5).map((product) => (
+          {currentCategory === 0
+            ? newproducts
+                .slice(0, 5)
+                .map((product) => (
+                  <ProductArena3 key={product.id} product={product} />
+                ))
+            : filteredProducts
+                .slice(0, 5)
+                .map((product) => (
+                  <ProductArena3 key={product.id} product={product} />
+                ))}
+          {/* {filteredProducts.slice(0, 5).map((product) => (
             <ProductArena3 key={product.id} product={product} />
-          ))}
+          ))} */}
         </div>
         <div className="row mt-5 g-4 productArea3-banner">
-          <div className="col-md-6">
-            <div className="banner bg-primary text-white text-center rounded">
-              <div>
-                <img
-                  src="https://cdn.nhathuoclongchau.com.vn/unsafe/1280x0/filters:quality(90)/https://cms-prod.s3-sgn09.fptcloud.com/1920x565_1_a50e0dee4c.png"
-                  alt=""
-                />
+          {bannerImg1.slice(0, 3).map((item) => (
+            <div className="col-md-6">
+              <div className="banner bg-primary text-white text-center rounded">
+                <Link to={item.banner_link ? item.banner_link : "/"}>
+                  <div>
+                    <img src={item.image_path} alt={item.title} />
+                  </div>
+                </Link>
               </div>
             </div>
-          </div>
-          <div className="col-md-6">
-            <div className="banner bg-info text-white text-center rounded">
-              <div>
-                <img
-                  src="https://cdn.nhathuoclongchau.com.vn/unsafe/1280x0/filters:quality(90)/https://cms-prod.s3-sgn09.fptcloud.com/1920x565_deb9cb8e87.jpg"
-                  alt=""
-                />
-              </div>
-            </div>
-          </div>
+          ))}
         </div>
       </div>
     </div>

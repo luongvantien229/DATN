@@ -6,6 +6,7 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { addToWishList } from "../../../redux/slices/wishlistSlice";
 
 export default function ProductDetail_Right({ product }) {
   const [quantity, setQuantity] = useState(1);
@@ -63,6 +64,24 @@ export default function ProductDetail_Right({ product }) {
     // toast.success("Sản phẩm đã được thêm vào giỏ hàng!");
   };
 
+  const handleAddToWishlist = async () => {
+    const item = {
+      ...product,
+    };
+    dispatch(addToWishList(item));
+
+    try {
+      
+      const response = await axios.post(
+        `/products/${product.id}/increment-favorite`
+      );
+      console.log(response.data.message); 
+    } catch (error) {
+      console.error("Error adding to wishlist:", error);
+      
+    }
+  };
+
   return (
     <div className="col-lg-6 col-md-6">
       <div className="product-details-content pro-details-content-pl">
@@ -80,25 +99,17 @@ export default function ProductDetail_Right({ product }) {
         <div className="pro-details-brand-review">
           <div className="pro-details-brand">
             <span>
-              Thương hiệu: {brands ? brands.name : "Đang tải..."}
-              <a href="shop.html"></a>
+              Thương hiệu:
+              <Link to={`/shop?brand=${product.brand_id}`}>
+               {brands ? brands.name : "Chưa có thương hiệu..."}
+              </Link>
             </span>
-          </div>
-          <div className="pro-details-rating-wrap">
-            <span>5.00</span>
-            <div className="pro-details-rating">
-              <i className="fas fa-star"></i>
-              <i className="fas fa-star"></i>
-              <i className="fas fa-star"></i>
-              <i className="fas fa-star"></i>
-              <i className="fas fa-star"></i>
-            </div>
-            <a href="#">(2 đánh giá)</a>
           </div>
         </div>
         <div className="pro-details-price-short-description">
           <div className="pro-details-price">
             <span className="new-price">{formattedPrice}</span>
+            <span className="old-price old-price-detail">{Number(product.price_cost).toLocaleString()}đ</span> {/* Giá sản phẩm */}
           </div>
           <div className="pro-details-short-description">
             <p>{product.description}</p>
@@ -128,12 +139,12 @@ export default function ProductDetail_Right({ product }) {
             <button>Thêm vào giỏ hàng</button>
           </div>
           <div className="pro-details-action tooltip-style-4">
-            <button aria-label="Thêm vào danh sách yêu thích">
+            <button aria-label="Thêm vào danh sách yêu thích" onClick={handleAddToWishlist}>
               <i className="fad fa-heart"></i>
             </button>
-            <button aria-label="Thêm vào so sánh">
+            {/* <button aria-label="Thêm vào so sánh">
               <i className="far fa-signal"></i>
-            </button>
+            </button> */}
           </div>
         </div>
         <div className="product-details-meta">
@@ -141,13 +152,13 @@ export default function ProductDetail_Right({ product }) {
             <li>
               <span>Mã sản phẩm:</span> {product.sku}
             </li>
-            <li>
+            {/* <li>
               <span>Thẻ:</span> <a href="#">covid19</a> /{" "}
               <a href="#">chăm sóc tại nhà</a> / <a href="#">Nhà thuốc</a>
-            </li>
+            </li> */}
           </ul>
         </div>
-        <div className="product-details-social tooltip-style-4">
+        {/* <div className="product-details-social tooltip-style-4">
           <a aria-label="Facebook" className="facebook" href="#">
             <i className="fab fa-facebook-f"></i>
           </a>
@@ -163,7 +174,7 @@ export default function ProductDetail_Right({ product }) {
           <a aria-label="Email" className="envelope" href="#">
             <i className="fas fa-envelope"></i>
           </a>
-        </div>
+        </div> */}
       </div>
       <ToastContainer />
     </div>

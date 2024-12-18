@@ -67,11 +67,11 @@ export default function CartTableContent() {
                 <div className="continure-btn">
                   <Link to="/shop">Tiếp tục mua sắm</Link>
                 </div>
-                <div className="clear-btn">
+                {/* <div className="clear-btn">
                   <a href="#">
                     <i className="fal fa-times"></i> Xóa giỏ hàng
                   </a>
-                </div>
+                </div> */}
               </div>
               {/* <div className="update-btn">
                 <a href="cart.html">Cập nhật giỏ hàng</a>

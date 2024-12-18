@@ -24,18 +24,21 @@ class AuthController extends Controller
     public function register()
     {
         $validator = Validator::make(request()->all(), [
-            'name' => 'required',
-            'email' => 'required|email|unique:users',
-            // 'password' => 'required|min:8',
-            'password' => 'required|min:8|same:password2',
-            'password2' => 'required|min:8',
-            'g-recaptcha-response' => new Captcha(),
-
-        ]);
+    'name' => 'required',
+    'email' => 'required|email|unique:users',
+    'password' => 'required|min:8|same:password2',
+    'password2' => 'required|min:8',
+    'g-recaptcha-response' => new Captcha(),
+], [
+    'email.unique' => 'Email này đã được sử dụng. Vui lòng chọn email khác.',
+    'email.email' => 'Email không hợp lệ. Vui lòng kiểm tra lại.',
+    'password.same' => 'Mật khẩu nhập lại không khớp.',
+    'password.min' => 'Mật khẩu phải có ít nhất 8 ký tự.',
+]);
 
         if ($validator->fails()) {
             return response()->json($validator->errors()->toJson(), 400);
-        }
+        } 
 
         $user = new User;
         $user->name = request()->name;
@@ -122,7 +125,7 @@ class AuthController extends Controller
         auth()->logout();
 
         return response()->json([
-            'message' => 'Successfully logged out',
+            'message' => 'Bạn đã đăng xuất tài khoản thành công!',
             'redirect_url' => '/',
         ]);
     }

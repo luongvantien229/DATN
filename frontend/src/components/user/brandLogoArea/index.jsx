@@ -3,11 +3,12 @@ import { useLocation } from "react-router-dom";
 import BrandLogoArea from "./BrandLogoArea"; // Đảm bảo bạn đang import đúng component
 import useSlick from "../../../hooks/user/slick";
 import axios from "axios"; // Đảm bảo bạn đã cài đặt axios
+import { Link } from "react-router-dom";
 
 export default function Index() {
   const location = useLocation();
-  const isHomePage = location.pathname === '/';
-  const isAboutPage = location.pathname === '/about';
+  const isHomePage = location.pathname === "/";
+  const isAboutPage = location.pathname === "/about";
 
   const { BrandLogoSettings } = useSlick();
   const [brands, setBrands] = useState([]); // State để lưu trữ danh sách thương hiệu
@@ -29,12 +30,24 @@ export default function Index() {
   return (
     <div className="brand-logo-area pb-35">
       <div className="custom-container">
-        {!isAboutPage && isHomePage && (
-          <div className="section-title-1 wow tmFadeInUp mb-30">
-            <h2>Mua sắm theo thương hiệu</h2>
+        <div className="row">
+          <div className="col-lg-6">
+            <div className="section-title-1 wow tmFadeInUp mb-30">
+              <h2>Mua sắm theo thương hiệu</h2>
+            </div>
           </div>
-        )}
-        <div ref={BrandLogoSettings} className="row align-items-center wow tmFadeInUp">
+          <div className="col-lg-6 text-lg-right">
+            <div className="btn-style-2">
+              <Link to="/shop?allBrand=allBrand">
+                Xem tất cả sản phẩm <i className="far fa-long-arrow-right"></i>
+              </Link>
+            </div>
+          </div>
+        </div>
+        <div
+          ref={BrandLogoSettings}
+          className="row align-items-center wow tmFadeInUp"
+        >
           {/* Truyền toàn bộ danh sách brands vào BrandLogoArea */}
           <BrandLogoArea brands={brands} />
         </div>

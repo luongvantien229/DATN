@@ -54,9 +54,9 @@ const ProductArena1 = forwardRef(({ product }, ref) => {
             <button aria-label="Add To Wishlist" onClick={handleAddToWishlist}>
               <i className="far fa-heart"></i>
             </button>
-            <button aria-label="Compare">
+            {/* <button aria-label="Compare">
               <i className="far fa-signal"></i>
-            </button>
+            </button> */}
           </div>
         </div>
         <div className="product-content-wrap">

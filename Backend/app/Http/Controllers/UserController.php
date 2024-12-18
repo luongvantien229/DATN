@@ -205,13 +205,12 @@ class UserController extends Controller
                 $user->image = $filename; // Update image field in the brand
             }
 
-            $user->update([
-                'name' => $request->name,
-                'email' => $request->email,
-                'phone' => $request->phone,
-            ]);
+            $user->name = $request->name;
+            $user->email = $request->email;
+            $user->phone = $request->phone;
+            $user->save();
 
-            return response()->json('user updated', 200);
+            return response()->json('Cập nhật thành công', 200);
 
         } catch (Exception $e) {
             return response()->json($e, 500);

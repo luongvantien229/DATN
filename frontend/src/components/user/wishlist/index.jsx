@@ -4,6 +4,7 @@ import { addToCart } from "../../../redux/slices/cartSlice";
 import { removeFromWishList } from "../../../redux/slices/wishlistSlice";
 import { Link } from "react-router-dom";
 import axios from "axios";
+import './style.scss';
 
 const Wishlist = () => {
   const wishlistItems = useSelector((state) => state.wishlist.wishlist);
@@ -79,7 +80,6 @@ const Wishlist = () => {
                               <span>{item.dateAdded}</span>
                             </td>
                             <td className="wishlist-product-add-wrap">
-                              <span>In stock</span>
                               <div className="wishlist-product-add">
                                 <button
                                   onClick={() => handleAddToCart(item)}
@@ -98,7 +98,7 @@ const Wishlist = () => {
                 </div>
               </div>
 
-              <div className="wishlist-bottom">
+              {/* <div className="wishlist-bottom">
                 <div className="wishlist-social-wrap">
                   <span>Share on:</span>
                   <div className="wishlist-social">
@@ -134,7 +134,7 @@ const Wishlist = () => {
                     </div>
                   </div>
                 </div>
-              </div>
+              </div> */}
             </div>
           </div>
         </div>

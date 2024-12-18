@@ -12,6 +12,7 @@ const SliderComponent = () => {
   const fetchSliderImg = async () => {
     try {
       const response = await axios.get('/banners/size/1');
+      console.log("🚀 ~ fetchSliderImg ~ response.data:", response.data)
       setSliderImg(response.data || []); // Cập nhật sliderImg từ API
     } catch (error) {
       console.error('Error fetching slider images:', error);
@@ -29,6 +30,8 @@ const SliderComponent = () => {
     speed: 500,
     slidesToShow: 1,
     slidesToScroll: 1,
+    autoplay: true,      // Bật chế độ tự chạy slide
+  autoplaySpeed: 2000, // Thời gian dừng giữa các slide (tính bằng ms)
   };
 
   return (
@@ -36,6 +39,7 @@ const SliderComponent = () => {
       <div className="custom-container">
         <div className="row">
           <div className="custom-common-column custom-column-width-100 custom-padding-5">
+          
             <div className="slider-area">
               {/* Sử dụng Slider từ react-slick và cấu hình */}
               <Slider ref={sliderRef} {...slickSettings} className="hero-slider-active-1 nav-style-1 nav-style-1-position-1">

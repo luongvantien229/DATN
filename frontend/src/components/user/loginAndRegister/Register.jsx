@@ -48,11 +48,14 @@ export default function Register() {
     if (!emailRegex.test(email)) {
       validationErrors.email = "Email không hợp lệ.";
     }
-    if (password.length < 6) {
-      validationErrors.password = "Mật khẩu phải có ít nhất 6 ký tự.";
+    if (password.length < 8) {
+      validationErrors.password = "Mật khẩu phải có ít nhất 8 ký tự.";
     }
     if (password !== password2) {
       validationErrors.password2 = "Mật khẩu không khớp.";
+    }
+    if (!captchaReady) {
+      validationErrors.recaptchaResponse = "reCAPTCHA chưa sẵn sàng. Vui lòng thử lại sau.";
     }
     setErrors(validationErrors);
     return Object.keys(validationErrors).length === 0;
@@ -144,19 +147,9 @@ export default function Register() {
         });
       }
     } catch (error) {
-      if (error.response) {
-        Swal.fire({
-          icon: "error",
-          title: "Lỗi",
-          text: error.response.data.message || "Đã xảy ra lỗi. Vui lòng thử lại.",
-        });
-      } else {
-        Swal.fire({
-          icon: "error",
-          title: "Lỗi Mạng",
-          text: "Vui lòng kiểm tra kết nối của bạn và thử lại.",
-        });
-      }
+      if (error.response && error.response.status === 400) {
+        setErrors(JSON.parse(error.response.data));
+    }
     }
   };
 
@@ -217,7 +210,8 @@ export default function Register() {
               {errors.password2 && <p style={{ color: "red" }}>{errors.password2}</p>}
             </div>
 
-            <div id="recaptcha-container" style={{ marginBottom: "15px" }}></div>
+            <div id="recaptcha-container" name="recaptchaResponse" style={{ marginBottom: "15px" }}></div>
+            {errors.recaptchaResponse && <p style={{ color: "red" }}>{errors.recaptchaResponse}</p>}
 
             <div className="privacy-policy-wrap">
               <p>

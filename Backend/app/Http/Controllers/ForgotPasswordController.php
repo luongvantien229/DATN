@@ -57,6 +57,7 @@ class ForgotPasswordController extends Controller
             ]);
 
         if ($request->password != $request->password2) {
+            // Validate failed
             return response()->json(['error' => 'Password not match'], 400);
         }
 
@@ -72,7 +73,7 @@ class ForgotPasswordController extends Controller
             return view('auth.passwords.success');
         }
 
-        return response()->json(['error' => 'Invalid token or email.'], 400);
+        return view('auth.passwords.reset', ['token' => $request->token]);
     }
     public function forgot_password(Request $request)
     {
@@ -85,7 +86,7 @@ class ForgotPasswordController extends Controller
             $request->only('email')
         );
 
-        return $status === Password::RESET_LINK_SENT
+        return $status === Password::PASSWORD_RESET
             ? response()->json(['message' => 'Reset link sent to your email'])
             : response()->json(['error' => 'Unable to send reset link'], 400);
     }

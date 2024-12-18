@@ -1,5 +1,5 @@
 import React from "react";
-
+import { Link } from "react-router-dom";
 
 const BrandLogoArea = ({ brands }) => {
   // Kiểm tra nếu brands không phải là mảng hoặc là mảng rỗng
@@ -13,9 +13,9 @@ const BrandLogoArea = ({ brands }) => {
 
         <div className="col-lg-2 col-md-4 col-6 col-sm-4" key={brand.id}>
           <div className="single-brand-logo mb-30">
-            <a href={`shop.html?brand=${brand.slug}`}>
+            <Link to={`/shop?brand=${brand.id}`}>
               <img src={brand.image} alt={brand.name} />
-            </a>
+            </Link>
           </div>
         </div>
       ))}

@@ -5,13 +5,16 @@ import axios from "axios";
 
 export default function  Product_Related()  {
     const { id, slug } = useParams();
-    const [related_products, setProduct] = useState(null);
+    const [product, setProduct] = useState([]);
+    console.log("🚀 ~ Product_Related ~ product:", product)
+    const [related_products, setRelatedProduct] = useState([]);
     useEffect(() => {
         const fetchProductDetail = async () => {
           try {
             const response = await axios.get(`/product_detail/${slug}/${id}`);
             const data = response.data;
-            setProduct(data.related_products);
+            setProduct(data.product);
+            setRelatedProduct(data.related_products);
           } catch (error) {
             console.error("Error fetching product details:", error);
           }
@@ -31,9 +34,9 @@ export default function  Product_Related()  {
             Sản phẩm liên quan
           </div>
           <div className="btn-style-2">
-            <a href="#">
+          <Link to={`/shop?category=${product.category_id}`}>
             Xem tất cả sản phẩm <i className="far fa-long-arrow-right"></i>
-            </a>
+            </Link>
           </div>
         </div>
         <div className="product-slider-active-1 nav-style-2 nav-style-2-modify-2 d-flex">

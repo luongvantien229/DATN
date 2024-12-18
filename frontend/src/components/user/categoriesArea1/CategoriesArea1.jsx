@@ -6,7 +6,7 @@ export default function CategoriesArena1({ category }) {
     <div className="product-plr-1">
       <div className="categories-wrap">
         <div className="categories-img categories-img-zoom">
-          <Link to={`shop/${category.slug}`}>
+          <Link to={`/shop?category=${category.id}`}>
             {" "}
             {/* Sử dụng slug cho link */}
             <img
@@ -20,7 +20,7 @@ export default function CategoriesArena1({ category }) {
         </div>
         <div className="categories-content text-center">
           <h3>
-            <Link to={`shop/${category.slug}`}>{category.name}</Link>{" "}
+            <Link to={`/shop?category=${category.id}`}>{category.name}</Link>{" "}
             {/* Hiển thị tên danh mục */}
           </h3>
         </div>

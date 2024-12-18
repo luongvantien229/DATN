@@ -321,3 +321,15 @@ Route::get('/get_categories_home', [IndexController::class, 'get_categories_home
 
 // Fetch 5 products with sold the most
 Route::get('/get_products_sold_most', [IndexController::class, 'get_products_sold_most']);
+
+// Fetch 5 products with favorite the most
+Route::get('/get_products_favorite_most', [IndexController::class, 'get_products_favorite_most']);
+
+// Fetch 5 products with sold the most all
+Route::get('/get_products_sold_most_all', [IndexController::class, 'get_products_sold_most_all']);
+
+// fetch 4 products with view the most
+Route::get('/get_products_view_most', [IndexController::class, 'get_products_view_most']);
+
+// fetch 4 products with view the most all
+Route::get('/get_products_view_most_all', [IndexController::class, 'get_products_view_most_all']);

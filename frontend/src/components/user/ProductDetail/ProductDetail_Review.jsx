@@ -52,10 +52,11 @@ export default function ProductDetail_Review() {
 
       setComments([...comments, formData]);
       setFormData({ name: "", email: "", message: "" });
-      alert("Comment submitted successfully!");
+      alert("Đánh giá của bạn đã được gửi thành công!");
     } catch (error) {
       console.error("Error submitting comment:", error);
     }
+    window.location.reload();
   };
 
   return (
@@ -64,10 +65,10 @@ export default function ProductDetail_Review() {
         <h2>Đánh giá ({comments ? comments.length : 0})</h2>
       </div>
       <div className="pro-details-review">
-        <p>
+        {/* <p>
           <span>5.00</span> trung bình dựa trên {comments ? comments.length : 0}{" "}
           đánh giá.
-        </p>
+        </p> */}
 
         {loading ? (
           <p>Đang tải đánh giá...</p>
@@ -158,7 +159,7 @@ export default function ProductDetail_Review() {
 
             <div className="rating-form-style">
               <form onSubmit={handleSubmit}>
-                <div className="comment-form-rating-wrap">
+                {/* <div className="comment-form-rating-wrap">
                   <span>Đánh giá của bạn: *</span>
                   <div className="comment-form-rating">
                     <i className="fas fa-star"></i>
@@ -167,7 +168,7 @@ export default function ProductDetail_Review() {
                     <i className="fas fa-star"></i>
                     <i className="fas fa-star"></i>
                   </div>
-                </div>
+                </div> */}
                 <div className="row">
                   <div className="col-lg-6 col-md-6">
                     <input

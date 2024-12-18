@@ -34,12 +34,12 @@ export default function Index() {
     <div className="banner-area pb-45">
         <div className="custom-container">
           <div className="row">
-          {bannerImg2Left.slice(0, 1).map((item) => (
-            <BannerArenaLeft key={item.id} item={item} />
-          ))}
-          {bannerImg2Right.slice(0, 1).map((item) => (
-            <BannerArenaRight key={item.id} item={item} />
-          ))}
+            {bannerImg2Left.slice(0, 1).map((item) => (
+              <BannerArenaLeft key={item.id} item={item} />
+            ))}
+            {bannerImg2Right.slice(0, 1).map((item) => (
+              <BannerArenaRight key={item.id} item={item} />
+            ))}
           </div>
         </div>
       </div>

@@ -21,11 +21,15 @@ export default function PaymentSuccess() {
             Cảm ơn bạn đã mua hàng. Chúng tôi sẽ liên hệ để giao hàng sớm nhất!
           </p>
           <button
-            className="btn btn-primary btn-lg"
-            onClick={() => navigate("/")}
-          >
-            Quay về trang chủ
-          </button>
+  className="btn btn-primary btn-lg"
+  onClick={() => {
+    navigate("/");
+    window.location.reload();
+  }}
+>
+  Quay về trang chủ
+</button>
+
         </div>
       </div>
       <style>

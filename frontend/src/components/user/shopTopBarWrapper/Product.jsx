@@ -1,7 +1,39 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import axios from "axios";
+import { addToCart } from "../../../redux/slices/cartSlice";
+import { addToWishList } from "../../../redux/slices/wishlistSlice";
 
 export default function Product({ product }) {
+  const dispatch = useDispatch();
+
+  const handleAddToCart = () => {
+    const item = {
+      ...product,
+      quantity: 1,
+    };
+
+    dispatch(addToCart(item));
+  };
+
+  const handleAddToWishlist = async () => {
+    const item = {
+      ...product,
+    };
+    dispatch(addToWishList(item));
+
+    try {
+      
+      const response = await axios.post(
+        `/products/${product.id}/increment-favorite`
+      );
+      console.log(response.data.message); 
+    } catch (error) {
+      console.error("Error adding to wishlist:", error);
+      
+    }
+  };
   return (
     <div className="col-xl-3 col-lg-4 col-md-4 col-12 col-sm-6 wow tmFadeInUp">
       <div className="single-product-wrap mb-50">
@@ -20,14 +52,11 @@ export default function Product({ product }) {
             
           </div>
           <div className="product-action-1">
-            <button aria-label="Add To Cart">
+          <button aria-label="Add To Cart" onClick={handleAddToCart}>
               <i className="far fa-shopping-bag"></i>
             </button>
-            <button aria-label="Add To Wishlist">
+            <button aria-label="Add To Wishlist" onClick={handleAddToWishlist}>
               <i className="far fa-heart"></i>
-            </button>
-            <button aria-label="Compare">
-              <i className="far fa-signal"></i>
             </button>
           </div>
           <div className="product-badges product-badges-position product-badges-mrg">

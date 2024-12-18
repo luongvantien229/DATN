@@ -122,7 +122,7 @@ const token = urlToken || localStorageToken; // If URL token exists, use it; oth
         console.error("Error fetching payment URL:", error);
         alert("Đã xảy ra lỗi khi thanh toán.");
       }
-      localStorage.removeItem("cart");
+      localStorage.removeItem("cartItems");
       localStorage.removeItem("coupon");
       localStorage.removeItem("PaymentInformation");
     }

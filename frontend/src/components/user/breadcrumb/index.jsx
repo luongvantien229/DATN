@@ -16,6 +16,7 @@ const Breadcrumb = () => {
     "/product-detail": "Chi tiết sản phẩm",
     "/login-register": "Đăng nhập - Đăng ký",
     "/wishlist": "Sản phẩm yêu thích",
+    "/user-profile": "Quản lý người dùng",
   };
 
   const slug = pathnames[pathnames.length - 1]; 
